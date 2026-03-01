@@ -38,4 +38,6 @@ jobs:
         run: ./gradlew build -x test
 
       - name: Run tests
-        run: ./gradlew test
+          run: ./gradlew test
+          env:
+            SPRING_DATASOURCE_PASSWORD: oshibi1234
