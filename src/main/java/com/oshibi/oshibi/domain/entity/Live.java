@@ -1,0 +1,71 @@
+package com.oshibi.oshibi.domain.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+@Entity
+@Table(name = "lives")
+@Getter
+@Setter
+@NoArgsConstructor
+public class Live extends BaseEntity {
+
+    @Id
+    @Column(name = "live_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long liveId;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private Account createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "venue_id")
+    private Venue venue;
+
+    @Column(nullable = false, length = 200)
+    private String title;
+
+    @Column(name = "live_type", nullable = false, length = 30)
+    private String liveType;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
+
+    @Column(name = "open_time")
+    private LocalTime openTime;
+
+    @Column(name = "start_time")
+    private LocalTime startTime;
+
+    @Column(name = "price_advance")
+    private Integer priceAdvance;
+
+    @Column(name = "price_door")
+    private Integer priceDoor;
+
+    @Column(name = "ticket_method", length = 30)
+    private String ticketMethod;
+
+    @Column(name = "has_streaming", nullable = false)
+    private boolean hasStreaming;
+
+    @Column(name = "streaming_price")
+    private Integer streamingPrice;
+
+    @Column(name = "streaming_start_date")
+    private LocalDate streamingStartDate;
+
+    @Column(name = "streaming_end_date")
+    private LocalDate streamingEndDate;
+
+    @Column(name = "flyer_url", length = 500)
+    private String flyerUrl;
+}
