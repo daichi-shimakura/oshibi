@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ライブ一覧</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f5f5; }
+        .filter-section {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .live-row {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px 16px;
+            transition: box-shadow 0.15s;
+        }
+        .live-row:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .live-row a { text-decoration: none; color: inherit; }
+        .live-title { font-weight: bold; color: #212529; }
+        .performers-text { color: #6c757d; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<!-- ========== ヘッダーナビ ========== -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">oshibi</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">ライブ一覧</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">芸人一覧</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">マイライブ</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">ログイン</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-4">
+
+    <!-- ========== 検索・フィルターセクション ========== -->
+    <div class="filter-section mb-4">
+
+        <!-- キーワード検索 -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="キーワード検索（ライブ名・出演者名）">
+                    <button class="btn btn-dark" type="button">検索</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- フィルター行1: 日付 -->
+        <div class="row g-2 mb-2">
+            <div class="col-md-3">
+                <label class="form-label small text-muted">開催日（から）</label>
+                <input type="date" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">開催日（まで）</label>
+                <input type="date" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-6 d-flex align-items-end gap-2">
+                <button class="btn btn-outline-dark btn-sm">今日</button>
+                <button class="btn btn-outline-dark btn-sm">今週末</button>
+            </div>
+        </div>
+
+        <!-- フィルター行2: 場所・種別・時間帯・価格 -->
+        <div class="row g-2 mb-2">
+            <div class="col-md-3">
+                <label class="form-label small text-muted">都道府県</label>
+                <select class="form-select form-select-sm">
+                    <option value="">すべて</option>
+                    <option>東京都</option>
+                    <option>大阪府</option>
+                    <option>神奈川県</option>
+                    <option>愛知県</option>
+                    <option>福岡県</option>
+                    <option disabled>---</option>
+                    <option>北海道</option>
+                    <option>青森県</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">ライブ種別</label>
+                <select class="form-select form-select-sm">
+                    <option value="">すべて</option>
+                    <option>ネタ</option>
+                    <option>トーク</option>
+                    <option>企画</option>
+                    <option>賞レース予選</option>
+                    <option>バトルライブ</option>
+                    <option>単独</option>
+                    <option>ツーマン</option>
+                    <option>ユニットライブ</option>
+                    <option>その他</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">開演時間帯</label>
+                <select class="form-select form-select-sm">
+                    <option value="">すべて</option>
+                    <option>～17:00</option>
+                    <option>17:00～18:00</option>
+                    <option>18:00～19:00</option>
+                    <option>19:00～20:00</option>
+                    <option>20:00～</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">価格上限（円）</label>
+                <input type="number" class="form-control form-control-sm" placeholder="例：3000">
+            </div>
+        </div>
+
+        <!-- フィルター行3: オプション -->
+        <div class="row g-2 mt-1">
+            <div class="col-md-3 d-flex align-items-center">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="filterPast">
+                    <label class="form-check-label small" for="filterPast">過去のライブを含む</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 検索結果ヘッダー ========== -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="text-muted mb-0">検索結果：<strong th:text="${#lists.size(lives)}">0</strong>件</p>
+    </div>
+
+    <!-- ========== ライブ一覧（リスト形式） ========== -->
+    <div class="d-flex flex-column gap-2">
+
+        <!-- リスト1: ネタライブ -->
+        <div class="live-row" th:each="live : ${lives}">
+            <a href="#">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <span th:text="${live.liveTitle}" class="live-title">第15回おもしろネタライブ</span>
+                        <span th:text="${live.liveType}" class="badge bg-secondary ms-2">ネタ</span>
+                    </div>
+                    <div class="text-end text-nowrap ms-3">
+                        <span class="small">前売
+                            <span th:text="${live.priceAdvance}" class="small">2,000</span>円
+                            <span class="small">/当日 </span>
+                            <span th:text="${live.priceDoor}" class="small">2,500</span>円
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-1">
+                    <span th:text="${#temporals.format(live.liveDate, 'yyyy/M/d')}" class="small text-muted">2026/3/15（日）</span>
+                    /開場
+                    <span th:text="${live.openTime}" class="small text-muted">17:30</span>
+                    /開演
+                    <span th:text="${live.startTime}" class="small text-muted">18:00</span>
+                    <span th:text="${live.venue + '（' + live.prefecture + '）'}" class="small text-muted ms-3">新宿バティオス（東京都）</span>
+                </div>
+                <div class="performers-text mt-1">
+                    出演：（未実装）
+                </div>
+                <div class="performers-text mt-1">
+                    他
+                    <span th:text="${live.otherPerformerCount}" class="performers-text mt-1">5</span>
+                    組
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- ========== ページネーション ========== -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled"><a class="page-link" href="#">前へ</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">...</a></li>
+            <li class="page-item"><a class="page-link" href="#">13</a></li>
+            <li class="page-item"><a class="page-link" href="#">次へ</a></li>
+        </ul>
+    </nav>
+
+</div>
+
+<!-- ========== フッター ========== -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <small>&copy; 2026 おしび（仮）</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -55,7 +55,7 @@ public class Live extends BaseEntity {
     private String ticketMethod;
 
     @Column(name = "has_streaming", nullable = false)
-    private boolean hasStreaming;
+    private Boolean hasStreaming;
 
     @Column(name = "streaming_price")
     private Integer streamingPrice;
