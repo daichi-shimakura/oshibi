@@ -12,7 +12,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/lives").permitAll()
+                        .requestMatchers("/lives", "/lives/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

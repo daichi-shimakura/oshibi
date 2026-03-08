@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "lives")
@@ -68,4 +70,7 @@ public class Live extends BaseEntity {
 
     @Column(name = "flyer_url", length = 500)
     private String flyerUrl;
+
+    @OneToMany(mappedBy = "live")
+    private List<LivePerformer> livePerformers = new ArrayList<>();
 }

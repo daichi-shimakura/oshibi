@@ -154,9 +154,8 @@
     <!-- ========== ライブ一覧（リスト形式） ========== -->
     <div class="d-flex flex-column gap-2">
 
-        <!-- リスト1: ネタライブ -->
         <div class="live-row" th:each="live : ${lives}">
-            <a href="#">
+            <a th:href="@{/lives/detail/{liveId}(liveId=${live.liveId})}" class="d-block">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
                         <span th:text="${live.liveTitle}" class="live-title">第15回おもしろネタライブ</span>

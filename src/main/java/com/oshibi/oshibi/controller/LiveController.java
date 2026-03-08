@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,5 +17,12 @@ public class LiveController {
         var liveList = liveService.findAll();
         model.addAttribute("lives", liveList);
         return "lives/list";
+    }
+
+    @GetMapping("/lives/detail/{liveId}")
+    public String detail(Model model, @PathVariable("liveId") Long liveId) {
+        var liveDetail = liveService.findById(liveId).orElseThrow();
+        model.addAttribute("live", liveDetail);
+        return "lives/detail";
     }
 }
