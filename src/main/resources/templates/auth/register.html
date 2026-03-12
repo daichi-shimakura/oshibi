@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ユーザー登録 - おしび</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+        background: #f5f5f5;
+    }
+    .auth-card {
+        max-width: 420px;
+        margin: 80px auto;
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 2rem;
+    }
+    .auth-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/lives">おしび（仮）</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="auth-card">
+    <div class="auth-title">ユーザー登録</div>
+
+    <form th:action="@{/register}" method="post">
+      <!-- CSRF対応はThymeleaf追加時にth:actionで自動付与 -->
+
+      <div class="mb-3">
+        <label for="email" class="form-label">メールアドレス</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com">
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">パスワード</label>
+        <input type="password" class="form-control" id="password" name="password">
+      </div>
+
+      <div class="mb-4">
+        <label for="passwordConfirm" class="form-label">パスワード（確認）</label>
+        <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm">
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">アカウント種別</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="accountType" id="typeFan" value="FAN" checked>
+          <label class="form-check-label" for="typeFan">ファン</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="accountType" id="typeLiveStaff" value="LIVE_STAFF">
+          <label class="form-check-label" for="typeLiveStaff">ライブ関係者（芸人・スタッフ）</label>
+        </div>
+      </div>
+
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-dark">登録する</button>
+      </div>
+    </form>
+
+    <div class="text-center small">
+      すでにアカウントをお持ちの方は
+      <a href="/login">ログイン</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
