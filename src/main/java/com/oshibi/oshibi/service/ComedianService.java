@@ -29,8 +29,8 @@ public class ComedianService {
 
         return comedianProfileRepository.findById(accountId).map(comedian -> {
             // comedianが出演するライブのリストを取得
-            List<ComedianLiveItemDto> lives = livePerformerRepository.findByComedian_AccountId(accountId).stream()
-                    .map(lp -> new ComedianLiveItemDto(
+            List<ComedianScheduleItemDto> lives = livePerformerRepository.findByComedian_AccountId(accountId).stream()
+                    .map(lp -> new ComedianScheduleItemDto(
                             lp.getLive().getLiveId(),
                             lp.getLive().getTitle(),
                             lp.getLive().getDate(),

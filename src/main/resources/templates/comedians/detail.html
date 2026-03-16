@@ -114,7 +114,7 @@
         <h5 class="mb-3">出演ライブ（今後の予定）</h5>
         <div class="d-flex flex-column gap-2" style="max-height: 400px; overflow-y: auto;">
             <div th:each="live : ${comedian.comedianLives}" class="live-row">
-                <a th:href="@{/lives/detail/{liveId}(liveId=${live.liveId})}">
+                <a th:href="@{/lives/{liveId}/comedians/{accountId}(liveId=${live.liveId},accountId=${comedian.accountId})}">
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="flex-grow-1">
                             <span th:text="${live.liveTitle}" class="live-title"></span>

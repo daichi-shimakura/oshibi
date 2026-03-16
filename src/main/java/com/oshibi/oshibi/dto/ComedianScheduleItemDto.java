@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ComedianLiveItemDto {
+public class ComedianScheduleItemDto {
     private Long liveId;
 
     private String liveTitle;

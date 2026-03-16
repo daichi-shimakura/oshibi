@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>芸人別ライブページ</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f5f5f5; }
+    .wireframe-note {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    .detail-section {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .comedian-header {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .status-badge-confirmed {
+      background: #198754;
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    .status-badge-tentative {
+      background: #ffc107;
+      color: #212529;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    .comedian-comment {
+      background: #f8f9fa;
+      border-left: 4px solid #0d6efd;
+      padding: 12px 16px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 1rem;
+    }
+    .neta-info {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 12px 16px;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #495057;
+      min-width: 140px;
+    }
+    .info-row {
+      padding: 6px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .info-row:last-child {
+      border-bottom: none;
+    }
+    .edit-section {
+      background: #fff;
+      border: 2px dashed #0d6efd;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダーナビ -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">おしび</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="#">ライブ一覧</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">芸人一覧</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-4">
+
+  <!-- パンくずリスト -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="#">芸人一覧</a></li>
+      <li class="breadcrumb-item"><a href="#">芸人名</a></li>
+      <li class="breadcrumb-item active">ライブ名</li>
+    </ol>
+  </nav>
+
+  <!-- 芸人ヘッダー -->
+  <div class="detail-section mb-3">
+    <h4><span th:text="${comedianLiveDetail.displayName}">芸人名</span> <span class="badge" th:text="${comedianLiveDetail.status}">ステータス</span></h4>
+  </div>
+
+  <!-- 芸人からのコメント -->
+  <div class="detail-section mb-3">
+    <h5>芸人からのコメント</h5>
+    <p th:text="${comedianLiveDetail.preComment}">コメント</p>
+  </div>
+
+  <!-- ネタ情報 -->
+  <div class="detail-section mb-3">
+    <h5>ネタ情報</h5>
+    <p th:text="${comedianLiveDetail.netaCount}">ネタ本数</p>
+    <p th:text="${comedianLiveDetail.netaType}">ネタ種類</p>
+  </div>
+
+  <!-- 共通ライブ情報 -->
+  <div class="detail-section mb-3">
+    <h5>ライブ情報</h5>
+    <p><span th:text="${comedianLiveDetail.liveTitle}"></span> <span class="badge bg-secondary" th:text="${comedianLiveDetail.liveType}"></span></p>
+    <p th:text="${comedianLiveDetail.description}"></p>
+    <p th:text="${comedianLiveDetail.liveDate}"></p>
+    <p>開場<span th:text="${comedianLiveDetail.openTime}"></span>/開演<span th:text="${comedianLiveDetail.startTime}"></span></p>
+    <p>前売<span th:text="${comedianLiveDetail.priceAdvance}"></span>円/当日<span th:text="${comedianLiveDetail.priceDoor}"></span>円</p>
+    <p th:text="${comedianLiveDetail.ticketMethod}"></p>
+    <p th:text="${comedianLiveDetail.venue}"></p>
+    <p th:text="${comedianLiveDetail.prefecture}"></p>
+    <p th:text="${comedianLiveDetail.address}"></p>
+    <p th:text="${comedianLiveDetail.nearestStation}"></p>
+    <a th:href="${comedianLiveDetail.googleMapsUrl}" target="_blank">Google Mapsで見る</a>
+
+    <!-- 配信情報（配信ありの場合のみ） -->
+    <div th:if="${comedianLiveDetail.hasStreaming}">
+      <p>配信あり</p>
+      <p>配信料金：<span th:text="${comedianLiveDetail.streamingPrice}"></span>円</p>
+      <p>配信期間：<span th:text="${comedianLiveDetail.streamingStartDate}"></span>〜<span th:text="${comedianLiveDetail.streamingEndDate}"></span></p>
+    </div>
+
+    <p>登録者：<a th:href="@{/comedians/{accountId}(accountId=${comedianLiveDetail.createdByAccountId})}" th:text="${comedianLiveDetail.createdByName}"></a></p>
+  </div>
+
+  <!-- 他の出演者 -->
+  <div class="detail-section mb-3">
+    <h5>他の出演者</h5>
+    <div class="d-flex flex-wrap gap-2">
+      <a th:each="performer : ${comedianLiveDetail.performers}"
+         th:href="@{/lives/{liveId}/comedians/{accountId}(liveId=${comedianLiveDetail.liveId}, accountId=${performer.accountId})}"
+         th:text="${performer.displayName}"
+         class="btn btn-outline-secondary btn-sm">芸人B</a>
+    </div>
+  </div>
+
+</div>
+
+<footer class="bg-dark text-white text-center py-3 mt-5">
+  <small>&copy; 2026 おしび</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

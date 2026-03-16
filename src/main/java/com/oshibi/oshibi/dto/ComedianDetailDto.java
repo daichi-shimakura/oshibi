@@ -36,5 +36,5 @@ public class ComedianDetailDto {
 
     private String podcastUrl;
 
-    private List<ComedianLiveItemDto> comedianLives;
+    private List<ComedianScheduleItemDto> comedianLives;
 }

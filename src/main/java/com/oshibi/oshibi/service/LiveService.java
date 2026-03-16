@@ -1,8 +1,11 @@
 package com.oshibi.oshibi.service;
 
+import com.oshibi.oshibi.domain.entity.LivePerformer;
+import com.oshibi.oshibi.dto.ComedianLiveDetailDto;
 import com.oshibi.oshibi.dto.LiveDetailDto;
 import com.oshibi.oshibi.dto.LiveListItemDto;
 import com.oshibi.oshibi.dto.PerformerDto;
+import com.oshibi.oshibi.repository.AccountRepository;
 import com.oshibi.oshibi.repository.LivePerformerRepository;
 import com.oshibi.oshibi.repository.LiveRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +17,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class LiveService {
+
     private final LiveRepository liveRepository;
+    private final LivePerformerRepository livePerformerRepository;
 
     public List<LiveListItemDto> findAll() {
         return liveRepository.findAll().stream()
@@ -63,5 +68,45 @@ public class LiveService {
                 live.getVenue().getNearestStation(),
                 live.getVenue().getGoogleMapsUrl()
                 ));
+    }
+
+    public Optional<ComedianLiveDetailDto> findByLiveIdAndAccountId(Long liveId,Long accountId) {
+
+        var comedianLiveOpt = livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId, accountId).orElseThrow();
+
+        return liveRepository.findById(liveId).map(live -> new ComedianLiveDetailDto(
+                live.getLiveId(),
+                live.getTitle(),
+                live.getDate(),
+                live.getOpenTime(),
+                live.getStartTime(),
+                live.getVenue().getName(),
+                live.getVenue().getPrefecture(),
+                live.getLiveType(),
+                live.getPriceAdvance(),
+                live.getPriceDoor(),
+                live.getLivePerformers().stream().filter(lp -> !lp.getComedian().getAccountId().equals(accountId)).map(lp -> new PerformerDto(
+                        lp.getComedian().getAccountId(),
+                        lp.getComedian().getAccount().getDisplayName(),
+                        lp.getDisplayOrder())).toList(),
+                live.getTicketMethod(),
+                live.getHasStreaming(),
+                live.getStreamingPrice(),
+                live.getStreamingStartDate(),
+                live.getStreamingEndDate(),
+                live.getFlyerUrl(),
+                live.getCreatedBy().getAccountId(),
+                live.getCreatedBy().getDisplayName(),
+                live.getDescription(),
+                live.getVenue().getAddress(),
+                live.getVenue().getNearestStation(),
+                live.getVenue().getGoogleMapsUrl(),
+                comedianLiveOpt.getComedian().getAccountId(),
+                comedianLiveOpt.getComedian().getAccount().getDisplayName(),
+                comedianLiveOpt.getPreComment(),
+                comedianLiveOpt.getNetaCount(),
+                comedianLiveOpt.getNetaType(),
+                comedianLiveOpt.getStatus()
+        ));
     }
 }

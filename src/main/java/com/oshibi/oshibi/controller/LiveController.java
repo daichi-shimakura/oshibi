@@ -19,10 +19,17 @@ public class LiveController {
         return "lives/list";
     }
 
-    @GetMapping("/lives/detail/{liveId}")
+    @GetMapping("/lives/{liveId}")
     public String detail(Model model, @PathVariable("liveId") Long liveId) {
         var liveDetail = liveService.findById(liveId).orElseThrow();
         model.addAttribute("live", liveDetail);
         return "lives/detail";
+    }
+
+    @GetMapping("/lives/{liveId}/comedians/{accountId}")
+    public String comedianLiveDetail(@PathVariable("liveId") Long liveId, @PathVariable("accountId") Long accountId, Model model) {
+        var comedianLiveDetail = liveService.findByLiveIdAndAccountId(liveId,accountId).orElseThrow();
+        model.addAttribute("comedianLiveDetail", comedianLiveDetail);
+        return "lives/comedianLiveDetail";
     }
 }
