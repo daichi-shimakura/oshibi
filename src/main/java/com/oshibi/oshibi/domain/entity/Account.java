@@ -24,7 +24,7 @@ public class Account extends BaseEntity {
     @Column(name = "account_id")
     private Long accountId;
 
-    @OneToOne//
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 

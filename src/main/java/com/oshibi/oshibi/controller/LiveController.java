@@ -32,4 +32,10 @@ public class LiveController {
         model.addAttribute("comedianLiveDetail", comedianLiveDetail);
         return "lives/comedianLiveDetail";
     }
+
+    @GetMapping("/lives/new")
+    public String newLive(Model model) {
+        // とりあえず空のDtoを渡す（中身は後で実装）
+        return "lives/edit";
+    }
 }
