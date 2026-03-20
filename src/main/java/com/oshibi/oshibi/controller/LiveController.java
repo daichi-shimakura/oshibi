@@ -1,5 +1,6 @@
 package com.oshibi.oshibi.controller;
 
+import com.oshibi.oshibi.dto.ComedianLiveRequestDto;
 import com.oshibi.oshibi.dto.LiveRequestDto;
 import com.oshibi.oshibi.service.LiveService;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -25,14 +25,14 @@ public class LiveController {
     }
 
     @GetMapping("/lives/{liveId}")
-    public String detail(Model model, @PathVariable("liveId") Long liveId) {
+    public String detail(Model model, @PathVariable Long liveId) {
         var liveDetail = liveService.findById(liveId).orElseThrow();
         model.addAttribute("live", liveDetail);
         return "lives/detail";
     }
 
     @GetMapping("/lives/{liveId}/comedians/{accountId}")
-    public String comedianLiveDetail(@PathVariable("liveId") Long liveId, @PathVariable("accountId") Long accountId, Model model) {
+    public String comedianLiveDetail(@PathVariable Long liveId, @PathVariable Long accountId, Model model) {
         var comedianLiveDetail = liveService.findByLiveIdAndAccountId(liveId,accountId).orElseThrow();
         model.addAttribute("comedianLiveDetail", comedianLiveDetail);
         return "lives/comedianLiveDetail";
@@ -64,10 +64,31 @@ public class LiveController {
 
     @PostMapping("/lives/{liveId}/edit")
     public String saveEditLive(LiveRequestDto dto, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long liveId) {
-        liveService.checkAuth(userDetails.getUsername(),liveId);
         var email = userDetails.getUsername();
+        liveService.checkAuth(email,liveId);
         var liveIdRedirect = liveService.save(dto,email);
         return "redirect:/lives/" + liveIdRedirect;
+    }
+
+    @GetMapping("/lives/{liveId}/comedians/{accountId}/edit")
+    public String showComedianLiveForm(Model model, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long liveId, @PathVariable Long accountId) {
+        liveService.checkAuthComedianLiveAccount(userDetails.getUsername(),accountId);
+        var comedianLiveForm = liveService.findByLiveIdAndAccountId(liveId,accountId).orElseThrow();
+        model.addAttribute("comedianLiveForm", comedianLiveForm);
+        var form = new ComedianLiveRequestDto();
+        form.setStatus(comedianLiveForm.getStatus());
+        form.setNetaCount(comedianLiveForm.getNetaCount());
+        form.setNetaType(comedianLiveForm.getNetaType());
+        form.setPreComment(comedianLiveForm.getPreComment());
+        model.addAttribute("form", form);
+        return "lives/comedianLiveEdit";
+    }
+
+    @PostMapping("/lives/{liveId}/comedians/{accountId}/edit")
+    public String saveComedianLive(ComedianLiveRequestDto dto, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long liveId, @PathVariable Long accountId) {
+        liveService.checkAuthComedianLiveAccount(userDetails.getUsername(),accountId);
+        liveService.saveComedianLive(liveId,accountId,dto);
+        return "redirect:/lives/" + liveId + "/comedians/" + accountId;
     }
 
 }

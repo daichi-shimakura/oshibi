@@ -152,6 +152,19 @@ public class LiveService {
         return live.getLiveId();
     }
 
+    public void saveComedianLive(Long liveId, Long accountId,ComedianLiveRequestDto dto){
+        //livePerformerエンティティを作成
+        //エンティティにDtoの値をセットして保存
+        //liveIdとaccountIdでLivePerformerテーブルを検索→あったらそこにComedianLiveRequestDtoの値を入れる
+        var comedianLiveOpt = livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId, accountId).orElseThrow();
+        comedianLiveOpt.setStatus(dto.getStatus());
+        comedianLiveOpt.setNetaCount(dto.getNetaCount());
+        comedianLiveOpt.setNetaType(dto.getNetaType());
+        comedianLiveOpt.setPreComment(dto.getPreComment());
+
+        livePerformerRepository.save(comedianLiveOpt);
+    }
+
     public List<Venue> findAllVenues() {
         return venueRepository.findAll();
     }
@@ -194,6 +207,15 @@ public class LiveService {
         var loginAccountId = accountRepository.findByUser_Email(email).orElseThrow().getAccountId();
 
         if (!createdById.equals(loginAccountId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized");
+        }
+    }
+
+    public void checkAuthComedianLiveAccount(String email, Long accountId){
+
+        var loginAccountId = accountRepository.findByUser_Email(email).orElseThrow().getAccountId();
+
+        if (!accountId.equals(loginAccountId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized");
         }
     }
