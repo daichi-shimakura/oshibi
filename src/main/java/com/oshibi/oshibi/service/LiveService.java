@@ -1,15 +1,14 @@
 package com.oshibi.oshibi.service;
 
+import com.oshibi.oshibi.domain.entity.Live;
 import com.oshibi.oshibi.domain.entity.LivePerformer;
-import com.oshibi.oshibi.dto.ComedianLiveDetailDto;
-import com.oshibi.oshibi.dto.LiveDetailDto;
-import com.oshibi.oshibi.dto.LiveListItemDto;
-import com.oshibi.oshibi.dto.PerformerDto;
-import com.oshibi.oshibi.repository.AccountRepository;
-import com.oshibi.oshibi.repository.LivePerformerRepository;
-import com.oshibi.oshibi.repository.LiveRepository;
+import com.oshibi.oshibi.domain.entity.Venue;
+import com.oshibi.oshibi.dto.*;
+import com.oshibi.oshibi.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +19,9 @@ public class LiveService {
 
     private final LiveRepository liveRepository;
     private final LivePerformerRepository livePerformerRepository;
+    private final VenueRepository venueRepository;
+    private final AccountRepository accountRepository;
+    private final ComedianProfileRepository comedianProfileRepository;
 
     public List<LiveListItemDto> findAll() {
         return liveRepository.findAll().stream()
@@ -109,4 +111,93 @@ public class LiveService {
                 comedianLiveOpt.getStatus()
         ));
     }
+
+    public Long save(LiveRequestDto liveRequestDto,String email){
+        //ライブパフォーマーがライブIdをFKにしているためライブから登録
+        //liveRepositoryで使えるようにDtoをエンティティ型に変換する
+        var live =  new Live();
+        live.setLiveId(liveRequestDto.getLiveId());
+        live.setCreatedBy(accountRepository.findByUser_Email(email).orElseThrow());
+        live.setVenue(venueRepository.findById(liveRequestDto.getVenueId()).orElseThrow());
+        live.setTitle(liveRequestDto.getTitle());
+        live.setLiveType(liveRequestDto.getLiveType());
+        live.setDescription(liveRequestDto.getDescription());
+        live.setDate(liveRequestDto.getDate());
+        live.setOpenTime(liveRequestDto.getOpenTime());
+        live.setStartTime(liveRequestDto.getStartTime());
+        live.setPriceAdvance(liveRequestDto.getPriceAdvance());
+        live.setPriceDoor(liveRequestDto.getPriceDoor());
+        live.setTicketMethod(liveRequestDto.getTicketMethod());
+        live.setHasStreaming(liveRequestDto.getHasStreaming());
+        live.setStreamingPrice(liveRequestDto.getStreamingPrice());
+        live.setStreamingStartDate(liveRequestDto.getStreamingStartDate());
+        live.setStreamingEndDate(liveRequestDto.getStreamingEndDate());
+        live.setFlyerUrl(liveRequestDto.getFlyerUrl());
+        liveRepository.save(live);
+
+        if (liveRequestDto.getPerformerAccountIds() != null && !liveRequestDto.getPerformerAccountIds().isEmpty()) {
+        //livePerformerを作成してlivePerformerに登録
+        var livePerformers = liveRequestDto.getPerformerAccountIds().stream().map(id -> {
+                    var performer = new LivePerformer();
+                    performer.setComedian(comedianProfileRepository.findById(id).orElseThrow());
+                    performer.setLive(live);
+                    performer.setDisplayOrder(liveRequestDto.getPerformerAccountIds().indexOf(id));
+                    performer.setStatus("TENTATIVE");
+                    return performer;
+                }
+                ).toList();
+        livePerformerRepository.saveAll(livePerformers);
+        }
+
+        return live.getLiveId();
+    }
+
+    public List<Venue> findAllVenues() {
+        return venueRepository.findAll();
+    }
+
+    public Optional<LiveFormDto> findLiveForEdit(Long liveId){
+        return liveRepository.findById(liveId).map(live -> new LiveFormDto(
+                live.getCreatedBy().getAccountId(),
+                live.getVenue().getVenueId(),
+                live.getVenue().getName(),
+                live.getVenue().getPrefecture(),
+                live.getVenue().getAddress(),
+                live.getVenue().getNearestStation(),
+                live.getVenue().getGoogleMapsUrl(),
+                live.getLiveId(),
+                live.getTitle(),
+                live.getLiveType(),
+                live.getDescription(),
+                live.getDate(),
+                live.getOpenTime(),
+                live.getStartTime(),
+                live.getPriceAdvance(),
+                live.getPriceDoor(),
+                live.getTicketMethod(),
+                live.getHasStreaming(),
+                live.getStreamingPrice(),
+                live.getStreamingStartDate(),
+                live.getStreamingEndDate(),
+                live.getFlyerUrl(),
+                live.getLivePerformers().stream().map(lp -> new PerformerDto(
+                        lp.getComedian().getAccountId(),
+                        lp.getComedian().getAccount().getDisplayName(),
+                        lp.getDisplayOrder()
+                )).toList()
+        ));
+    }
+
+    public void checkAuth(String email, Long liveId){
+
+        var createdById = liveRepository.findById(liveId).orElseThrow().getCreatedBy().getAccountId();
+        var loginAccountId = accountRepository.findByUser_Email(email).orElseThrow().getAccountId();
+
+        if (!createdById.equals(loginAccountId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized");
+        }
+    }
+
+
+
 }

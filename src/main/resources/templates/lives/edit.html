@@ -1,10 +1,237 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ライブ情報登録・編集</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f5f5; }
+        .form-section {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .performer-added {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .conditional-field {
+            border-left: 3px solid #0d6efd;
+            padding-left: 1rem;
+            margin-left: 0.5rem;
+        }
+    </style>
 </head>
 <body>
 
+<!-- ヘッダーナビ -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/lives}">おしび</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/lives}">ライブ一覧</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/comedians}">芸人一覧</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/my-lives}">マイライブ</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" th:href="@{/account}">アカウント設定</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-4" style="max-width: 800px;">
+
+    <!-- パンくずリスト -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a th:href="@{/my-lives}">マイライブ</a></li>
+            <!-- 新規登録と編集でパンくずを出し分ける -->
+            <li class="breadcrumb-item active" th:text="${form == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></li>
+        </ol>
+    </nav>
+
+    <h4 class="mb-4" th:text="${form == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></h4>
+
+    <!-- フォーム：新規と編集でaction先を出し分ける -->
+    <form th:action="${form == null} ? @{/lives/new} : @{/lives/{liveId}/edit(liveId=${form.liveId})}"
+          th:object="${dto}"
+          method="post">
+
+        <!-- ========== 基本情報 ========== -->
+        <div class="form-section">
+            <h5 class="mb-3">基本情報</h5>
+
+            <div class="mb-3">
+                <label class="form-label">ライブ名 <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" th:field="*{title}" placeholder="例：第15回おもしろネタライブ">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">ライブ種別 <span class="text-danger">*</span></label>
+                <select class="form-select" th:field="*{liveType}">
+                    <option value="">選択してください</option>
+                    <option value="NETA">ネタ</option>
+                    <option value="TALK">トーク</option>
+                    <option value="KIKAKU">企画</option>
+                    <option value="YOSEN">賞レース予選</option>
+                    <option value="BATTLE">バトルライブ</option>
+                    <option value="TANDOKU">単独</option>
+                    <option value="TWOMAN">ツーマン</option>
+                    <option value="UNIT">ユニットライブ</option>
+                    <option value="OTHER">その他</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">備考・説明</label>
+                <textarea class="form-control" th:field="*{description}" rows="4"
+                          placeholder="ライブの趣旨、注意事項、ドリンク代の有無など"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">フライヤーURL</label>
+                <input type="url" class="form-control" th:field="*{flyerUrl}"
+                       placeholder="例：https://pbs.twimg.com/media/xxxxx.jpg">
+                <div class="form-text">X、Instagram等に投稿済みのフライヤー画像URLを貼り付けてください</div>
+            </div>
+        </div>
+
+        <!-- ========== 日時 ========== -->
+        <div class="form-section">
+            <h5 class="mb-3">日時</h5>
+
+            <div class="mb-3">
+                <label class="form-label">開催日 <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" th:field="*{date}">
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">開場時間</label>
+                    <input type="time" class="form-control" th:field="*{openTime}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">開演時間 <span class="text-danger">*</span></label>
+                    <input type="time" class="form-control" th:field="*{startTime}">
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== チケット情報 ========== -->
+        <div class="form-section">
+            <h5 class="mb-3">チケット情報</h5>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">前売料金（円）</label>
+                    <input type="number" class="form-control" th:field="*{priceAdvance}" placeholder="例：2000">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">当日料金（円）</label>
+                    <input type="number" class="form-control" th:field="*{priceDoor}" placeholder="例：2500">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">チケット取得方法 <span class="text-danger">*</span></label>
+                <select class="form-select" th:field="*{ticketMethod}">
+                    <option value="">選択してください</option>
+                    <option value="OKICHIKE">取り置き（置きチケ）</option>
+                    <option value="TICKET_SITE">チケットサイト予約</option>
+                    <option value="CONVENIENCE">コンビニ発券</option>
+                    <option value="DOOR">当日券</option>
+                    <option value="OTHER">その他</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ========== 配信情報 ========== -->
+        <div class="form-section">
+            <h5 class="mb-3">配信情報</h5>
+
+            <div class="mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" th:field="*{hasStreaming}" id="hasStreaming">
+                    <label class="form-check-label" for="hasStreaming">配信あり</label>
+                </div>
+            </div>
+
+            <div class="conditional-field">
+                <div class="form-text mb-2">配信ありの場合のみ入力</div>
+                <div class="mb-3">
+                    <label class="form-label">配信料金（円）</label>
+                    <input type="number" class="form-control" th:field="*{streamingPrice}" placeholder="例：1500">
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">配信開始日</label>
+                        <input type="date" class="form-control" th:field="*{streamingStartDate}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">配信終了日（アーカイブ期限）</label>
+                        <input type="date" class="form-control" th:field="*{streamingEndDate}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 会場（ドロップダウン） ========== -->
+        <div class="form-section">
+            <h5 class="mb-3">会場</h5>
+            <div class="mb-3">
+                <label class="form-label">会場 <span class="text-danger">*</span></label>
+                <select class="form-select" th:field="*{venueId}">
+                    <option value="">選択してください</option>
+                    <!-- venuesリストをth:eachで展開 -->
+                    <option th:each="venue : ${venues}"
+                            th:value="${venue.venueId}"
+                            th:text="${venue.name} + ' (' + ${venue.prefecture} + ')'">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ========== 出演者 ========== -->
+        <!-- TODO: 出演者の動的追加はMVP後回し。現状はaccount_idをカンマ区切りで入力 -->
+        <div class="form-section">
+            <h5 class="mb-3">出演者</h5>
+            <div class="mb-3">
+                <label class="form-label">出演者のアカウントID（カンマ区切り）</label>
+                <input type="text" class="form-control" placeholder="例：3,5,8">
+                <div class="form-text">芸人のアカウントIDをカンマ区切りで入力してください（暫定仕様）</div>
+            </div>
+        </div>
+
+        <!-- ========== 送信ボタン ========== -->
+        <div class="d-flex justify-content: between align-items-center mb-5">
+            <div>
+                <!-- 編集時のみ削除ボタンを表示 -->
+                <button th:if="${form != null}" type="button" class="btn btn-outline-danger">このライブを削除</button>
+            </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/my-lives}" class="btn btn-outline-secondary">キャンセル</a>
+                <button type="submit" class="btn btn-dark">保存する</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<!-- フッター -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <small>&copy; 2026 おしび</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
