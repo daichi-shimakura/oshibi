@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マイライブ一覧</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f5f5; }
+        .live-row {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px 16px;
+            transition: box-shadow 0.15s;
+        }
+        .live-row:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .live-title { font-weight: bold; color: #212529; }
+        .performers-text { color: #6c757d; font-size: 0.85rem; }
+        .section-title {
+            font-size: 1rem;
+            font-weight: bold;
+            border-left: 4px solid #212529;
+            padding-left: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== ヘッダーナビ ========== -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/lives}">oshibi</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/lives}">ライブ一覧</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/comedians}">芸人一覧</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('LIVE_STAFF')">
+                    <a class="nav-link active" th:href="@{/my/lives}">マイライブ</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/profile/edit}">アカウント設定</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-link nav-link">ログアウト</button>
+                    </form>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}">ログイン</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h4 mb-0">マイライブ一覧</h1>
+        <a th:href="@{/lives/new}" class="btn btn-dark btn-sm">＋ 新規ライブ登録</a>
+    </div>
+
+    <!-- ========== 自分が登録したライブ ========== -->
+    <div class="mb-5">
+        <p class="section-title">自分が登録したライブ</p>
+
+        <div th:if="${#lists.isEmpty(ownedLives)}" class="text-muted small">
+            登録したライブはありません。
+        </div>
+
+        <div class="d-flex flex-column gap-2" th:unless="${#lists.isEmpty(ownedLives)}">
+            <div class="live-row" th:each="live : ${ownedLives}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <a th:href="@{/lives/{liveId}(liveId=${live.liveId})}"
+                           class="live-title text-decoration-none"
+                           th:text="${live.liveTitle}"></a>
+                        <span th:text="${live.liveType}" class="badge bg-secondary ms-1"></span>
+                    </div>
+                    <div class="text-end text-nowrap ms-3">
+                        <span class="small">
+                            前売 <span th:text="${live.priceAdvance}"></span>円
+                            / 当日 <span th:text="${live.priceDoor}"></span>円
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-1">
+                    <span th:text="${#temporals.format(live.liveDate, 'yyyy/M/d（E）')}"
+                          class="small text-muted"></span>
+                    　開場 <span th:text="${live.openTime}" class="small text-muted"></span>
+                    　開演 <span th:text="${live.startTime}" class="small text-muted"></span>
+                    <span th:text="${live.venue + '（' + live.prefecture + '）'}"
+                          class="small text-muted ms-3"></span>
+                </div>
+                <div class="mt-2 d-flex gap-2">
+                    <a th:href="@{/lives/{liveId}/edit(liveId=${live.liveId})}"
+                       class="btn btn-outline-dark btn-sm">共通情報を編集</a>
+                    <a th:href="@{/lives/{liveId}/comedians/{accountId}/edit(liveId=${live.liveId}, accountId=${accountId})}"
+                       class="btn btn-outline-secondary btn-sm">芸人別情報を編集</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 出演者として登録されたライブ ========== -->
+    <div>
+        <p class="section-title">出演者として登録されたライブ</p>
+
+        <div th:if="${#lists.isEmpty(performingLives)}" class="text-muted small">
+            出演予定のライブはありません。
+        </div>
+
+        <div class="d-flex flex-column gap-2" th:unless="${#lists.isEmpty(performingLives)}">
+            <div class="live-row" th:each="live : ${performingLives}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <a th:href="@{/lives/{liveId}(liveId=${live.liveId})}"
+                           class="live-title text-decoration-none"
+                           th:text="${live.liveTitle}"></a>
+                        <span th:text="${live.liveType}" class="badge bg-secondary ms-1"></span>
+                    </div>
+                    <div class="text-end text-nowrap ms-3">
+                        <span class="small">
+                            前売 <span th:text="${live.priceAdvance}"></span>円
+                            / 当日 <span th:text="${live.priceDoor}"></span>円
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-1">
+                    <span th:text="${#temporals.format(live.liveDate, 'yyyy/M/d（E）')}"
+                          class="small text-muted"></span>
+                    　開場 <span th:text="${live.openTime}" class="small text-muted"></span>
+                    　開演 <span th:text="${live.startTime}" class="small text-muted"></span>
+                    <span th:text="${live.venue + '（' + live.prefecture + '）'}"
+                          class="small text-muted ms-3"></span>
+                </div>
+                <div class="mt-2">
+                    <a th:href="@{/lives/{liveId}/comedians/{accountId}/edit(liveId=${live.liveId}, accountId=${accountId})}"
+                       class="btn btn-outline-secondary btn-sm">芸人別情報を編集</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ========== フッター ========== -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <small>&copy; 2026 oshibi</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -165,10 +166,6 @@ public class LiveService {
         livePerformerRepository.save(comedianLiveOpt);
     }
 
-    public List<Venue> findAllVenues() {
-        return venueRepository.findAll();
-    }
-
     public Optional<LiveFormDto> findLiveForEdit(Long liveId){
         return liveRepository.findById(liveId).map(live -> new LiveFormDto(
                 live.getCreatedBy().getAccountId(),
@@ -199,6 +196,49 @@ public class LiveService {
                         lp.getDisplayOrder()
                 )).toList()
         ));
+    }
+
+    public List<LiveListItemDto> getOwnedLives(Long accountId){
+        return liveRepository.findByCreatedBy_AccountIdAndDateGreaterThanEqual(accountId,LocalDate.now()).stream()
+                .map(live -> new LiveListItemDto(
+                        live.getLiveId(),
+                        live.getTitle(),
+                        live.getDate(),
+                        live.getOpenTime(),
+                        live.getStartTime(),
+                        live.getVenue().getName(),
+                        live.getVenue().getPrefecture(),
+                        live.getLiveType(),
+                        live.getPriceAdvance(),
+                        live.getPriceDoor(),
+                        List.of(),  // comedianNames（仮置き）
+                        0           // otherPerformerCount（仮置き）
+                )).toList();
+    }
+
+    public List<LiveListItemDto> getPerformingLives(Long accountId){
+        return livePerformerRepository.findByComedian_AccountIdAndLive_DateGreaterThanEqual(accountId,LocalDate.now()).stream()
+                .map(lp -> {
+                    var live = lp.getLive();
+                    return new LiveListItemDto(
+                            live.getLiveId(),
+                            live.getTitle(),
+                            live.getDate(),
+                            live.getOpenTime(),
+                            live.getStartTime(),
+                            live.getVenue().getName(),
+                            live.getVenue().getPrefecture(),
+                            live.getLiveType(),
+                            live.getPriceAdvance(),
+                            live.getPriceDoor(),
+                            List.of(),  // comedianNames（仮置き）
+                            0           // otherPerformerCount（仮置き）
+                    );
+                }).toList();
+    }
+
+    public List<Venue> findAllVenues() {
+        return venueRepository.findAll();
     }
 
     public void checkAuth(String email, Long liveId){

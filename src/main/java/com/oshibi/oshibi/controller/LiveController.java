@@ -2,6 +2,7 @@ package com.oshibi.oshibi.controller;
 
 import com.oshibi.oshibi.dto.ComedianLiveRequestDto;
 import com.oshibi.oshibi.dto.LiveRequestDto;
+import com.oshibi.oshibi.service.AccountService;
 import com.oshibi.oshibi.service.LiveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class LiveController {
     private final LiveService liveService;
+    private final AccountService accountService;
 
     @GetMapping("/lives")
     public String list(Model model) {
@@ -89,6 +91,17 @@ public class LiveController {
         liveService.checkAuthComedianLiveAccount(userDetails.getUsername(),accountId);
         liveService.saveComedianLive(liveId,accountId,dto);
         return "redirect:/lives/" + liveId + "/comedians/" + accountId;
+    }
+
+    @GetMapping("/my/lives")
+    public String showMyLiveList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        var email = userDetails.getUsername();
+        var accountId = accountService.getAccountIdByEmail(email);
+
+        model.addAttribute("ownedLives", liveService.getOwnedLives(accountId));
+        model.addAttribute("performingLives", liveService.getPerformingLives(accountId));
+
+        return "my/lives";
     }
 
 }
