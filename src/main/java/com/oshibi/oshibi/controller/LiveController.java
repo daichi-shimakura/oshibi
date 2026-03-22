@@ -2,6 +2,7 @@ package com.oshibi.oshibi.controller;
 
 import com.oshibi.oshibi.dto.ComedianLiveRequestDto;
 import com.oshibi.oshibi.dto.LiveFormDto;
+import com.oshibi.oshibi.dto.LiveSearchDto;
 import com.oshibi.oshibi.service.AccountService;
 import com.oshibi.oshibi.service.LiveService;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,10 @@ public class LiveController {
     private final AccountService accountService;
 
     @GetMapping("/lives")
-    public String list(Model model) {
-        var liveList = liveService.findAll();
+    public String list(Model model, LiveSearchDto liveSearchDto) {
+        var liveList = liveService.search(liveSearchDto);
         model.addAttribute("lives", liveList);
+        model.addAttribute("liveSearchDto", liveSearchDto);
         return "lives/list";
     }
 

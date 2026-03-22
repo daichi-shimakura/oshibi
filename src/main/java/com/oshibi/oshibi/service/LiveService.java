@@ -6,6 +6,7 @@ import com.oshibi.oshibi.domain.entity.Venue;
 import com.oshibi.oshibi.dto.*;
 import com.oshibi.oshibi.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,8 +25,27 @@ public class LiveService {
     private final AccountRepository accountRepository;
     private final ComedianProfileRepository comedianProfileRepository;
 
-    public List<LiveListItemDto> findAll() {
-        return liveRepository.findAll().stream()
+    public List<LiveListItemDto> search(LiveSearchDto dto) {
+
+        Specification<Live> spec = (root, query, cb) -> cb.conjunction();
+
+        if (dto.getLiveTitle() != null && !dto.getLiveTitle().isBlank()) {
+            spec = spec.and(LiveSpecification.titleContains(dto.getLiveTitle()));
+        }
+
+        if (dto.getDateFrom() != null) {
+            spec = spec.and(LiveSpecification.dateAfter(dto.getDateFrom()));
+        }
+
+        if (dto.getDateTo() != null) {
+            spec = spec.and(LiveSpecification.dateBefore(dto.getDateTo()));
+        }
+
+        if (!dto.isHasPast()) {
+            spec = spec.and(LiveSpecification.futureOnly());
+        }
+
+        return liveRepository.findAll(spec).stream()
                 .map(live -> new LiveListItemDto(
                         live.getLiveId(),
                         live.getTitle(),
