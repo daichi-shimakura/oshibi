@@ -1,7 +1,7 @@
 package com.oshibi.oshibi.controller;
 
 import com.oshibi.oshibi.dto.ComedianLiveRequestDto;
-import com.oshibi.oshibi.dto.LiveRequestDto;
+import com.oshibi.oshibi.dto.LiveFormDto;
 import com.oshibi.oshibi.service.AccountService;
 import com.oshibi.oshibi.service.LiveService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class LiveController {
 
     @GetMapping("/lives/new")
     public String showNewLiveForm(Model model) {
-        model.addAttribute("dto", new LiveRequestDto());
+        model.addAttribute("form", new LiveFormDto());
         model.addAttribute("venues", liveService.findAllVenues());
         return "lives/edit";
     }
@@ -52,20 +52,19 @@ public class LiveController {
         liveService.checkAuth(userDetails.getUsername(),liveId);
         var liveDetail = liveService.findLiveForEdit(liveId).orElseThrow();
         model.addAttribute("form", liveDetail);
-        model.addAttribute("dto", new LiveRequestDto());
         model.addAttribute("venues", liveService.findAllVenues());
         return "lives/edit";
     }
 
     @PostMapping("/lives/new")
-    public String saveNewLive(LiveRequestDto dto,@AuthenticationPrincipal UserDetails userDetails) {
+    public String saveNewLive(LiveFormDto dto,@AuthenticationPrincipal UserDetails userDetails) {
         var email = userDetails.getUsername();
         var liveId = liveService.save(dto,email);
         return "redirect:/lives/" + liveId;
     }
 
     @PostMapping("/lives/{liveId}/edit")
-    public String saveEditLive(LiveRequestDto dto, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long liveId) {
+    public String saveEditLive(LiveFormDto dto, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long liveId) {
         var email = userDetails.getUsername();
         liveService.checkAuth(email,liveId);
         var liveIdRedirect = liveService.save(dto,email);

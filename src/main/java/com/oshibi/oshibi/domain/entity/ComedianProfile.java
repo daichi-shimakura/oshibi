@@ -35,7 +35,5 @@ public class ComedianProfile extends BaseEntity {
 
     @Column(name = "member_names", columnDefinition = "TEXT")
     private String memberNames;
-
-    @Column(name = "profile_image_url", length = 500)
-    private String profileImageUrl;
+    
 }

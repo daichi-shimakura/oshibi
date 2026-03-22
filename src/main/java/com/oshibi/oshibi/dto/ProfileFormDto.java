@@ -1,12 +1,15 @@
 package com.oshibi.oshibi.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ProfileDto {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProfileFormDto {
     //ライブ関係者
 
     private String unitType;
@@ -16,6 +19,7 @@ public class ProfileDto {
     private String memberNames;
 
     //共通
+    private String accountType;
 
     private String displayName;
 

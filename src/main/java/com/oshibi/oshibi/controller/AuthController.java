@@ -1,5 +1,7 @@
 package com.oshibi.oshibi.controller;
 
+import com.oshibi.oshibi.dto.EmailChangeDto;
+import com.oshibi.oshibi.dto.PasswordChangeDto;
 import com.oshibi.oshibi.dto.RegisterDto;
 import com.oshibi.oshibi.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,10 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
@@ -50,4 +55,22 @@ public class AuthController {
 
         return "redirect:/profile/edit";
     }
+
+    @PostMapping("/account/email")
+    public String changeEmail(@ModelAttribute EmailChangeDto dto,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              HttpServletRequest request){
+        authService.changeEmail(userDetails.getUsername(), dto.getNewEmail());
+        // セッション無効化
+        request.getSession().invalidate();
+        return "redirect:/login";
+    }
+
+    // パスワード変更（users.password_hash）
+    @PostMapping("/account/password")
+    public String changePassword(@ModelAttribute PasswordChangeDto dto, @AuthenticationPrincipal UserDetails userDetails){
+        authService.changePassword(userDetails.getUsername(), dto);
+        return "redirect:/lives";
+    }
+
 }

@@ -50,7 +50,7 @@ public class ComedianService {
                     comedian.getUnitType(),
                     comedian.getAgency(),
                     comedian.getMemberNames(),
-                    comedian.getProfileImageUrl(),
+                    comedian.getAccount().getProfileImageUrl(),
                     comedian.getAccountId(),
                     comedian.getAccount().getDescription(),
                     comedian.getAccount().getXUrl(),

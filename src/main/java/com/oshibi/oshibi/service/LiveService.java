@@ -113,36 +113,36 @@ public class LiveService {
         ));
     }
 
-    public Long save(LiveRequestDto liveRequestDto,String email){
+    public Long save(LiveFormDto liveFormDto,String email){
         //ライブパフォーマーがライブIdをFKにしているためライブから登録
         //liveRepositoryで使えるようにDtoをエンティティ型に変換する
         var live =  new Live();
-        live.setLiveId(liveRequestDto.getLiveId());
+        live.setLiveId(liveFormDto.getLiveId());
         live.setCreatedBy(accountRepository.findByUser_Email(email).orElseThrow());
-        live.setVenue(venueRepository.findById(liveRequestDto.getVenueId()).orElseThrow());
-        live.setTitle(liveRequestDto.getTitle());
-        live.setLiveType(liveRequestDto.getLiveType());
-        live.setDescription(liveRequestDto.getDescription());
-        live.setDate(liveRequestDto.getDate());
-        live.setOpenTime(liveRequestDto.getOpenTime());
-        live.setStartTime(liveRequestDto.getStartTime());
-        live.setPriceAdvance(liveRequestDto.getPriceAdvance());
-        live.setPriceDoor(liveRequestDto.getPriceDoor());
-        live.setTicketMethod(liveRequestDto.getTicketMethod());
-        live.setHasStreaming(liveRequestDto.getHasStreaming());
-        live.setStreamingPrice(liveRequestDto.getStreamingPrice());
-        live.setStreamingStartDate(liveRequestDto.getStreamingStartDate());
-        live.setStreamingEndDate(liveRequestDto.getStreamingEndDate());
-        live.setFlyerUrl(liveRequestDto.getFlyerUrl());
+        live.setVenue(venueRepository.findById(liveFormDto.getVenueId()).orElseThrow());
+        live.setTitle(liveFormDto.getTitle());
+        live.setLiveType(liveFormDto.getLiveType());
+        live.setDescription(liveFormDto.getDescription());
+        live.setDate(liveFormDto.getDate());
+        live.setOpenTime(liveFormDto.getOpenTime());
+        live.setStartTime(liveFormDto.getStartTime());
+        live.setPriceAdvance(liveFormDto.getPriceAdvance());
+        live.setPriceDoor(liveFormDto.getPriceDoor());
+        live.setTicketMethod(liveFormDto.getTicketMethod());
+        live.setHasStreaming(liveFormDto.getHasStreaming());
+        live.setStreamingPrice(liveFormDto.getStreamingPrice());
+        live.setStreamingStartDate(liveFormDto.getStreamingStartDate());
+        live.setStreamingEndDate(liveFormDto.getStreamingEndDate());
+        live.setFlyerUrl(liveFormDto.getFlyerUrl());
         liveRepository.save(live);
 
-        if (liveRequestDto.getPerformerAccountIds() != null && !liveRequestDto.getPerformerAccountIds().isEmpty()) {
+        if (liveFormDto.getPerformerAccountIds() != null && !liveFormDto.getPerformerAccountIds().isEmpty()) {
         //livePerformerを作成してlivePerformerに登録
-        var livePerformers = liveRequestDto.getPerformerAccountIds().stream().map(id -> {
+        var livePerformers = liveFormDto.getPerformerAccountIds().stream().map(id -> {
                     var performer = new LivePerformer();
                     performer.setComedian(comedianProfileRepository.findById(id).orElseThrow());
                     performer.setLive(live);
-                    performer.setDisplayOrder(liveRequestDto.getPerformerAccountIds().indexOf(id));
+                    performer.setDisplayOrder(liveFormDto.getPerformerAccountIds().indexOf(id));
                     performer.setStatus("TENTATIVE");
                     return performer;
                 }
@@ -194,7 +194,8 @@ public class LiveService {
                         lp.getComedian().getAccountId(),
                         lp.getComedian().getAccount().getDisplayName(),
                         lp.getDisplayOrder()
-                )).toList()
+                )).toList(),
+                null
         ));
     }
 

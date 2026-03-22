@@ -33,28 +33,14 @@
 <body>
 
 <!-- ヘッダーナビ -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/lives}">おしび</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/lives}">ライブ一覧</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/comedians}">芸人一覧</a></li>
-                <li class="nav-item"><a class="nav-link active" th:href="@{/my-lives}">マイライブ</a></li>
-            </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" th:href="@{/account}">アカウント設定</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<nav th:replace="~{fragments/header :: header}"></nav>
 
 <div class="container my-4" style="max-width: 800px;">
 
     <!-- パンくずリスト -->
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb small">
-            <li class="breadcrumb-item"><a th:href="@{/my-lives}">マイライブ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/my/lives}">マイライブ</a></li>
             <!-- 新規登録と編集でパンくずを出し分ける -->
             <li class="breadcrumb-item active" th:text="${form == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></li>
         </ol>
@@ -64,7 +50,7 @@
 
     <!-- フォーム：新規と編集でaction先を出し分ける -->
     <form th:action="${form == null} ? @{/lives/new} : @{/lives/{liveId}/edit(liveId=${form.liveId})}"
-          th:object="${dto}"
+          th:object="${form}"
           method="post">
 
         <!-- ========== 基本情報 ========== -->
@@ -219,7 +205,7 @@
                 <button th:if="${form != null}" type="button" class="btn btn-outline-danger">このライブを削除</button>
             </div>
             <div class="d-flex gap-2">
-                <a th:href="@{/my-lives}" class="btn btn-outline-secondary">キャンセル</a>
+                <a th:href="@{/my/lives}" class="btn btn-outline-secondary">キャンセル</a>
                 <button type="submit" class="btn btn-dark">保存する</button>
             </div>
         </div>

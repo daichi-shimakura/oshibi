@@ -1,7 +1,7 @@
 package com.oshibi.oshibi.controller;
 
 import com.oshibi.oshibi.domain.entity.Account;
-import com.oshibi.oshibi.dto.ProfileDto;
+import com.oshibi.oshibi.dto.ProfileFormDto;
 import com.oshibi.oshibi.repository.AccountRepository;
 import com.oshibi.oshibi.service.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
@@ -25,7 +26,7 @@ public class ProfileController {
         String email = userDetails.getUsername();
         Account account = accountRepository.findByUser_Email(email)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-        model.addAttribute("profileDto", new ProfileDto());
+        model.addAttribute("profileFormDto", new ProfileFormDto());
         model.addAttribute("accountType", account.getAccountType());
 
         return "profile/edit";
@@ -33,11 +34,28 @@ public class ProfileController {
 
 
     @PostMapping("/profile/edit")
-    public String saveProfile(@AuthenticationPrincipal UserDetails userDetails,ProfileDto dto) {
+    public String saveProfile(@AuthenticationPrincipal UserDetails userDetails, ProfileFormDto dto) {
         String email = userDetails.getUsername();
         // プロフィール保存処理の実装
         profileService.saveProfile(email,dto);
         return "redirect:/lives";
     }
+
+    @GetMapping("/account/edit")
+    public String showAccountEditForm(Model model, @AuthenticationPrincipal UserDetails userDetails){
+        String email = userDetails.getUsername();
+        ProfileFormDto form = profileService.showProfileEditForm(email);
+        model.addAttribute("profileFormDto", form);
+        model.addAttribute("email", email);
+        return "account/edit";
+    }
+
+    // プロフィール保存（accounts / comedian_profiles）
+    @PostMapping("/account/edit")
+    public String saveAccountEdit(@ModelAttribute ProfileFormDto form, @AuthenticationPrincipal UserDetails userDetails){
+        profileService.saveProfile(userDetails.getUsername(), form);
+        return "redirect:/lives";
+    }
+
 
 }

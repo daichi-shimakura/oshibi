@@ -1,0 +1,1 @@
+ALTER TABLE comedian_profiles DROP COLUMN profile_image_url;

@@ -2,7 +2,7 @@ package com.oshibi.oshibi.service;
 
 import com.oshibi.oshibi.domain.entity.Account;
 import com.oshibi.oshibi.domain.entity.ComedianProfile;
-import com.oshibi.oshibi.dto.ProfileDto;
+import com.oshibi.oshibi.dto.ProfileFormDto;
 import com.oshibi.oshibi.repository.AccountRepository;
 import com.oshibi.oshibi.repository.ComedianProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class ProfileService {
     private final AccountRepository accountRepository;
     private final ComedianProfileRepository comedianProfileRepository;
 
-    public void saveProfile(String email, ProfileDto dto) {
+    public void saveProfile(String email, ProfileFormDto dto) {
         // Accountを作成
         //ログイン中のアカウントのIdを取得
         Account account = accountRepository.findByUser_Email(email)
@@ -44,5 +44,32 @@ public class ProfileService {
             comedianProfile.setAccount(account);
             comedianProfileRepository.save(comedianProfile);
         }
+
+    }
+
+    public ProfileFormDto showProfileEditForm(String email){
+        Account account = accountRepository.findByUser_Email(email)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+
+        ProfileFormDto profileFormDto = new ProfileFormDto();
+        profileFormDto.setAccountType(account.getAccountType());
+        profileFormDto.setDisplayName(account.getDisplayName());
+        profileFormDto.setProfileImageUrl(account.getProfileImageUrl());
+        profileFormDto.setDescription(account.getDescription());
+        profileFormDto.setXUrl(account.getXUrl());
+        profileFormDto.setInstagramUrl(account.getInstagramUrl());
+        profileFormDto.setYoutubeUrl(account.getYoutubeUrl());
+        profileFormDto.setTiktokUrl(account.getTiktokUrl());
+        profileFormDto.setNoteUrl(account.getNoteUrl());
+        profileFormDto.setPodcastUrl(account.getPodcastUrl());
+
+        if ("LIVE_STAFF".equals(account.getAccountType())) {
+            ComedianProfile comedianProfile = comedianProfileRepository.findById(account.getAccountId()).orElse(new ComedianProfile());
+            profileFormDto.setUnitType(comedianProfile.getUnitType());
+            profileFormDto.setAgency(comedianProfile.getAgency());
+            profileFormDto.setMemberNames(comedianProfile.getMemberNames());
+        }
+        return profileFormDto;
     }
 }

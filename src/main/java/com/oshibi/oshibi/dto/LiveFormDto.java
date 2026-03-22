@@ -2,13 +2,17 @@ package com.oshibi.oshibi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 @Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class LiveFormDto {
     private Long createdById;
 
@@ -55,4 +59,6 @@ public class LiveFormDto {
     private String flyerUrl;
 
     private List<PerformerDto> performers;
+
+    private List<Long> performerAccountIds;
 }
