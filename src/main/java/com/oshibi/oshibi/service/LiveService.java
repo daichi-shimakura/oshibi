@@ -30,7 +30,7 @@ public class LiveService {
         Specification<Live> spec = (root, query, cb) -> cb.conjunction();
 
         if (dto.getLiveTitle() != null && !dto.getLiveTitle().isBlank()) {
-            spec = spec.and(LiveSpecification.titleContains(dto.getLiveTitle()));
+            spec = spec.and(LiveSpecification.keywordSearch(dto.getLiveTitle()));
         }
 
         if (dto.getDateFrom() != null) {
@@ -43,6 +43,22 @@ public class LiveService {
 
         if (!dto.isHasPast()) {
             spec = spec.and(LiveSpecification.futureOnly());
+        }
+
+        if (dto.getPrefecture() != null && !dto.getPrefecture().isBlank()) {
+            spec = spec.and(LiveSpecification.prefecture(dto.getPrefecture()));
+        }
+
+        if (dto.getLiveType() != null && !dto.getLiveType().isBlank()) {
+            spec = spec.and(LiveSpecification.liveType(dto.getLiveType()));
+        }
+
+        if (dto.getMaxPrice() != null) {
+            spec = spec.and(LiveSpecification.maxPrice(dto.getMaxPrice()));
+        }
+
+        if (dto.getStartTimeSlot() != null) {
+            spec = spec.and(LiveSpecification.startTimeSlot(dto.getStartTimeSlot()));
         }
 
         return liveRepository.findAll(spec).stream()

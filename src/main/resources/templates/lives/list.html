@@ -33,48 +33,98 @@
 
 <div class="container my-4">
 
-    <form th:action="@{/lives}" method="get" th:object="${liveSearchDto}">
+    <div class="container my-4">
 
-        <!-- キーワード検索 -->
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="input-group">
-                    <input type="text" class="form-control"
-                           th:field="*{liveTitle}"
-                           placeholder="キーワード検索（ライブ名）">
-                    <button class="btn btn-dark" type="submit">検索</button>
+        <form th:action="@{/lives}" method="get" th:object="${liveSearchDto}">
+
+            <!-- キーワード検索 -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               th:field="*{liveTitle}"
+                               placeholder="キーワード検索（ライブ名・出演者名）">
+                        <button class="btn btn-dark" type="submit">検索</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 日付 -->
-        <div class="row g-2 mb-2">
-            <div class="col-md-3">
-                <label class="form-label small text-muted">開催日（から）</label>
-                <input type="date" class="form-control form-control-sm"
-                       th:value="${#temporals.format(liveSearchDto.dateFrom, 'yyyy-MM-dd')}"
-                       name="dateFrom">
-            </div>
-            <div class="col-md-3">
-                <label class="form-label small text-muted">開催日（まで）</label>
-                <input type="date" class="form-control form-control-sm"
-                       th:value="${#temporals.format(liveSearchDto.dateTo, 'yyyy-MM-dd')}"
-                       name="dateTo">
-            </div>
-        </div>
-
-        <!-- 過去のライブを含む -->
-        <div class="row g-2 mt-1">
-            <div class="col-md-3 d-flex align-items-center">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox"
-                           th:field="*{hasPast}">
-                    <label class="form-check-label small">過去のライブを含む</label>
+            <!-- 日付 -->
+            <div class="row g-2 mb-2">
+                <div class="col-md-3">
+                    <label class="form-label small text-muted">開催日（から）</label>
+                    <input type="date" class="form-control form-control-sm"
+                           th:value="${liveSearchDto.dateFrom != null ? #temporals.format(liveSearchDto.dateFrom, 'yyyy-MM-dd') : ''}"
+                           name="dateFrom">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small text-muted">開催日（まで）</label>
+                    <input type="date" class="form-control form-control-sm"
+                           th:value="${liveSearchDto.dateTo != null ? #temporals.format(liveSearchDto.dateTo, 'yyyy-MM-dd') : ''}"
+                           name="dateTo">
                 </div>
             </div>
-        </div>
 
-    </form>
+            <!-- 都道府県・ライブ種別・時間帯・価格 -->
+            <div class="row g-2 mb-2">
+                <div class="col-md-3">
+                    <label class="form-label small text-muted">都道府県</label>
+                    <select class="form-select form-select-sm" th:field="*{prefecture}">
+                        <option value="">すべて</option>
+                        <option value="東京都">東京都</option>
+                        <option value="大阪府">大阪府</option>
+                        <option value="神奈川県">神奈川県</option>
+                        <option value="愛知県">愛知県</option>
+                        <option value="福岡県">福岡県</option>
+                        <option value="北海道">北海道</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small text-muted">ライブ種別</label>
+                    <select class="form-select form-select-sm" th:field="*{liveType}">
+                        <option value="">すべて</option>
+                        <option value="NETA">ネタ</option>
+                        <option value="TALK">トーク</option>
+                        <option value="KIKAKU">企画</option>
+                        <option value="AWARDS">賞レース予選</option>
+                        <option value="BATTLE">バトルライブ</option>
+                        <option value="SOLO">単独</option>
+                        <option value="TWO_MAN">ツーマン</option>
+                        <option value="UNIT">ユニットライブ</option>
+                        <option value="OTHER">その他</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small text-muted">開演時間帯</label>
+                    <select class="form-select form-select-sm" th:field="*{startTimeSlot}">
+                        <option value="">すべて</option>
+                        <option value="~17:00">～17:00</option>
+                        <option value="17:00~18:00">17:00～18:00</option>
+                        <option value="18:00~19:00">18:00～19:00</option>
+                        <option value="19:00~20:00">19:00～20:00</option>
+                        <option value="20:00~">20:00～</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small text-muted">価格上限（円）</label>
+                    <input type="number" class="form-control form-control-sm"
+                           th:field="*{maxPrice}"
+                           placeholder="例：3000">
+                </div>
+            </div>
+
+            <!-- 過去のライブを含む -->
+            <div class="row g-2 mt-1">
+                <div class="col-md-3 d-flex align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               th:field="*{hasPast}">
+                        <label class="form-check-label small">過去のライブを含む</label>
+                    </div>
+                </div>
+            </div>
+
+        </form>
     <!-- ========== 検索結果ヘッダー ========== -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <p class="text-muted mb-0">検索結果：<strong th:text="${#lists.size(lives)}">0</strong>件</p>

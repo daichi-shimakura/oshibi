@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -16,4 +17,8 @@ public class LiveSearchDto {
     private LocalDate dateFrom;
     private LocalDate dateTo;
     private boolean hasPast;
+    private String prefecture;
+    private String liveType;
+    private Integer maxPrice;
+    private String startTimeSlot;
 }
