@@ -8,13 +8,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class LiveSpecification {
+    private LiveSpecification() {}
+    private static final String START_TIME = "startTime";
     public static Specification<Live> keywordSearch(String keyword) {
         return (root, query, cb) -> {
-            // live_performers テーブルをJOIN
+            if (query != null) {
+                query.distinct(true);
+            }
             var performers = root.join("livePerformers", JoinType.LEFT);
-            // accounts テーブルをJOIN
             var account = performers.join("comedian", JoinType.LEFT);
-
             return cb.or(
                     cb.like(root.get("title"), "%" + keyword + "%"),
                     cb.like(account.get("displayName"), "%" + keyword + "%")
@@ -57,11 +59,11 @@ public class LiveSpecification {
 
     public static Specification<Live> startTimeSlot(String slot) {
         return (root, query, cb) -> switch (slot) {
-            case "~17:00" -> cb.lessThan(root.get("startTime"), LocalTime.of(17, 0));
-            case "17:00~18:00" -> cb.between(root.get("startTime"), LocalTime.of(17, 0), LocalTime.of(18, 0));
-            case "18:00~19:00" -> cb.between(root.get("startTime"), LocalTime.of(18, 0), LocalTime.of(19, 0));
-            case "19:00~20:00" -> cb.between(root.get("startTime"), LocalTime.of(19, 0), LocalTime.of(20, 0));
-            case "20:00~" -> cb.greaterThanOrEqualTo(root.get("startTime"), LocalTime.of(20, 0));
+            case "~17:00" -> cb.lessThan(root.get(START_TIME), LocalTime.of(17, 0));
+            case "17:00~18:00" -> cb.between(root.get(START_TIME), LocalTime.of(17, 0), LocalTime.of(18, 0));
+            case "18:00~19:00" -> cb.between(root.get(START_TIME), LocalTime.of(18, 0), LocalTime.of(19, 0));
+            case "19:00~20:00" -> cb.between(root.get(START_TIME), LocalTime.of(19, 0), LocalTime.of(20, 0));
+            case "20:00~" -> cb.greaterThanOrEqualTo(root.get(START_TIME), LocalTime.of(20, 0));
             default -> cb.conjunction();
         };
 
