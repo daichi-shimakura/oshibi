@@ -29,8 +29,8 @@ public class LiveService {
 
         Specification<Live> spec = (root, query, cb) -> cb.conjunction();
 
-        if (dto.getLiveTitle() != null && !dto.getLiveTitle().isBlank()) {
-            spec = spec.and(LiveSpecification.keywordSearch(dto.getLiveTitle()));
+        if (dto.getKeyWord() != null && !dto.getKeyWord().isBlank()) {
+            spec = spec.and(LiveSpecification.keywordSearch(dto.getKeyWord()));
         }
 
         if (dto.getDateFrom() != null) {

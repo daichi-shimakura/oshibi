@@ -1,9 +1,14 @@
 package com.oshibi.oshibi.service;
 
+import com.oshibi.oshibi.domain.entity.ComedianProfile;
+import com.oshibi.oshibi.domain.entity.Live;
 import com.oshibi.oshibi.dto.*;
 import com.oshibi.oshibi.repository.ComedianProfileRepository;
+import com.oshibi.oshibi.repository.ComedianSpecification;
 import com.oshibi.oshibi.repository.LivePerformerRepository;
+import com.oshibi.oshibi.repository.LiveSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +20,23 @@ public class ComedianService {
     private final ComedianProfileRepository comedianProfileRepository;
     private final LivePerformerRepository livePerformerRepository;
 
-    public List<ComedianListItemDto> findAll() {
-        return comedianProfileRepository.findAll().stream()
+    public List<ComedianListItemDto> search(ComedianSearchDto dto) {
+
+        Specification<ComedianProfile> spec = (root, query, cb) -> cb.conjunction();
+
+        if (dto.getKeyWord() != null && !dto.getKeyWord().isBlank()) {
+            spec = spec.and(ComedianSpecification.keywordSearch(dto.getKeyWord()));
+        }
+
+        if (dto.getUnitType() != null && !dto.getUnitType().isBlank()) {
+            spec = spec.and(ComedianSpecification.unitType(dto.getUnitType()));
+        }
+
+        if (dto.getAgency() != null && !dto.getAgency().isBlank()) {
+            spec = spec.and(ComedianSpecification.agency(dto.getAgency()));
+        }
+
+        return comedianProfileRepository.findAll(spec).stream()
                 .map(cp -> new ComedianListItemDto(
                         cp.getAccountId(),
                         cp.getAccount().getDisplayName(),

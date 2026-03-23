@@ -1,5 +1,6 @@
 package com.oshibi.oshibi.controller;
 
+import com.oshibi.oshibi.dto.ComedianSearchDto;
 import com.oshibi.oshibi.service.ComedianService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -13,9 +14,10 @@ public class ComedianController {
     private final ComedianService comedianService;
 
     @GetMapping("/comedians")
-    public String list(Model model) {
-        var comedianlist = comedianService.findAll();
+    public String list(Model model, ComedianSearchDto comedianSearchDto) {
+        var comedianlist = comedianService.search(comedianSearchDto);
         model.addAttribute("comedians", comedianlist);
+        model.addAttribute("comedianSearchDto", comedianSearchDto);
         return "comedians/list";
     }
 

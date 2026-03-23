@@ -81,14 +81,16 @@
 <div class="container my-4">
 
     <!-- ========== 検索・フィルターセクション ========== -->
-    <div class="filter-section mb-4">
+    <form class="filter-section mb-4" th:action="@{/comedians}" method="get" th:object="${comedianSearchDto}">
 
         <!-- キーワード検索 -->
         <div class="row mb-3">
             <div class="col-12">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="キーワード検索（芸名）">
-                    <button class="btn btn-dark" type="button">検索</button>
+                    <input type="text" class="form-control"
+                           th:field="*{keyWord}"
+                           placeholder="キーワード検索（芸名）">
+                    <button class="btn btn-dark" type="submit">検索</button>
                 </div>
             </div>
         </div>
@@ -97,20 +99,23 @@
         <div class="row g-2">
             <div class="col-md-4">
                 <label class="form-label small text-muted">ユニット種別</label>
-                <select class="form-select form-select-sm">
+                <select class="form-select form-select-sm" th:field="*{unitType}">
                     <option value="">すべて</option>
-                    <option>ピン</option>
-                    <option>コンビ</option>
-                    <option>トリオ</option>
-                    <option>グループ</option>
+                    <option value="PIN">ピン</option>
+                    <option value="COMBI">コンビ</option>
+                    <option value="TRIO">トリオ</option>
+                    <option value="GROUP">グループ</option>
                 </select>
             </div>
             <div class="col-md-4">
                 <label class="form-label small text-muted">所属事務所</label>
-                <input type="text" class="form-control form-control-sm" placeholder="例：サンプルプロダクション">
+                <input type="text" class="form-control form-control-sm"
+                       th:field="*{agency}"
+                       placeholder="例：サンプルプロダクション">
             </div>
         </div>
-    </div>
+
+    </form>
 
     <!-- ========== 検索結果ヘッダー ========== -->
     <div class="d-flex justify-content-between align-items-center mb-3">

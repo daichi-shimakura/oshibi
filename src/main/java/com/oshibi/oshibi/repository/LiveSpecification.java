@@ -8,8 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class LiveSpecification {
+
     private LiveSpecification() {}
     private static final String START_TIME = "startTime";
+
     public static Specification<Live> keywordSearch(String keyword) {
         return (root, query, cb) -> {
             if (query != null) {
