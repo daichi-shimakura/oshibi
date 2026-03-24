@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @RequiredArgsConstructor
 public class LiveController {
+    public static final String REDIRECT_LIVES = "redirect:/lives/";
+
     private final LiveService liveService;
     private final AccountService accountService;
 
@@ -62,7 +64,7 @@ public class LiveController {
     public String saveNewLive(LiveFormDto dto,@AuthenticationPrincipal UserDetails userDetails) {
         var email = userDetails.getUsername();
         var liveId = liveService.save(dto,email);
-        return "redirect:/lives/" + liveId;
+        return REDIRECT_LIVES + liveId;
     }
 
     @PostMapping("/lives/{liveId}/edit")
@@ -70,7 +72,7 @@ public class LiveController {
         var email = userDetails.getUsername();
         liveService.checkAuth(email,liveId);
         var liveIdRedirect = liveService.save(dto,email);
-        return "redirect:/lives/" + liveIdRedirect;
+        return REDIRECT_LIVES + liveIdRedirect;
     }
 
     @GetMapping("/lives/{liveId}/comedians/{accountId}/edit")
@@ -91,7 +93,7 @@ public class LiveController {
     public String saveComedianLive(ComedianLiveRequestDto dto, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long liveId, @PathVariable Long accountId) {
         liveService.checkAuthComedianLiveAccount(userDetails.getUsername(),accountId);
         liveService.saveComedianLive(liveId,accountId,dto);
-        return "redirect:/lives/" + liveId + "/comedians/" + accountId;
+        return REDIRECT_LIVES + liveId + "/comedians/" + accountId;
     }
 
     @GetMapping("/my/lives")

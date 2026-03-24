@@ -1,7 +1,6 @@
 package com.oshibi.oshibi.repository;
 
 import com.oshibi.oshibi.domain.entity.Live;
-import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +12,7 @@ import java.util.List;
 
 
 public interface LiveRepository extends JpaRepository<Live, Long>, JpaSpecificationExecutor<Live> {
+
     List<Live> findByCreatedBy_AccountIdAndDateGreaterThanEqual(Long accountId, LocalDate liveDate);
 
     @EntityGraph(attributePaths = {"livePerformers"})

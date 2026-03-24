@@ -1,6 +1,7 @@
 package com.oshibi.oshibi.repository;
 
 import com.oshibi.oshibi.domain.entity.LivePerformer;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ public interface LivePerformerRepository extends JpaRepository<LivePerformer, Lo
     List<LivePerformer> findByComedian_AccountId(Long accountId);// コメディアンのアカウントIDから、そのコメディアンが出演するライブのリストを取得
 
     Optional<LivePerformer> findByLive_LiveIdAndComedian_AccountId(Long liveId, Long accountId);
+
 
     List<LivePerformer> findByComedian_AccountIdAndLive_DateGreaterThanEqual(Long accountId, LocalDate liveDate);
 }

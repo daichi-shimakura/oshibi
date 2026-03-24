@@ -75,7 +75,7 @@ public class LiveService {
                             live.getPriceDoor(),
                             live.getLivePerformers().stream().map(lp ->
                                     lp.getComedian().getAccount().getDisplayName()).toList(),
-                            Math.max(0, live.getLivePerformers().size() - 20)           // otherPerformerCount（仮置き）
+                            Math.max(0, live.getLivePerformers().size() - 20)
                     )).toList();
     }
 
@@ -269,8 +269,9 @@ public class LiveService {
                             live.getLiveType(),
                             live.getPriceAdvance(),
                             live.getPriceDoor(),
-                            List.of(),  // comedianNames（仮置き）
-                            0           // otherPerformerCount（仮置き）
+                            live.getLivePerformers().stream().map(livePerformer ->
+                                    livePerformer.getComedian().getAccount().getDisplayName()).toList(),
+                            Math.max(0, live.getLivePerformers().size() - 20)
                     );
                 }).toList();
     }
