@@ -29,8 +29,8 @@ public class LiveService {
 
         Specification<Live> spec = (root, query, cb) -> cb.conjunction();
 
-        if (dto.getKeyWord() != null && !dto.getKeyWord().isBlank()) {
-            spec = spec.and(LiveSpecification.keywordSearch(dto.getKeyWord()));
+        if (dto.getKeyword() != null && !dto.getKeyword().isBlank()) {
+            spec = spec.and(LiveSpecification.keywordSearch(dto.getKeyword()));
         }
 
         if (dto.getDateFrom() != null) {
@@ -63,19 +63,20 @@ public class LiveService {
 
         return liveRepository.findAll(spec).stream()
                 .map(live -> new LiveListItemDto(
-                        live.getLiveId(),
-                        live.getTitle(),
-                        live.getDate(),
-                        live.getOpenTime(),
-                        live.getStartTime(),
-                        live.getVenue().getName(),
-                        live.getVenue().getPrefecture(),
-                        live.getLiveType(),
-                        live.getPriceAdvance(),
-                        live.getPriceDoor(),
-                        List.of(),  // comedianNames（仮置き）
-                        0           // otherPerformerCount（仮置き）
-                )).toList();
+                            live.getLiveId(),
+                            live.getTitle(),
+                            live.getDate(),
+                            live.getOpenTime(),
+                            live.getStartTime(),
+                            live.getVenue().getName(),
+                            live.getVenue().getPrefecture(),
+                            live.getLiveType(),
+                            live.getPriceAdvance(),
+                            live.getPriceDoor(),
+                            live.getLivePerformers().stream().map(lp ->
+                                    lp.getComedian().getAccount().getDisplayName()).toList(),
+                            Math.max(0, live.getLivePerformers().size() - 20)           // otherPerformerCount（仮置き）
+                    )).toList();
     }
 
     public Optional<LiveDetailDto> findById(Long liveId) {

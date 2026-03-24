@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LiveSearchDto {
-    private String keyWord;
+    private String keyword;
     private LocalDate dateFrom;
     private LocalDate dateTo;
     private boolean hasPast;
