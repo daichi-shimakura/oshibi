@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会場登録 - oshibi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f5f5; }
+        .form-section {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-4" style="max-width: 600px;">
+
+    <h4 class="mb-4">会場登録</h4>
+
+    <!-- 成功メッセージ -->
+    <div th:if="${param.success}" class="alert alert-success" role="alert">
+        会場を登録しました。このタブを閉じてください。
+        <div class="mt-2">
+            <button type="button" class="btn btn-outline-success btn-sm"
+                    onclick="window.opener.location.reload(); window.close();">
+                閉じる
+            </button>
+        </div>
+    </div>
+
+    <!-- 登録フォーム（成功時は非表示） -->
+    <div th:unless="${param.success}">
+        <form th:action="@{/venue/new}" th:object="${venueRequestDto}" method="post">
+
+            <div class="form-section">
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">会場名 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="例：新宿バティオス">
+                </div>
+
+                <div class="mb-3">
+                    <label for="prefecture" class="form-label">都道府県 <span class="text-danger">*</span></label>
+                    <select class="form-select" id="prefecture" th:field="*{prefecture}">
+                        <option value="">選択してください</option>
+                        <option value="北海道">北海道</option>
+                        <option value="青森県">青森県</option>
+                        <option value="岩手県">岩手県</option>
+                        <option value="宮城県">宮城県</option>
+                        <option value="秋田県">秋田県</option>
+                        <option value="山形県">山形県</option>
+                        <option value="福島県">福島県</option>
+                        <option value="茨城県">茨城県</option>
+                        <option value="栃木県">栃木県</option>
+                        <option value="群馬県">群馬県</option>
+                        <option value="埼玉県">埼玉県</option>
+                        <option value="千葉県">千葉県</option>
+                        <option value="東京都">東京都</option>
+                        <option value="神奈川県">神奈川県</option>
+                        <option value="新潟県">新潟県</option>
+                        <option value="富山県">富山県</option>
+                        <option value="石川県">石川県</option>
+                        <option value="福井県">福井県</option>
+                        <option value="山梨県">山梨県</option>
+                        <option value="長野県">長野県</option>
+                        <option value="岐阜県">岐阜県</option>
+                        <option value="静岡県">静岡県</option>
+                        <option value="愛知県">愛知県</option>
+                        <option value="三重県">三重県</option>
+                        <option value="滋賀県">滋賀県</option>
+                        <option value="京都府">京都府</option>
+                        <option value="大阪府">大阪府</option>
+                        <option value="兵庫県">兵庫県</option>
+                        <option value="奈良県">奈良県</option>
+                        <option value="和歌山県">和歌山県</option>
+                        <option value="鳥取県">鳥取県</option>
+                        <option value="島根県">島根県</option>
+                        <option value="岡山県">岡山県</option>
+                        <option value="広島県">広島県</option>
+                        <option value="山口県">山口県</option>
+                        <option value="徳島県">徳島県</option>
+                        <option value="香川県">香川県</option>
+                        <option value="愛媛県">愛媛県</option>
+                        <option value="高知県">高知県</option>
+                        <option value="福岡県">福岡県</option>
+                        <option value="佐賀県">佐賀県</option>
+                        <option value="長崎県">長崎県</option>
+                        <option value="熊本県">熊本県</option>
+                        <option value="大分県">大分県</option>
+                        <option value="宮崎県">宮崎県</option>
+                        <option value="鹿児島県">鹿児島県</option>
+                        <option value="沖縄県">沖縄県</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">住所</label>
+                    <input type="text" class="form-control" id="address" th:field="*{address}" placeholder="例：新宿区新宿2-12-4 アコード新宿B1F">
+                </div>
+
+                <div class="mb-3">
+                    <label for="nearestStation" class="form-label">最寄り駅</label>
+                    <input type="text" class="form-control" id="nearestStation" th:field="*{nearestStation}" placeholder="例：新宿三丁目駅 徒歩3分">
+                </div>
+
+                <div class="mb-3">
+                    <label for="googleMapsUrl" class="form-label">Google Maps URL</label>
+                    <input type="url" class="form-control" id="googleMapsUrl" th:field="*{googleMapsUrl}" placeholder="例：https://maps.google.com/...">
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mb-5">
+                <button type="button" class="btn btn-outline-secondary" onclick="window.close()">キャンセル</button>
+                <button type="submit" class="btn btn-dark">登録する</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

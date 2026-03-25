@@ -48,8 +48,10 @@
 
     <h4 class="mb-4" th:text="${form == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></h4>
 
+    <p class="text-danger small mb-4">※ 会場を新規登録する場合は、先に「新規会場を登録する」から登録してください。</p>
+
     <!-- フォーム：新規と編集でaction先を出し分ける -->
-    <form th:action="${form == null} ? @{/lives/new} : @{/lives/{liveId}/edit(liveId=${form.liveId})}"
+    <form th:action="@{${form == null ? '/lives/new' : '/lives/' + form.liveId + '/edit'}}"
           th:object="${form}"
           method="post">
 
@@ -184,6 +186,12 @@
                             th:text="${venue.name} + ' (' + ${venue.prefecture} + ')'">
                     </option>
                 </select>
+                <div class="form-text mt-1">
+                    会場が見つからない場合は
+                    <a href="javascript:void(0)" onclick="window.open('/venue/new', '_blank')">
+                        新しく会場を登録する
+                    </a>
+                </div>
             </div>
         </div>
 
