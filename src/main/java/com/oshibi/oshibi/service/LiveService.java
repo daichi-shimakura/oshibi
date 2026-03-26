@@ -186,20 +186,26 @@ public class LiveService {
         live.setFlyerUrl(liveFormDto.getFlyerUrl());
         liveRepository.save(live);
 
-        if (liveFormDto.getPerformerAccountIds() != null && !liveFormDto.getPerformerAccountIds().isEmpty()) {
+        if (liveFormDto.getPerformerAdds() != null && !liveFormDto.getPerformerAdds().isEmpty()) {
         //livePerformerを作成してlivePerformerに登録
-        var livePerformers = liveFormDto.getPerformerAccountIds().stream().map(id -> {
+        var livePerformers = liveFormDto.getPerformerAdds().stream().map(id -> {
                     var performer = new LivePerformer();
-                    performer.setComedian(comedianProfileRepository.findById(id).orElseThrow());
-                    performer.setLive(live);
-                    performer.setDisplayOrder(liveFormDto.getPerformerAccountIds().indexOf(id));
-                    performer.setStatus("TENTATIVE");
+                    if (id.getAccountId() != null) {
+                        performer.setComedian(comedianProfileRepository.findById(id.getAccountId()).orElseThrow());
+                        performer.setLive(live);
+                        performer.setDisplayOrder(liveFormDto.getPerformerAdds().indexOf(id));
+                        performer.setStatus("TENTATIVE");
+                    } else {
+                        performer.setGuestName(id.getGuestName());
+                        performer.setLive(live);
+                        performer.setDisplayOrder(liveFormDto.getPerformerAdds().indexOf(id));
+                        performer.setStatus("TENTATIVE");
+                    }
                     return performer;
                 }
                 ).toList();
         livePerformerRepository.saveAll(livePerformers);
         }
-
         return live.getLiveId();
     }
 

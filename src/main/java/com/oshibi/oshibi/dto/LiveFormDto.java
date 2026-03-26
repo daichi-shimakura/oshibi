@@ -60,5 +60,5 @@ public class LiveFormDto {
 
     private List<PerformerDto> performers;
 
-    private List<Long> performerAccountIds;
+    private List<PerformerAddDto> performerAdds;
 }
