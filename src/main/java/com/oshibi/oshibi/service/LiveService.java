@@ -74,7 +74,10 @@ public class LiveService {
                             live.getPriceAdvance(),
                             live.getPriceDoor(),
                             live.getLivePerformers().stream().map(lp ->
-                                    lp.getComedian().getAccount().getDisplayName()).toList(),
+                                    lp.getComedian() != null
+                                            ? lp.getComedian().getAccount().getDisplayName()
+                                            : lp.getGuestName()
+                            ).toList(),
                             Math.max(0, live.getLivePerformers().size() - 20)
                     )).toList();
     }
@@ -92,8 +95,12 @@ public class LiveService {
                 live.getPriceAdvance(),
                 live.getPriceDoor(),
                 live.getLivePerformers().stream().map(lp -> new PerformerDto(
-                        lp.getComedian().getAccountId(),
-                        lp.getComedian().getAccount().getDisplayName(),
+                        lp.getComedian() != null
+                                ? lp.getComedian().getAccountId()
+                                : null,
+                        lp.getComedian() != null
+                                ? lp.getComedian().getAccount().getDisplayName()
+                                : lp.getGuestName(),
                         lp.getDisplayOrder())).toList(),
                 live.getTicketMethod(),
                 live.getHasStreaming(),
@@ -125,9 +132,15 @@ public class LiveService {
                 live.getLiveType(),
                 live.getPriceAdvance(),
                 live.getPriceDoor(),
-                live.getLivePerformers().stream().filter(lp -> !lp.getComedian().getAccountId().equals(accountId)).map(lp -> new PerformerDto(
-                        lp.getComedian().getAccountId(),
-                        lp.getComedian().getAccount().getDisplayName(),
+                live.getLivePerformers().stream().filter(lp -> (lp.getComedian() == null ||
+                        (!lp.getComedian().getAccountId().equals(accountId)))
+                ).map(lp -> new PerformerDto(
+                        lp.getComedian() != null
+                                ? lp.getComedian().getAccountId()
+                                : null,
+                        lp.getComedian() != null
+                                ? lp.getComedian().getAccount().getDisplayName()
+                                : lp.getGuestName(),
                         lp.getDisplayOrder())).toList(),
                 live.getTicketMethod(),
                 live.getHasStreaming(),
@@ -228,8 +241,12 @@ public class LiveService {
                 live.getStreamingEndDate(),
                 live.getFlyerUrl(),
                 live.getLivePerformers().stream().map(lp -> new PerformerDto(
-                        lp.getComedian().getAccountId(),
-                        lp.getComedian().getAccount().getDisplayName(),
+                        lp.getComedian() != null
+                                ? lp.getComedian().getAccountId()
+                                : null,
+                        lp.getComedian() != null
+                                ? lp.getComedian().getAccount().getDisplayName()
+                                : lp.getGuestName(),
                         lp.getDisplayOrder()
                 )).toList(),
                 null
@@ -270,7 +287,9 @@ public class LiveService {
                             live.getPriceAdvance(),
                             live.getPriceDoor(),
                             live.getLivePerformers().stream().map(livePerformer ->
-                                    livePerformer.getComedian().getAccount().getDisplayName()).toList(),
+                                    livePerformer.getComedian() != null
+                                            ? livePerformer.getComedian().getAccount().getDisplayName()
+                                            : livePerformer.getGuestName()).toList(),
                             Math.max(0, live.getLivePerformers().size() - 20)
                     );
                 }).toList();

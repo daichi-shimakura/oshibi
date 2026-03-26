@@ -22,7 +22,7 @@ public class LivePerformer extends BaseEntity {
     private Live live;
 
     @ManyToOne
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "account_id")
     private ComedianProfile comedian;
 
     @Column(name = "display_order")
@@ -39,4 +39,7 @@ public class LivePerformer extends BaseEntity {
 
     @Column(name = "neta_type", length = 200)
     private String netaType;
+
+    @Column(name = "guest_name", length = 100)
+    private String guestName;
 }
