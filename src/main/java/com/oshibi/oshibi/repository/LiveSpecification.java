@@ -18,7 +18,8 @@ public class LiveSpecification {
                 query.distinct(true);
             }
             var performers = root.join("livePerformers", JoinType.LEFT);
-            var account = performers.join("comedian", JoinType.LEFT);
+            var comedian = performers.join("comedian", JoinType.LEFT);
+            var account = comedian.join("account", JoinType.LEFT);
             return cb.or(
                     cb.like(root.get("title"), "%" + keyword + "%"),
                     cb.like(account.get("displayName"), "%" + keyword + "%")
