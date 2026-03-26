@@ -6,6 +6,8 @@ import com.oshibi.oshibi.domain.entity.Venue;
 import com.oshibi.oshibi.dto.*;
 import com.oshibi.oshibi.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ public class LiveService {
     private final AccountRepository accountRepository;
     private final ComedianProfileRepository comedianProfileRepository;
 
-    public List<LiveListItemDto> search(LiveSearchDto dto) {
+    public Page<LiveListItemDto> search(LiveSearchDto dto, Pageable pageable) {
 
         Specification<Live> spec = (root, query, cb) -> cb.conjunction();
 
@@ -61,7 +63,7 @@ public class LiveService {
             spec = spec.and(LiveSpecification.startTimeSlot(dto.getStartTimeSlot()));
         }
 
-        return liveRepository.findAll(spec).stream()
+        return liveRepository.findAll(spec,pageable)
                 .map(live -> new LiveListItemDto(
                             live.getLiveId(),
                             live.getTitle(),
@@ -79,7 +81,7 @@ public class LiveService {
                                             : lp.getGuestName()
                             ).toList(),
                             Math.max(0, live.getLivePerformers().size() - 20)
-                    )).toList();
+                    ));
     }
 
     public Optional<LiveDetailDto> findById(Long liveId) {

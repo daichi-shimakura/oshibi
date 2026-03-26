@@ -119,12 +119,12 @@
 
     <!-- ========== 検索結果ヘッダー ========== -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <p class="text-muted mb-0">検索結果：<strong th:text="${#lists.size(comedians)}">0</strong>件</p>
+        <p class="text-muted mb-0">検索結果：<strong th:text="${#lists.size(comedianPage.totalElements)}">0</strong>件</p>
     </div>
 
     <!-- ========== ライブ一覧（リスト形式） ========== -->
     <div class="row g-3">
-        <div class="col-md-4 col-sm-6" th:each="comedian : ${comedians}">
+        <div class="col-md-4 col-sm-6" th:each="comedian : ${comedianPage.content}">
             <div class="comedian-card p-3 text-center">
                 <a th:href="@{/comedians/detail/{accountId}(accountId=${comedian.accountId})}">
                     <div class="profile-image-placeholder">画像<br>（第二段階）</div>
@@ -139,13 +139,37 @@
     <!-- ========== ページネーション ========== -->
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link" href="#">前へ</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">...</a></li>
-            <li class="page-item"><a class="page-link" href="#">13</a></li>
-            <li class="page-item"><a class="page-link" href="#">次へ</a></li>
+
+            <!-- 前へ -->
+            <li class="page-item" th:classappend="${!comedianPage.hasPrevious()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/comedians(page=${comedianPage.number - 1},
+                                    keyWord=${comedianSearchDto.keyWord},
+                                    unitType=${comedianSearchDto.unitType},
+                                    agency=${comedianSearchDto.agency})}">前へ</a>
+            </li>
+
+            <!-- ページ番号 -->
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, comedianPage.totalPages - 1)}"
+                th:classappend="${i == comedianPage.number} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/comedians(page=${i},
+                                     keyWord=${comedianSearchDto.keyWord},
+                                     unitType=${comedianSearchDto.unitType},
+                                     agency=${comedianSearchDto.agency})}"
+                   th:text="${i + 1}"></a>
+            </li>
+
+            <!-- 次へ -->
+            <li class="page-item" th:classappend="${!comedianPage.hasNext()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/comedians(page=${comedianPage.number + 1},
+                                     keyWord=${comedianSearchDto.keyWord},
+                                     unitType=${comedianSearchDto.unitType},
+                                     agency=${comedianSearchDto.agency})}">次へ</a>
+            </li>
+
         </ul>
     </nav>
 

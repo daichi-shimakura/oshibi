@@ -1,13 +1,13 @@
 package com.oshibi.oshibi.service;
 
 import com.oshibi.oshibi.domain.entity.ComedianProfile;
-import com.oshibi.oshibi.domain.entity.Live;
 import com.oshibi.oshibi.dto.*;
 import com.oshibi.oshibi.repository.ComedianProfileRepository;
 import com.oshibi.oshibi.repository.ComedianSpecification;
 import com.oshibi.oshibi.repository.LivePerformerRepository;
-import com.oshibi.oshibi.repository.LiveSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class ComedianService {
     private final ComedianProfileRepository comedianProfileRepository;
     private final LivePerformerRepository livePerformerRepository;
 
-    public List<ComedianListItemDto> search(ComedianSearchDto dto) {
+    public Page<ComedianListItemDto> search(ComedianSearchDto dto, Pageable pageable) {
 
         Specification<ComedianProfile> spec = (root, query, cb) -> cb.conjunction();
 
@@ -36,13 +36,13 @@ public class ComedianService {
             spec = spec.and(ComedianSpecification.agency(dto.getAgency()));
         }
 
-        return comedianProfileRepository.findAll(spec).stream()
+        return comedianProfileRepository.findAll(spec,pageable)
                 .map(cp -> new ComedianListItemDto(
                         cp.getAccountId(),
                         cp.getAccount().getDisplayName(),
                         cp.getUnitType(),
                         cp.getAgency()
-                )).toList();
+                ));
     }
 
     public Optional<ComedianDetailDto> findById(Long accountId) {

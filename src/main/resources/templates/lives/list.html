@@ -124,13 +124,13 @@
         </form>
     <!-- ========== 検索結果ヘッダー ========== -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <p class="text-muted mb-0">検索結果：<strong th:text="${#lists.size(lives)}">0</strong>件</p>
+        <p class="text-muted mb-0">検索結果：<strong th:text="${#lists.size(livePage.totalElements)}">0</strong>件</p>
     </div>
 
     <!-- ========== ライブ一覧（リスト形式） ========== -->
     <div class="d-flex flex-column gap-2">
 
-        <div class="live-row" th:each="live : ${lives}">
+        <div class="live-row" th:each="live : ${livePage.content}">
             <a th:href="@{/lives/{liveId}(liveId=${live.liveId})}" class="d-block">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -168,13 +168,51 @@
     <!-- ========== ページネーション ========== -->
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link" href="#">前へ</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">...</a></li>
-            <li class="page-item"><a class="page-link" href="#">13</a></li>
-            <li class="page-item"><a class="page-link" href="#">次へ</a></li>
+
+            <!-- 前へ -->
+            <li class="page-item" th:classappend="${!livePage.hasPrevious()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/lives(page=${livePage.number - 1},
+                                    keyword=${liveSearchDto.keyword},
+                                    dateFrom=${liveSearchDto.dateFrom},
+                                    dateTo=${liveSearchDto.dateTo},
+                                    hasPast=${liveSearchDto.hasPast},
+                                    prefecture=${liveSearchDto.prefecture},
+                                    liveType=${liveSearchDto.liveType},
+                                    maxPrice=${liveSearchDto.maxPrice},
+                                    startTimeSlot=${liveSearchDto.startTimeSlot})}">前へ</a>
+            </li>
+
+            <!-- ページ番号 -->
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, livePage.totalPages - 1)}"
+                th:classappend="${i == livePage.number} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/lives(page=${i},
+                   keyword=${liveSearchDto.keyword},
+                                    dateFrom=${liveSearchDto.dateFrom},
+                                    dateTo=${liveSearchDto.dateTo},
+                                    hasPast=${liveSearchDto.hasPast},
+                                    prefecture=${liveSearchDto.prefecture},
+                                    liveType=${liveSearchDto.liveType},
+                                    maxPrice=${liveSearchDto.maxPrice},
+                                    startTimeSlot=${liveSearchDto.startTimeSlot})}"
+                   th:text="${i + 1}"></a>
+            </li>
+
+            <!-- 次へ -->
+            <li class="page-item" th:classappend="${!livePage.hasNext()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/lives(page=${livePage.number + 1},keyword=${liveSearchDto.keyword},
+                                    dateFrom=${liveSearchDto.dateFrom},
+                                    dateTo=${liveSearchDto.dateTo},
+                                    hasPast=${liveSearchDto.hasPast},
+                                    prefecture=${liveSearchDto.prefecture},
+                                    liveType=${liveSearchDto.liveType},
+                                    maxPrice=${liveSearchDto.maxPrice},
+                                    startTimeSlot=${liveSearchDto.startTimeSlot})}">次へ</a>
+            </li>
+
         </ul>
     </nav>
 

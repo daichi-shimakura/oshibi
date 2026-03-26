@@ -6,6 +6,8 @@ import com.oshibi.oshibi.dto.LiveSearchDto;
 import com.oshibi.oshibi.service.AccountService;
 import com.oshibi.oshibi.service.LiveService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,9 +26,10 @@ public class LiveController {
     private final AccountService accountService;
 
     @GetMapping("/lives")
-    public String list(Model model, LiveSearchDto liveSearchDto) {
-        var liveList = liveService.search(liveSearchDto);
-        model.addAttribute("lives", liveList);
+    public String list(Model model, LiveSearchDto liveSearchDto, @RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 20);
+        var livePage  = liveService.search(liveSearchDto,pageable);
+        model.addAttribute("livePage", livePage);
         model.addAttribute("liveSearchDto", liveSearchDto);
         return "lives/list";
     }
