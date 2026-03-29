@@ -114,9 +114,13 @@
         <h5 class="mb-3">出演者（出番順）</h5>
         <div class="performer-inline">
             <span th:each="performer, iter : ${live.performers}">
-                <a th:href="@{/comedians/detail/{accountId}(accountId=${performer.accountId})}"
+                <a th:if="${performer.accountId != null}"
+                   th:href="@{/comedians/detail/{accountId}(accountId=${performer.accountId})}"
                    th:text="${performer.displayName}"
-                   class="performer-link"></a><span th:if="!${iter.last}">、</span>
+                   class="performer-link"></a>
+                <span th:if="${performer.accountId == null}"
+                      th:text="${performer.displayName}"></span>
+                <span th:if="!${iter.last}">、</span>
             </span>
         </div>
     </div>
