@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -36,10 +37,13 @@ public class LiveFormDto {
 
     private String description;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime openTime;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime startTime;
 
     private Integer priceAdvance;
@@ -52,8 +56,10 @@ public class LiveFormDto {
 
     private Integer streamingPrice;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate streamingStartDate;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate streamingEndDate;
 
     private String flyerUrl;
