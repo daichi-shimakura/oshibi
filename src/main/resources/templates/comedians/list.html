@@ -119,7 +119,7 @@
 
     <!-- ========== 検索結果ヘッダー ========== -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <p class="text-muted mb-0">検索結果：<strong th:text="${#lists.size(comedianPage.totalElements)}">0</strong>件</p>
+        <p class="text-muted mb-0">検索結果：<strong th:text="${comedianPage.totalElements}">0</strong>件</p>
     </div>
 
     <!-- ========== ライブ一覧（リスト形式） ========== -->
@@ -152,6 +152,7 @@
             <!-- ページ番号 -->
             <li class="page-item"
                 th:each="i : ${#numbers.sequence(0, comedianPage.totalPages - 1)}"
+                th:if="${comedianPage.totalPages > 0}"
                 th:classappend="${i == comedianPage.number} ? 'active'">
                 <a class="page-link"
                    th:href="@{/comedians(page=${i},

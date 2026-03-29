@@ -124,7 +124,7 @@
         </form>
     <!-- ========== 検索結果ヘッダー ========== -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <p class="text-muted mb-0">検索結果：<strong th:text="${#lists.size(livePage.totalElements)}">0</strong>件</p>
+        <p class="text-muted mb-0">検索結果：<strong th:text="${livePage.totalElements}">0</strong>件</p>
     </div>
 
     <!-- ========== ライブ一覧（リスト形式） ========== -->
@@ -178,8 +178,10 @@
             </li>
 
             <!-- ページ番号 -->
+            <!-- ページ番号 li全体をth:ifで囲む -->
             <li class="page-item"
                 th:each="i : ${#numbers.sequence(0, livePage.totalPages - 1)}"
+                th:if="${livePage.totalPages > 0}"
                 th:classappend="${i == livePage.number} ? 'active'">
                 <a class="page-link"
                    th:href="@{/lives(page=${i},
