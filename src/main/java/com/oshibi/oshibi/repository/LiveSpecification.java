@@ -23,7 +23,8 @@ public class LiveSpecification {
             var account = comedian.join("account", JoinType.LEFT);
             return cb.or(
                     cb.like(root.get("title"), "%" + keyword + "%"),
-                    cb.like(account.get("displayName"), "%" + keyword + "%")
+                    cb.like(account.get("displayName"), "%" + keyword + "%"),
+                    cb.like(performers.get("guestName"), "%" + keyword + "%")
             );
         };
     }
