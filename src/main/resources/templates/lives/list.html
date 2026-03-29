@@ -137,29 +137,23 @@
                         <span th:text="${live.liveTitle}" class="live-title"></span>
                         <span th:text="${live.liveType}" class="badge bg-secondary ms-2"></span>
                     </div>
-                    <div class="text-end text-nowrap ms-3">
-                        <span class="small">前売
-                            <span th:text="${live.priceAdvance}" class="small"></span>円
-                            <span class="small">/当日 </span>
-                            <span th:text="${live.priceDoor}" class="small"></span>円
-                        </span>
+                    <div class="text-end text-nowrap ms-3 small">
+                        <span th:if="${live.priceAdvance != null}">前売 <span th:text="${live.priceAdvance}"></span>円 / </span>
+                        <span th:if="${live.priceDoor != null}">当日 <span th:text="${live.priceDoor}"></span>円</span>
+                        <span th:if="${live.priceAdvance == null and live.priceDoor == null}">料金未定</span>
                     </div>
                 </div>
                 <div class="mt-1">
                     <span th:text="${#temporals.format(live.liveDate, 'yyyy/M/d')}" class="small text-muted"></span>
-                    /開場
-                    <span th:text="${live.openTime}" class="small text-muted"></span>
-                    /開演
-                    <span th:text="${live.startTime}" class="small text-muted"></span>
-                    <span th:text="${live.venue + '（' + live.prefecture + '）'}" class="small text-muted ms-3">新宿バティオス（東京都）</span>
+                    <span th:if="${live.openTime != null}" class="small text-muted"> /開場 <span th:text="${live.openTime}"></span></span>
+                    <span class="small text-muted"> /開演 <span th:text="${live.startTime}"></span></span>
+                    <span th:text="${live.venue + '（' + live.prefecture + '）'}" class="small text-muted ms-3"></span>
                 </div>
                 <div class="performers-text mt-1">
                     出演：<span th:text="${#strings.listJoin(live.comedianNames, '、')}"></span>
                 </div>
-                <div class="performers-text mt-1">
-                    他
-                    <span th:text="${live.otherPerformerCount}" class="performers-text mt-1">5</span>
-                    組
+                <div class="performers-text mt-1" th:if="${live.otherPerformerCount > 0}">
+                    他 <span th:text="${live.otherPerformerCount}"></span>組
                 </div>
             </a>
         </div>
