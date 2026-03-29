@@ -56,18 +56,17 @@
                            th:text="${live.liveTitle}"></a>
                         <span th:text="${live.liveType}" class="badge bg-secondary ms-1"></span>
                     </div>
-                    <div class="text-end text-nowrap ms-3">
-                        <span class="small">
-                            前売 <span th:text="${live.priceAdvance}"></span>円
-                            / 当日 <span th:text="${live.priceDoor}"></span>円
-                        </span>
+                    <div class="text-end text-nowrap ms-3 small">
+                        <span th:if="${live.priceAdvance != null}">前売 <span th:text="${live.priceAdvance}"></span>円 / </span>
+                        <span th:if="${live.priceDoor != null}">当日 <span th:text="${live.priceDoor}"></span>円</span>
+                        <span th:if="${live.priceAdvance == null and live.priceDoor == null}">料金未定</span>
                     </div>
                 </div>
                 <div class="mt-1">
                     <span th:text="${#temporals.format(live.liveDate, 'yyyy/M/d（E）')}"
                           class="small text-muted"></span>
-                    　開場 <span th:text="${live.openTime}" class="small text-muted"></span>
-                    　開演 <span th:text="${live.startTime}" class="small text-muted"></span>
+                    <span th:if="${live.openTime != null}" class="small text-muted">　開場 <span th:text="${live.openTime}"></span></span>
+                    <span class="small text-muted">　開演 <span th:text="${live.startTime}"></span></span>
                     <span th:text="${live.venue + '（' + live.prefecture + '）'}"
                           class="small text-muted ms-3"></span>
                 </div>
@@ -98,18 +97,17 @@
                            th:text="${live.liveTitle}"></a>
                         <span th:text="${live.liveType}" class="badge bg-secondary ms-1"></span>
                     </div>
-                    <div class="text-end text-nowrap ms-3">
-                        <span class="small">
-                            前売 <span th:text="${live.priceAdvance}"></span>円
-                            / 当日 <span th:text="${live.priceDoor}"></span>円
-                        </span>
+                    <div class="text-end text-nowrap ms-3 small">
+                        <span th:if="${live.priceAdvance != null}">前売 <span th:text="${live.priceAdvance}"></span>円 / </span>
+                        <span th:if="${live.priceDoor != null}">当日 <span th:text="${live.priceDoor}"></span>円</span>
+                        <span th:if="${live.priceAdvance == null and live.priceDoor == null}">料金未定</span>
                     </div>
                 </div>
                 <div class="mt-1">
                     <span th:text="${#temporals.format(live.liveDate, 'yyyy/M/d（E）')}"
                           class="small text-muted"></span>
-                    　開場 <span th:text="${live.openTime}" class="small text-muted"></span>
-                    　開演 <span th:text="${live.startTime}" class="small text-muted"></span>
+                    <span th:if="${live.openTime != null}" class="small text-muted">　開場 <span th:text="${live.openTime}"></span></span>
+                    <span class="small text-muted">　開演 <span th:text="${live.startTime}"></span></span>
                     <span th:text="${live.venue + '（' + live.prefecture + '）'}"
                           class="small text-muted ms-3"></span>
                 </div>
