@@ -305,6 +305,13 @@ public class LiveService {
                 }).toList();
     }
 
+    public void delete(Long liveId, String email){
+        checkAuth(email, liveId);
+
+        liveRepository.deleteById(liveId);
+        livePerformerRepository.deleteByLive_LiveId(liveId);
+    }
+
     public List<Venue> findAllVenues() {
         return venueRepository.findAll();
     }

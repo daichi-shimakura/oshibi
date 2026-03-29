@@ -112,4 +112,11 @@ public class LiveController {
         return "my/lives";
     }
 
+    @PostMapping("/live/{liveId}/edit")
+    public String deleteLive(@PathVariable Long liveId, @AuthenticationPrincipal UserDetails userDetails) {
+        var email = userDetails.getUsername();
+        liveService.delete(liveId,email);
+        return "redirect:/my/lives";
+    }
+
 }

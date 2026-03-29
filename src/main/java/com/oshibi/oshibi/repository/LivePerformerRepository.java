@@ -14,8 +14,9 @@ public interface LivePerformerRepository extends JpaRepository<LivePerformer, Lo
 
     Optional<LivePerformer> findByLive_LiveIdAndComedian_AccountId(Long liveId, Long accountId);
 
-
     List<LivePerformer> findByComedian_AccountIdAndLive_DateGreaterThanEqual(Long accountId, LocalDate liveDate);
+
+    void deleteByLive_LiveId(Long liveId);
 }
 
 
