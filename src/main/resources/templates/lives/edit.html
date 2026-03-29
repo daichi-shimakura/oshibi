@@ -30,6 +30,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <!-- ヘッダーナビ -->
@@ -46,12 +47,12 @@
         </ol>
     </nav>
 
-    <h4 class="mb-4" th:text="${form == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></h4>
+    <h4 class="mb-4" th:text="${form.liveId == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></h4>
 
     <p class="text-danger small mb-4">※ 会場を新規登録する場合は、先に「新規会場を登録する」から登録してください。</p>
 
     <!-- フォーム：新規と編集でaction先を出し分ける -->
-    <form th:action="@{${form == null ? '/lives/new' : '/lives/' + form.liveId + '/edit'}}"
+    <form th:action="@{${form.liveId == null ? '/lives/new' : '/lives/' + form.liveId + '/edit'}}"
           th:object="${form}"
           method="post">
 
@@ -196,14 +197,26 @@
         </div>
 
         <!-- ========== 出演者 ========== -->
-        <!-- TODO: 出演者の動的追加はMVP後回し。現状はaccount_idをカンマ区切りで入力 -->
         <div class="form-section">
             <h5 class="mb-3">出演者</h5>
-            <div class="mb-3">
-                <label class="form-label">出演者のアカウントID（カンマ区切り）</label>
-                <input type="text" class="form-control" placeholder="例：3,5,8">
-                <div class="form-text">芸人のアカウントIDをカンマ区切りで入力してください（暫定仕様）</div>
+
+            <div class="mb-3 position-relative">
+                <label class="form-label">芸人を検索して追加</label>
+                <!-- ① テキストボックス -->
+                <input type="text" id="performerSearch" class="form-control"
+                       placeholder="芸名で検索" autocomplete="off">
+                <!-- ② ドロップダウン（JSが候補を入れる空の箱） -->
+                <div id="searchDropdown"
+                     class="list-group position-absolute w-100 shadow"
+                     style="z-index:1000; display:none; max-height:200px; overflow-y:auto;">
+                </div>
             </div>
+
+            <!-- ③ 追加済み出演者リスト（JSが表示ラベルを入れる空の箱） -->
+            <div id="performerList" class="d-flex flex-column gap-2 mb-3"></div>
+
+            <!-- ④ hidden input群（JSがSpring向けのデータを入れる空の箱） -->
+            <div id="performerInputs"></div>
         </div>
 
         <!-- ========== 送信ボタン ========== -->
@@ -227,5 +240,89 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.getElementById('performerSearch').addEventListener('input', function() {
+        const q = this.value;
+        if (q.length < 1) return; // 1文字未満は検索しない
+
+        fetch(`/api/comedians/search?q=${q}`)
+            .then(res => res.json())
+            .then(data => {
+                const dropdown = document.getElementById('searchDropdown');
+                dropdown.innerHTML = ''; // 前の検索結果をクリア
+                dropdown.style.display = 'block';
+
+                data.forEach(comedian => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = 'list-group-item list-group-item-action';
+                    item.textContent = `${comedian.displayName}（${comedian.unitType}・${comedian.agency}）`;
+                    dropdown.appendChild(item);
+
+                    item.addEventListener('click', function() {
+                        addPerformer(comedian.accountId, comedian.displayName);
+                        dropdown.style.display = 'none'; // ドロップダウンを閉じる
+                        document.getElementById('performerSearch').value = ''; // 検索欄をクリア
+                    });
+                });
+
+                const guestItem = document.createElement('button');
+                guestItem.type = 'button';
+                guestItem.className = 'list-group-item list-group-item-action text-muted';
+                guestItem.textContent = `"${q}"をアカウントなしで追加`;
+                dropdown.appendChild(guestItem);
+
+                guestItem.addEventListener('click', function() {
+                    addPerformer(null, q);
+                    dropdown.style.display = 'none';
+                    document.getElementById('performerSearch').value = '';
+                });
+
+            });
+    });
+
+    let performerIndex = 0; // hidden inputの連番管理
+    const addedAccountIds = new Set(); // 追加済みのaccountIdを管理
+
+    function addPerformer(accountId, displayName) {
+        if (accountId !== null && addedAccountIds.has(accountId)) return;
+        if (accountId !== null) addedAccountIds.add(accountId);
+        // ③ 追加済みリストにラベル表示
+        const list = document.getElementById('performerList');
+        const label = document.createElement('div');
+        label.className = 'performer-added';
+        label.innerHTML = `
+        <span>${displayName}</span>
+        <button type="button" class="btn btn-sm btn-outline-danger">削除</button>`;
+
+        list.appendChild(label);
+
+        // ④ hidden input生成
+        const inputs = document.getElementById('performerInputs');
+        const hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        if(accountId != null) {
+            hidden.name = `performerAdds[${performerIndex}].accountId`;
+            hidden.value = accountId;
+        } else {
+            hidden.name = `performerAdds[${performerIndex}].guestName`;
+            hidden.value = displayName;
+        }
+        inputs.appendChild(hidden);
+
+        // 削除ボタンのイベントリスナー
+        const deleteBtn = label.querySelector('button');
+        deleteBtn.addEventListener('click', function() {
+            list.removeChild(label);
+            inputs.removeChild(hidden);
+            addedAccountIds.delete(accountId);
+            performerIndex--;
+        });
+
+        performerIndex++;
+    }
+</script>
+
 </body>
 </html>

@@ -83,4 +83,14 @@ public class ComedianService {
             );
         });
     }
+
+    public List<ComedianSearchResultDto> searchComedians(String q) {
+        return comedianProfileRepository.findByAccount_DisplayNameContainingIgnoreCase(q).stream()
+                .map(cp -> new ComedianSearchResultDto(
+                        cp.getAccountId(),
+                        cp.getAccount().getDisplayName(),
+                        cp.getUnitType(),
+                        cp.getAgency()
+                )).toList();
+    }
 }
