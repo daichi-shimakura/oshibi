@@ -37,6 +37,8 @@ public class AuthService {
         account.setAccountType(AccountType.valueOf(dto.getAccountType()));
         account.setDisplayName(dto.getEmail());
         accountRepository.save(account);
+
+        user.setAccount(account);
     }
 
     public void changeEmail(String currentEmail, String newEmail){

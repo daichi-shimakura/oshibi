@@ -24,8 +24,7 @@ public class ProfileController {
     public String showProfileForm(@AuthenticationPrincipal UserDetails userDetails,Model model) {
 
         String email = userDetails.getUsername();
-        Account account = accountRepository.findByUser_Email(email)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findByUser_Email(email).orElse(null);
         model.addAttribute("profileFormDto", new ProfileFormDto());
         model.addAttribute("accountType", account.getAccountType());
 
