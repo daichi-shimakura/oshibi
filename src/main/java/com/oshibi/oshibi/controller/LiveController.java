@@ -107,6 +107,7 @@ public class LiveController {
 
         model.addAttribute("ownedLives", liveService.getOwnedLives(accountId));
         model.addAttribute("performingLives", liveService.getPerformingLives(accountId));
+        model.addAttribute("accountId", accountId);
 
         return "my/lives";
     }

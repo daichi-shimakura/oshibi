@@ -33,7 +33,8 @@ public class Live extends BaseEntity {
     private String title;
 
     @Column(name = "live_type", nullable = false, length = 30)
-    private String liveType;
+    @Enumerated(EnumType.STRING)
+    private LiveType liveType;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -54,7 +55,8 @@ public class Live extends BaseEntity {
     private Integer priceDoor;
 
     @Column(name = "ticket_method", length = 30)
-    private String ticketMethod;
+    @Enumerated(EnumType.STRING)
+    private TicketMethod ticketMethod;
 
     @Column(name = "has_streaming", nullable = false)
     private Boolean hasStreaming;

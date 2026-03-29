@@ -1,6 +1,7 @@
 package com.oshibi.oshibi.repository;
 
 import com.oshibi.oshibi.domain.entity.ComedianProfile;
+import com.oshibi.oshibi.domain.entity.UnitType;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ComedianSpecification {
@@ -11,7 +12,7 @@ public class ComedianSpecification {
 
     public static Specification<ComedianProfile> unitType(String unitType){
         return (root, query, cb) ->
-                cb.equal(root.get("unitType"), unitType);
+                cb.equal(root.get("unitType"), UnitType.valueOf(unitType));
     }
 
     public static Specification<ComedianProfile> agency(String agency){

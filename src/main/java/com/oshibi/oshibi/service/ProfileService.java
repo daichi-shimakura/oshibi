@@ -1,7 +1,9 @@
 package com.oshibi.oshibi.service;
 
 import com.oshibi.oshibi.domain.entity.Account;
+import com.oshibi.oshibi.domain.entity.AccountType;
 import com.oshibi.oshibi.domain.entity.ComedianProfile;
+import com.oshibi.oshibi.domain.entity.UnitType;
 import com.oshibi.oshibi.dto.ProfileFormDto;
 import com.oshibi.oshibi.repository.AccountRepository;
 import com.oshibi.oshibi.repository.ComedianProfileRepository;
@@ -38,7 +40,7 @@ public class ProfileService {
             ComedianProfile comedianProfile = comedianProfileRepository
                     .findById(account.getAccountId())
                     .orElse(new ComedianProfile());
-            comedianProfile.setUnitType(dto.getUnitType());
+            comedianProfile.setUnitType(UnitType.valueOf(dto.getUnitType()));
             comedianProfile.setAgency(dto.getAgency());
             comedianProfile.setMemberNames(dto.getMemberNames());
             comedianProfile.setAccount(account);
@@ -53,7 +55,7 @@ public class ProfileService {
 
 
         ProfileFormDto profileFormDto = new ProfileFormDto();
-        profileFormDto.setAccountType(account.getAccountType());
+        profileFormDto.setAccountType(account.getAccountType().getLabel());
         profileFormDto.setDisplayName(account.getDisplayName());
         profileFormDto.setProfileImageUrl(account.getProfileImageUrl());
         profileFormDto.setDescription(account.getDescription());
@@ -64,9 +66,9 @@ public class ProfileService {
         profileFormDto.setNoteUrl(account.getNoteUrl());
         profileFormDto.setPodcastUrl(account.getPodcastUrl());
 
-        if ("LIVE_STAFF".equals(account.getAccountType())) {
+        if (AccountType.LIVE_STAFF.equals(account.getAccountType())) {
             ComedianProfile comedianProfile = comedianProfileRepository.findById(account.getAccountId()).orElse(new ComedianProfile());
-            profileFormDto.setUnitType(comedianProfile.getUnitType());
+            profileFormDto.setUnitType(comedianProfile.getUnitType().name());
             profileFormDto.setAgency(comedianProfile.getAgency());
             profileFormDto.setMemberNames(comedianProfile.getMemberNames());
         }

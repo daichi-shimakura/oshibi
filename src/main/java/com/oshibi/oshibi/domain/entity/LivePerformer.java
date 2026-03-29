@@ -29,7 +29,8 @@ public class LivePerformer extends BaseEntity {
     private Integer displayOrder;
 
     @Column(nullable = false, length = 20)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private PerformerStatus status;
 
     @Column(name = "pre_comment", columnDefinition = "TEXT")
     private String preComment;

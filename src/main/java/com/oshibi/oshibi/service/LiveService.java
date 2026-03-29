@@ -1,8 +1,6 @@
 package com.oshibi.oshibi.service;
 
-import com.oshibi.oshibi.domain.entity.Live;
-import com.oshibi.oshibi.domain.entity.LivePerformer;
-import com.oshibi.oshibi.domain.entity.Venue;
+import com.oshibi.oshibi.domain.entity.*;
 import com.oshibi.oshibi.dto.*;
 import com.oshibi.oshibi.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +70,7 @@ public class LiveService {
                             live.getStartTime(),
                             live.getVenue().getName(),
                             live.getVenue().getPrefecture(),
-                            live.getLiveType(),
+                            live.getLiveType().getLabel(),
                             live.getPriceAdvance(),
                             live.getPriceDoor(),
                             live.getLivePerformers().stream().map(lp ->
@@ -93,7 +91,7 @@ public class LiveService {
                 live.getStartTime(),
                 live.getVenue().getName(),
                 live.getVenue().getPrefecture(),
-                live.getLiveType(),
+                live.getLiveType().getLabel(),
                 live.getPriceAdvance(),
                 live.getPriceDoor(),
                 live.getLivePerformers().stream().map(lp -> new PerformerDto(
@@ -104,7 +102,7 @@ public class LiveService {
                                 ? lp.getComedian().getAccount().getDisplayName()
                                 : lp.getGuestName(),
                         lp.getDisplayOrder())).toList(),
-                live.getTicketMethod(),
+                live.getTicketMethod() != null ? live.getTicketMethod().getLabel() : null,
                 live.getHasStreaming(),
                 live.getStreamingPrice(),
                 live.getStreamingStartDate(),
@@ -131,7 +129,7 @@ public class LiveService {
                 live.getStartTime(),
                 live.getVenue().getName(),
                 live.getVenue().getPrefecture(),
-                live.getLiveType(),
+                live.getLiveType().getLabel(),
                 live.getPriceAdvance(),
                 live.getPriceDoor(),
                 live.getLivePerformers().stream().filter(lp -> (lp.getComedian() == null ||
@@ -144,7 +142,7 @@ public class LiveService {
                                 ? lp.getComedian().getAccount().getDisplayName()
                                 : lp.getGuestName(),
                         lp.getDisplayOrder())).toList(),
-                live.getTicketMethod(),
+                live.getTicketMethod() != null ? live.getTicketMethod().getLabel() : null,
                 live.getHasStreaming(),
                 live.getStreamingPrice(),
                 live.getStreamingStartDate(),
@@ -161,7 +159,7 @@ public class LiveService {
                 comedianLiveOpt.getPreComment(),
                 comedianLiveOpt.getNetaCount(),
                 comedianLiveOpt.getNetaType(),
-                comedianLiveOpt.getStatus()
+                comedianLiveOpt.getStatus().getLabel()
         ));
     }
 
@@ -173,14 +171,18 @@ public class LiveService {
         live.setCreatedBy(accountRepository.findByUser_Email(email).orElseThrow());
         live.setVenue(venueRepository.findById(liveFormDto.getVenueId()).orElseThrow());
         live.setTitle(liveFormDto.getTitle());
-        live.setLiveType(liveFormDto.getLiveType());
+        live.setLiveType(LiveType.valueOf(liveFormDto.getLiveType()));
         live.setDescription(liveFormDto.getDescription());
         live.setDate(liveFormDto.getDate());
         live.setOpenTime(liveFormDto.getOpenTime());
         live.setStartTime(liveFormDto.getStartTime());
         live.setPriceAdvance(liveFormDto.getPriceAdvance());
         live.setPriceDoor(liveFormDto.getPriceDoor());
-        live.setTicketMethod(liveFormDto.getTicketMethod());
+        live.setTicketMethod(
+                liveFormDto.getTicketMethod() != null && !liveFormDto.getTicketMethod().isBlank()
+                        ? TicketMethod.valueOf(liveFormDto.getTicketMethod())
+                        : null
+        );
         live.setHasStreaming(liveFormDto.getHasStreaming());
         live.setStreamingPrice(liveFormDto.getStreamingPrice());
         live.setStreamingStartDate(liveFormDto.getStreamingStartDate());
@@ -196,12 +198,12 @@ public class LiveService {
                         performer.setComedian(comedianProfileRepository.findById(id.getAccountId()).orElseThrow());
                         performer.setLive(live);
                         performer.setDisplayOrder(liveFormDto.getPerformerAdds().indexOf(id));
-                        performer.setStatus("TENTATIVE");
+                        performer.setStatus(PerformerStatus.TENTATIVE);
                     } else {
                         performer.setGuestName(id.getGuestName());
                         performer.setLive(live);
                         performer.setDisplayOrder(liveFormDto.getPerformerAdds().indexOf(id));
-                        performer.setStatus("TENTATIVE");
+                        performer.setStatus(PerformerStatus.TENTATIVE);
                     }
                     return performer;
                 }
@@ -216,7 +218,7 @@ public class LiveService {
         //エンティティにDtoの値をセットして保存
         //liveIdとaccountIdでLivePerformerテーブルを検索→あったらそこにComedianLiveRequestDtoの値を入れる
         var comedianLiveOpt = livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId, accountId).orElseThrow();
-        comedianLiveOpt.setStatus(dto.getStatus());
+        comedianLiveOpt.setStatus(PerformerStatus.valueOf(dto.getStatus()));
         comedianLiveOpt.setNetaCount(dto.getNetaCount());
         comedianLiveOpt.setNetaType(dto.getNetaType());
         comedianLiveOpt.setPreComment(dto.getPreComment());
@@ -235,14 +237,14 @@ public class LiveService {
                 live.getVenue().getGoogleMapsUrl(),
                 live.getLiveId(),
                 live.getTitle(),
-                live.getLiveType(),
+                live.getLiveType().name(),
                 live.getDescription(),
                 live.getDate(),
                 live.getOpenTime(),
                 live.getStartTime(),
                 live.getPriceAdvance(),
                 live.getPriceDoor(),
-                live.getTicketMethod(),
+                live.getTicketMethod() != null ? live.getTicketMethod().name() : null,
                 live.getHasStreaming(),
                 live.getStreamingPrice(),
                 live.getStreamingStartDate(),
@@ -271,7 +273,7 @@ public class LiveService {
                         live.getStartTime(),
                         live.getVenue().getName(),
                         live.getVenue().getPrefecture(),
-                        live.getLiveType(),
+                        live.getLiveType().getLabel(),
                         live.getPriceAdvance(),
                         live.getPriceDoor(),
                         List.of(),  // comedianNames（仮置き）
@@ -291,7 +293,7 @@ public class LiveService {
                             live.getStartTime(),
                             live.getVenue().getName(),
                             live.getVenue().getPrefecture(),
-                            live.getLiveType(),
+                            live.getLiveType().getLabel(),
                             live.getPriceAdvance(),
                             live.getPriceDoor(),
                             live.getLivePerformers().stream().map(livePerformer ->

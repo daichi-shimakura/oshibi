@@ -1,6 +1,7 @@
 package com.oshibi.oshibi.service;
 
 import com.oshibi.oshibi.domain.entity.Account;
+import com.oshibi.oshibi.domain.entity.AccountType;
 import com.oshibi.oshibi.domain.entity.User;
 import com.oshibi.oshibi.dto.PasswordChangeDto;
 import com.oshibi.oshibi.dto.RegisterDto;
@@ -33,7 +34,7 @@ public class AuthService {
         // 4. Accountエンティティ作成・保存
         var account = new Account();
         account.setUser(user);
-        account.setAccountType(dto.getAccountType());
+        account.setAccountType(AccountType.valueOf(dto.getAccountType()));
         account.setDisplayName(dto.getEmail());
         accountRepository.save(account);
     }

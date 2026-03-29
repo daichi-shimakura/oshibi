@@ -1,6 +1,7 @@
 package com.oshibi.oshibi.repository;
 
 import com.oshibi.oshibi.domain.entity.Live;
+import com.oshibi.oshibi.domain.entity.LiveType;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -49,7 +50,7 @@ public class LiveSpecification {
 
     public static Specification<Live> liveType(String liveType) {
         return (root, query, cb) ->
-                cb.equal(root.get("liveType"), liveType);
+                cb.equal(root.get("liveType"), LiveType.valueOf(liveType));
     }
 
     public static Specification<Live> maxPrice(Integer maxPrice) {

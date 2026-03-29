@@ -1,12 +1,6 @@
 package com.oshibi.oshibi.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +22,8 @@ public class ComedianProfile extends BaseEntity {
     private Account account;
 
     @Column(name = "unit_type", nullable = false, length = 20)
-    private String unitType;
+    @Enumerated(EnumType.STRING)
+    private UnitType unitType;
 
     @Column(length = 100)
     private String agency;

@@ -40,7 +40,7 @@ public class ComedianService {
                 .map(cp -> new ComedianListItemDto(
                         cp.getAccountId(),
                         cp.getAccount().getDisplayName(),
-                        cp.getUnitType(),
+                        cp.getUnitType().getLabel(),
                         cp.getAgency()
                 ));
     }
@@ -58,7 +58,7 @@ public class ComedianService {
                             lp.getLive().getStartTime(),
                             lp.getLive().getVenue().getName(),
                             lp.getLive().getVenue().getPrefecture(),
-                            lp.getLive().getLiveType(),
+                            lp.getLive().getLiveType().getLabel(),
                             lp.getLive().getPriceAdvance(),
                             lp.getLive().getPriceDoor()
                     )).toList();
@@ -67,7 +67,7 @@ public class ComedianService {
             // 作ったlivesを渡す
             return new ComedianDetailDto(
                     comedian.getAccount().getDisplayName(),
-                    comedian.getUnitType(),
+                    comedian.getUnitType().getLabel(),
                     comedian.getAgency(),
                     comedian.getMemberNames(),
                     comedian.getAccount().getProfileImageUrl(),
@@ -89,7 +89,7 @@ public class ComedianService {
                 .map(cp -> new ComedianSearchResultDto(
                         cp.getAccountId(),
                         cp.getAccount().getDisplayName(),
-                        cp.getUnitType(),
+                        cp.getUnitType().getLabel(),
                         cp.getAgency()
                 )).toList();
     }
