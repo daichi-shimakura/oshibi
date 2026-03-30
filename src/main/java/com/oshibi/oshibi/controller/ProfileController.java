@@ -1,14 +1,18 @@
 package com.oshibi.oshibi.controller;
 
 import com.oshibi.oshibi.domain.entity.Account;
+import com.oshibi.oshibi.dto.EmailChangeDto;
+import com.oshibi.oshibi.dto.PasswordChangeDto;
 import com.oshibi.oshibi.dto.ProfileFormDto;
 import com.oshibi.oshibi.repository.AccountRepository;
 import com.oshibi.oshibi.service.ProfileService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,17 +30,30 @@ public class ProfileController {
         String email = userDetails.getUsername();
         Account account = accountRepository.findByUser_Email(email).orElse(null);
         model.addAttribute("profileFormDto", new ProfileFormDto());
-        model.addAttribute("accountType", account.getAccountType());
+        model.addAttribute("accountType", account.getAccountType().name());
 
         return "profile/edit";
     }
 
 
     @PostMapping("/profile/edit")
-    public String saveProfile(@AuthenticationPrincipal UserDetails userDetails, ProfileFormDto dto) {
+    public String saveProfile(@AuthenticationPrincipal UserDetails userDetails,
+                              @Valid ProfileFormDto dto,
+                              BindingResult bindingResult,
+                              Model model) {
+        if (bindingResult.hasErrors()) {
+            String email = userDetails.getUsername();
+            Account account = accountRepository.findByUser_Email(email).orElse(null);
+            model.addAttribute("accountType", account.getAccountType().name());
+            return "profile/edit";
+        }
         String email = userDetails.getUsername();
-        // プロフィール保存処理の実装
-        profileService.saveProfile(email,dto);
+        try {
+            profileService.saveProfile(email, dto);
+        } catch (IllegalArgumentException e) {
+            bindingResult.reject("error.global", e.getMessage());
+            return "profile/edit";
+        }
         return "redirect:/lives";
     }
 
@@ -45,14 +62,34 @@ public class ProfileController {
         String email = userDetails.getUsername();
         ProfileFormDto form = profileService.showProfileEditForm(email);
         model.addAttribute("profileFormDto", form);
+        model.addAttribute("emailChangeDto", new EmailChangeDto());   // 追加
+        model.addAttribute("passwordChangeDto", new PasswordChangeDto()); // 追加
         model.addAttribute("email", email);
         return "account/edit";
     }
 
     // プロフィール保存（accounts / comedian_profiles）
     @PostMapping("/account/edit")
-    public String saveAccountEdit(@ModelAttribute ProfileFormDto form, @AuthenticationPrincipal UserDetails userDetails){
-        profileService.saveProfile(userDetails.getUsername(), form);
+    public String saveAccountEdit(@Valid @ModelAttribute ProfileFormDto form,
+                                  BindingResult bindingResult,
+                                  @AuthenticationPrincipal UserDetails userDetails,
+                                  Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("passwordChangeDto", new PasswordChangeDto());
+            model.addAttribute("emailChangeDto", new EmailChangeDto());
+            model.addAttribute("email", userDetails.getUsername());
+            return "account/edit";
+        }
+
+        try {
+            profileService.saveProfile(userDetails.getUsername(), form);
+        } catch (IllegalArgumentException e) {
+            bindingResult.reject("error.global", e.getMessage());
+            model.addAttribute("passwordChangeDto", new PasswordChangeDto());
+            model.addAttribute("emailChangeDto", new EmailChangeDto());
+            model.addAttribute("email", userDetails.getUsername());
+            return "account/edit";
+        }
         return "redirect:/lives";
     }
 

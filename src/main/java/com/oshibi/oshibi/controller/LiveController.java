@@ -5,6 +5,7 @@ import com.oshibi.oshibi.dto.LiveFormDto;
 import com.oshibi.oshibi.dto.LiveSearchDto;
 import com.oshibi.oshibi.service.AccountService;
 import com.oshibi.oshibi.service.LiveService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,10 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -50,7 +49,7 @@ public class LiveController {
 
     @GetMapping("/lives/new")
     public String showNewLiveForm(Model model) {
-        model.addAttribute("form", new LiveFormDto());
+        model.addAttribute("liveFormDto", new LiveFormDto());
         model.addAttribute("venues", liveService.findAllVenues());
         return "lives/edit";
     }
@@ -59,23 +58,40 @@ public class LiveController {
     public String editLive(Model model, @PathVariable Long liveId, @AuthenticationPrincipal UserDetails userDetails) {
         liveService.checkAuth(userDetails.getUsername(),liveId);
         var liveDetail = liveService.findLiveForEdit(liveId).orElseThrow();
-        model.addAttribute("form", liveDetail);
+        model.addAttribute("liveFormDto", liveDetail);
         model.addAttribute("venues", liveService.findAllVenues());
         return "lives/edit";
     }
 
     @PostMapping("/lives/new")
-    public String saveNewLive(LiveFormDto dto,@AuthenticationPrincipal UserDetails userDetails) {
+    public String saveNewLive(@Valid @ModelAttribute LiveFormDto dto,
+                              BindingResult bindingResult,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              Model model) {
+        if (bindingResult.hasErrors()) {
+            liveService.restorePerformers(dto);
+            model.addAttribute("venues", liveService.findAllVenues());
+            return "lives/edit";
+        }
         var email = userDetails.getUsername();
-        var liveId = liveService.save(dto,email);
+        var liveId = liveService.save(dto, email);
         return REDIRECT_LIVES + liveId;
     }
 
     @PostMapping("/lives/{liveId}/edit")
-    public String saveEditLive(LiveFormDto dto, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long liveId) {
+    public String saveEditLive(@Valid @ModelAttribute LiveFormDto dto,
+                               BindingResult bindingResult,
+                               @AuthenticationPrincipal UserDetails userDetails,
+                               @PathVariable Long liveId,
+                               Model model) {
+        if (bindingResult.hasErrors()) {
+            liveService.restorePerformers(dto);
+            model.addAttribute("venues", liveService.findAllVenues());
+            return "lives/edit";
+        }
         var email = userDetails.getUsername();
-        liveService.checkAuth(email,liveId);
-        var liveIdRedirect = liveService.save(dto,email);
+        liveService.checkAuth(email, liveId);
+        var liveIdRedirect = liveService.save(dto, email);
         return REDIRECT_LIVES + liveIdRedirect;
     }
 
@@ -89,14 +105,24 @@ public class LiveController {
         form.setNetaCount(comedianLiveForm.getNetaCount());
         form.setNetaType(comedianLiveForm.getNetaType());
         form.setPreComment(comedianLiveForm.getPreComment());
-        model.addAttribute("form", form);
+        model.addAttribute("comedianLiveRequestDto", form);
         return "lives/comedianLiveEdit";
     }
 
     @PostMapping("/lives/{liveId}/comedians/{accountId}/edit")
-    public String saveComedianLive(ComedianLiveRequestDto dto, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long liveId, @PathVariable Long accountId) {
-        liveService.checkAuthComedianLiveAccount(userDetails.getUsername(),accountId);
-        liveService.saveComedianLive(liveId,accountId,dto);
+    public String saveComedianLive(@Valid @ModelAttribute ComedianLiveRequestDto dto,
+                                   BindingResult bindingResult,
+                                   @AuthenticationPrincipal UserDetails userDetails,
+                                   @PathVariable Long liveId,
+                                   @PathVariable Long accountId,
+                                   Model model) {
+        if (bindingResult.hasErrors()) {
+            var comedianLiveForm = liveService.findByLiveIdAndAccountId(liveId, accountId).orElseThrow();
+            model.addAttribute("comedianLiveForm", comedianLiveForm);
+            return "lives/comedianLiveEdit";
+        }
+        liveService.checkAuthComedianLiveAccount(userDetails.getUsername(), accountId);
+        liveService.saveComedianLive(liveId, accountId, dto);
         return REDIRECT_LIVES + liveId + "/comedians/" + accountId;
     }
 
@@ -112,7 +138,7 @@ public class LiveController {
         return "my/lives";
     }
 
-    @PostMapping("/live/{liveId}/edit")
+    @PostMapping("/lives/{liveId}/delete")
     public String deleteLive(@PathVariable Long liveId, @AuthenticationPrincipal UserDetails userDetails) {
         var email = userDetails.getUsername();
         liveService.delete(liveId,email);

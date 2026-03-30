@@ -30,19 +30,33 @@
         <div class="tab-pane fade show active" id="profile">
             <form th:action="@{/account/edit}" method="post" th:object="${profileFormDto}">
 
+                <!-- グローバルエラー -->
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger mb-3">
+                    <p th:each="error : ${#fields.globalErrors()}" th:text="${error}" class="mb-0"></p>
+                </div>
+
                 <div class="mb-3">
-                    <label class="form-label">表示名</label>
+                    <label class="form-label">表示名<span class="text-danger">*</span></label>
                     <input type="text" class="form-control" th:field="*{displayName}">
+                    <div th:if="${#fields.hasErrors('displayName')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('displayName')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">自己紹介</label>
                     <textarea class="form-control" rows="3" th:field="*{description}"></textarea>
+                    <div th:if="${#fields.hasErrors('description')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('description')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">プロフィール画像URL</label>
                     <input type="text" class="form-control" th:field="*{profileImageUrl}">
+                    <div th:if="${#fields.hasErrors('profileImageUrl')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('profileImageUrl')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -81,16 +95,25 @@
                                 <label class="form-check-label">グループ</label>
                             </div>
                         </div>
+                        <div th:if="${#fields.hasErrors('unitType')}" class="text-danger small mt-1">
+                            <p th:each="error : ${#fields.errors('unitType')}" th:text="${error}" class="mb-0"></p>
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">所属事務所</label>
                         <input type="text" class="form-control" th:field="*{agency}">
+                        <div th:if="${#fields.hasErrors('agency')}" class="text-danger small mt-1">
+                            <p th:each="error : ${#fields.errors('agency')}" th:text="${error}" class="mb-0"></p>
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">メンバー名</label>
                         <input type="text" class="form-control" th:field="*{memberNames}">
+                        <div th:if="${#fields.hasErrors('memberNames')}" class="text-danger small mt-1">
+                            <p th:each="error : ${#fields.errors('memberNames')}" th:text="${error}" class="mb-0"></p>
+                        </div>
                     </div>
                 </div>
 
@@ -98,26 +121,44 @@
                 <div class="mb-3">
                     <label class="form-label">X（Twitter）URL</label>
                     <input type="text" class="form-control" th:field="*{xUrl}">
+                    <div th:if="${#fields.hasErrors('xUrl')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('xUrl')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Instagram URL</label>
                     <input type="text" class="form-control" th:field="*{instagramUrl}">
+                    <div th:if="${#fields.hasErrors('instagramUrl')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('instagramUrl')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">YouTube URL</label>
                     <input type="text" class="form-control" th:field="*{youtubeUrl}">
+                    <div th:if="${#fields.hasErrors('youtubeUrl')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('youtubeUrl')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">TikTok URL</label>
                     <input type="text" class="form-control" th:field="*{tiktokUrl}">
+                    <div th:if="${#fields.hasErrors('tiktokUrl')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('tiktokUrl')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Note URL</label>
                     <input type="text" class="form-control" th:field="*{noteUrl}">
+                    <div th:if="${#fields.hasErrors('noteUrl')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('noteUrl')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">ポッドキャスト URL</label>
                     <input type="text" class="form-control" th:field="*{podcastUrl}">
+                    <div th:if="${#fields.hasErrors('podcastUrl')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('podcastUrl')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-dark">保存する</button>
@@ -128,15 +169,24 @@
         <div class="tab-pane fade" id="login">
 
             <!-- メール変更 -->
-            <form th:action="@{/account/email}" method="post" class="mb-4">
+            <form th:action="@{/account/email}" method="post" th:object="${emailChangeDto}" class="mb-4">
                 <h6 class="mb-3">メールアドレス変更</h6>
+
+                <!-- グローバルエラー -->
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger mb-3">
+                    <p th:each="error : ${#fields.globalErrors()}" th:text="${error}" class="mb-0"></p>
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label text-muted small">現在のメールアドレス</label>
                     <p th:text="${email}" class="fw-bold"></p>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">新しいメールアドレス</label>
-                    <input type="email" class="form-control" name="newEmail">
+                    <input type="email" class="form-control" th:field="*{newEmail}">
+                    <div th:if="${#fields.hasErrors('newEmail')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('newEmail')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-dark">変更する</button>
             </form>
@@ -144,19 +194,34 @@
             <hr>
 
             <!-- パスワード変更 -->
-            <form th:action="@{/account/password}" method="post" class="mb-4">
+            <form th:action="@{/account/password}" method="post" th:object="${passwordChangeDto}" class="mb-4">
                 <h6 class="mb-3">パスワード変更</h6>
+
+                <!-- グローバルエラー -->
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger mb-3">
+                    <p th:each="error : ${#fields.globalErrors()}" th:text="${error}" class="mb-0"></p>
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label">現在のパスワード</label>
-                    <input type="password" class="form-control" name="currentPassword">
+                    <input type="password" class="form-control" th:field="*{currentPassword}">
+                    <div th:if="${#fields.hasErrors('currentPassword')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('currentPassword')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">新しいパスワード</label>
-                    <input type="password" class="form-control" name="newPassword">
+                    <input type="password" class="form-control" th:field="*{newPassword}">
+                    <div th:if="${#fields.hasErrors('newPassword')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('newPassword')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">新しいパスワード（確認）</label>
-                    <input type="password" class="form-control" name="confirmPassword">
+                    <input type="password" class="form-control" th:field="*{confirmPassword}">
+                    <div th:if="${#fields.hasErrors('confirmPassword')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('confirmPassword')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-dark">変更する</button>
             </form>

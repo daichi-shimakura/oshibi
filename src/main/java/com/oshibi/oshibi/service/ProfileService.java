@@ -8,6 +8,7 @@ import com.oshibi.oshibi.dto.ProfileFormDto;
 import com.oshibi.oshibi.repository.AccountRepository;
 import com.oshibi.oshibi.repository.ComedianProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.stereotype.Service;
 
 
@@ -19,10 +20,16 @@ public class ProfileService {
     private final ComedianProfileRepository comedianProfileRepository;
 
     public void saveProfile(String email, ProfileFormDto dto) {
+
+        if ("LIVE_STAFF".equals(dto.getAccountType())
+                && !StringUtils.hasText(dto.getUnitType())) {
+            throw new IllegalArgumentException("ユニット種別は必須です");
+        }
+
         // Accountを作成
         //ログイン中のアカウントのIdを取得
         Account account = accountRepository.findByUser_Email(email)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new RuntimeException("アカウントが見つかりません"));
         //アカウントエンティティを更新
         account.setDisplayName(dto.getDisplayName());
         account.setDescription(dto.getDescription());
@@ -35,7 +42,7 @@ public class ProfileService {
         account.setPodcastUrl(dto.getPodcastUrl());
         accountRepository.save(account);
 
-        if ("LIVE_STAFF".equals(account.getAccountType())) {
+        if (account.getAccountType() == AccountType.LIVE_STAFF) {
             // ComedianProfileを作成
             ComedianProfile comedianProfile = comedianProfileRepository
                     .findById(account.getAccountId())
@@ -51,11 +58,11 @@ public class ProfileService {
 
     public ProfileFormDto showProfileEditForm(String email){
         Account account = accountRepository.findByUser_Email(email)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new RuntimeException("アカウントが見つかりません"));
 
 
         ProfileFormDto profileFormDto = new ProfileFormDto();
-        profileFormDto.setAccountType(account.getAccountType().getLabel());
+        profileFormDto.setAccountType(account.getAccountType().name());
         profileFormDto.setDisplayName(account.getDisplayName());
         profileFormDto.setProfileImageUrl(account.getProfileImageUrl());
         profileFormDto.setDescription(account.getDescription());

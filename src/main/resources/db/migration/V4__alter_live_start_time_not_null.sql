@@ -1,0 +1,2 @@
+ALTER TABLE lives
+    ALTER COLUMN start_time SET NOT NULL;

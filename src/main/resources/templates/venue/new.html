@@ -37,11 +37,18 @@
     <div th:unless="${param.success}">
         <form th:action="@{/venue/new}" th:object="${venueRequestDto}" method="post">
 
+            <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger mb-3">
+                <p th:each="error : ${#fields.globalErrors()}" th:text="${error}" class="mb-0"></p>
+            </div>
+
             <div class="form-section">
 
                 <div class="mb-3">
                     <label for="name" class="form-label">会場名 <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="例：新宿バティオス">
+                    <div th:if="${#fields.hasErrors('name')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('name')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -96,21 +103,33 @@
                         <option value="鹿児島県">鹿児島県</option>
                         <option value="沖縄県">沖縄県</option>
                     </select>
+                    <div th:if="${#fields.hasErrors('prefecture')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('prefecture')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="address" class="form-label">住所</label>
                     <input type="text" class="form-control" id="address" th:field="*{address}" placeholder="例：新宿区新宿2-12-4 アコード新宿B1F">
+                    <div th:if="${#fields.hasErrors('address')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('address')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="nearestStation" class="form-label">最寄り駅</label>
                     <input type="text" class="form-control" id="nearestStation" th:field="*{nearestStation}" placeholder="例：新宿三丁目駅 徒歩3分">
+                    <div th:if="${#fields.hasErrors('nearestStation')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('nearestStation')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="googleMapsUrl" class="form-label">Google Maps URL</label>
                     <input type="url" class="form-control" id="googleMapsUrl" th:field="*{googleMapsUrl}" placeholder="例：https://maps.google.com/...">
+                    <div th:if="${#fields.hasErrors('googleMapsUrl')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('googleMapsUrl')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
             </div>

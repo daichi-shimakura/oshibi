@@ -42,19 +42,22 @@
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb small">
             <li class="breadcrumb-item"><a th:href="@{/my/lives}">マイライブ</a></li>
-            <!-- 新規登録と編集でパンくずを出し分ける -->
-            <li class="breadcrumb-item active" th:text="${form == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></li>
+            <li class="breadcrumb-item active" th:text="${liveFormDto == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></li>
         </ol>
     </nav>
 
-    <h4 class="mb-4" th:text="${form.liveId == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></h4>
+    <h4 class="mb-4" th:text="${liveFormDto.liveId == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></h4>
 
     <p class="text-danger small mb-4">※ 会場を新規登録する場合は、先に「新規会場を登録する」から登録してください。</p>
 
-    <!-- フォーム：新規と編集でaction先を出し分ける -->
-    <form th:action="@{${form.liveId == null ? '/lives/new' : '/lives/' + form.liveId + '/edit'}}"
-          th:object="${form}"
+    <form th:action="@{${liveFormDto.liveId == null ? '/lives/new' : '/lives/' + liveFormDto.liveId + '/edit'}}"
+          th:object="${liveFormDto}"
           method="post">
+
+        <!-- グローバルエラー -->
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger mb-3">
+            <p th:each="error : ${#fields.globalErrors()}" th:text="${error}" class="mb-0"></p>
+        </div>
 
         <!-- ========== 基本情報 ========== -->
         <div class="form-section">
@@ -63,6 +66,9 @@
             <div class="mb-3">
                 <label class="form-label">ライブ名 <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" th:field="*{title}" placeholder="例：第15回おもしろネタライブ">
+                <div th:if="${#fields.hasErrors('title')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('title')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -79,12 +85,18 @@
                     <option value="UNIT">ユニットライブ</option>
                     <option value="OTHER">その他</option>
                 </select>
+                <div th:if="${#fields.hasErrors('liveType')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('liveType')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">備考・説明</label>
                 <textarea class="form-control" th:field="*{description}" rows="4"
                           placeholder="ライブの趣旨、注意事項、ドリンク代の有無など"></textarea>
+                <div th:if="${#fields.hasErrors('description')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('description')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -92,6 +104,9 @@
                 <input type="url" class="form-control" th:field="*{flyerUrl}"
                        placeholder="例：https://pbs.twimg.com/media/xxxxx.jpg">
                 <div class="form-text">X、Instagram等に投稿済みのフライヤー画像URLを貼り付けてください</div>
+                <div th:if="${#fields.hasErrors('flyerUrl')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('flyerUrl')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
         </div>
 
@@ -102,6 +117,9 @@
             <div class="mb-3">
                 <label class="form-label">開催日 <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" th:field="*{date}">
+                <div th:if="${#fields.hasErrors('date')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('date')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="row g-3 mb-3">
@@ -112,6 +130,9 @@
                 <div class="col-md-6">
                     <label class="form-label">開演時間 <span class="text-danger">*</span></label>
                     <input type="time" class="form-control" th:field="*{startTime}">
+                    <div th:if="${#fields.hasErrors('startTime')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('startTime')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,15 +145,21 @@
                 <div class="col-md-6">
                     <label class="form-label">前売料金（円）</label>
                     <input type="number" class="form-control" th:field="*{priceAdvance}" placeholder="例：2000">
+                    <div th:if="${#fields.hasErrors('priceAdvance')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('priceAdvance')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">当日料金（円）</label>
                     <input type="number" class="form-control" th:field="*{priceDoor}" placeholder="例：2500">
+                    <div th:if="${#fields.hasErrors('priceDoor')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('priceDoor')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">チケット取得方法 <span class="text-danger">*</span></label>
+                <label class="form-label">チケット取得方法</label>
                 <select class="form-select" th:field="*{ticketMethod}">
                     <option value="">選択してください</option>
                     <option value="OKICHIKE">取り置き（置きチケ）</option>
@@ -160,6 +187,9 @@
                 <div class="mb-3">
                     <label class="form-label">配信料金（円）</label>
                     <input type="number" class="form-control" th:field="*{streamingPrice}" placeholder="例：1500">
+                    <div th:if="${#fields.hasErrors('streamingPrice')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('streamingPrice')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
@@ -174,14 +204,13 @@
             </div>
         </div>
 
-        <!-- ========== 会場（ドロップダウン） ========== -->
+        <!-- ========== 会場 ========== -->
         <div class="form-section">
             <h5 class="mb-3">会場</h5>
             <div class="mb-3">
-                <label class="form-label">会場 <span class="text-danger">*</span></label>
+                <label class="form-label">会場</label>
                 <select class="form-select" th:field="*{venueId}">
                     <option value="">選択してください</option>
-                    <!-- venuesリストをth:eachで展開 -->
                     <option th:each="venue : ${venues}"
                             th:value="${venue.venueId}"
                             th:text="${venue.name} + ' (' + ${venue.prefecture} + ')'">
@@ -202,28 +231,23 @@
 
             <div class="mb-3 position-relative">
                 <label class="form-label">芸人を検索して追加</label>
-                <!-- ① テキストボックス -->
                 <input type="text" id="performerSearch" class="form-control"
                        placeholder="芸名で検索" autocomplete="off">
-                <!-- ② ドロップダウン（JSが候補を入れる空の箱） -->
                 <div id="searchDropdown"
                      class="list-group position-absolute w-100 shadow"
                      style="z-index:1000; display:none; max-height:200px; overflow-y:auto;">
                 </div>
             </div>
 
-            <!-- ③ 追加済み出演者リスト（JSが表示ラベルを入れる空の箱） -->
             <div id="performerList" class="d-flex flex-column gap-2 mb-3"></div>
-
-            <!-- ④ hidden input群（JSがSpring向けのデータを入れる空の箱） -->
             <div id="performerInputs"></div>
         </div>
 
         <!-- ========== 送信ボタン ========== -->
         <div class="d-flex justify-content: between align-items-center mb-5">
             <div>
-                <form th:action="@{/lives/{liveId}/delete(liveId=${form.liveId})}" method="post">
-                    <button th:if="${form.liveId != null}" type="submit" class="btn btn-outline-danger"
+                <form th:action="@{/lives/{liveId}/delete(liveId=${liveFormDto.liveId})}" method="post">
+                    <button th:if="${liveFormDto.liveId != null}" type="submit" class="btn btn-outline-danger"
                             onclick="return confirm('このライブを削除しますか？')">このライブを削除</button>
                 </form>
             </div>
@@ -236,7 +260,6 @@
     </form>
 </div>
 
-<!-- フッター -->
 <footer class="bg-dark text-white text-center py-3 mt-5">
     <small>&copy; 2026 おしび</small>
 </footer>
@@ -246,13 +269,13 @@
 <script th:inline="javascript">
     document.getElementById('performerSearch').addEventListener('input', function() {
         const q = this.value;
-        if (q.length < 1) return; // 1文字未満は検索しない
+        if (q.length < 1) return;
 
         fetch(`/api/comedians/search?q=${q}`)
             .then(res => res.json())
             .then(data => {
                 const dropdown = document.getElementById('searchDropdown');
-                dropdown.innerHTML = ''; // 前の検索結果をクリア
+                dropdown.innerHTML = '';
                 dropdown.style.display = 'block';
 
                 data.forEach(comedian => {
@@ -264,8 +287,8 @@
 
                     item.addEventListener('click', function() {
                         addPerformer(comedian.accountId, comedian.displayName);
-                        dropdown.style.display = 'none'; // ドロップダウンを閉じる
-                        document.getElementById('performerSearch').value = ''; // 検索欄をクリア
+                        dropdown.style.display = 'none';
+                        document.getElementById('performerSearch').value = '';
                     });
                 });
 
@@ -280,52 +303,57 @@
                     dropdown.style.display = 'none';
                     document.getElementById('performerSearch').value = '';
                 });
-
             });
     });
 
-    let performerIndex = 0; // hidden inputの連番管理
-    const addedAccountIds = new Set(); // 追加済みのaccountIdを管理
+    let performerIndex = 0;
+    const addedAccountIds = new Set();
 
     function addPerformer(accountId, displayName) {
         if (accountId !== null && addedAccountIds.has(accountId)) return;
         if (accountId !== null) addedAccountIds.add(accountId);
-        // ③ 追加済みリストにラベル表示
+
         const list = document.getElementById('performerList');
         const label = document.createElement('div');
         label.className = 'performer-added';
         label.innerHTML = `
         <span>${displayName}</span>
         <button type="button" class="btn btn-sm btn-outline-danger">削除</button>`;
-
         list.appendChild(label);
 
-        // ④ hidden input生成
         const inputs = document.getElementById('performerInputs');
         const hidden = document.createElement('input');
+        const hiddenName = document.createElement('input');
         hidden.type = 'hidden';
+        hiddenName.type = 'hidden';
         if(accountId != null) {
             hidden.name = `performerAdds[${performerIndex}].accountId`;
             hidden.value = accountId;
+
+            hiddenName.name = `performerAdds[${performerIndex}].displayName`;
+            hiddenName.value = displayName;
+            inputs.appendChild(hiddenName);
         } else {
             hidden.name = `performerAdds[${performerIndex}].guestName`;
             hidden.value = displayName;
         }
         inputs.appendChild(hidden);
 
-        // 削除ボタンのイベントリスナー
         const deleteBtn = label.querySelector('button');
         deleteBtn.addEventListener('click', function() {
             list.removeChild(label);
             inputs.removeChild(hidden);
             addedAccountIds.delete(accountId);
+            if (accountId != null) {
+                inputs.removeChild(hiddenName);
+            }
             performerIndex--;
         });
 
         performerIndex++;
     }
 
-    const existingPerformers = /*[[${form.performers}]]*/ [];
+    const existingPerformers = /*[[${liveFormDto.performers}]]*/ [];
     if (existingPerformers) {
         existingPerformers.forEach(p => {
             addPerformer(p.accountId, p.displayName);

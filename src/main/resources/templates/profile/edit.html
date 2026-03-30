@@ -44,22 +44,36 @@
 
         <form th:action="@{/profile/edit}" th:object="${profileFormDto}" method="post">
 
+            <!-- グローバルエラー -->
+            <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger mb-3">
+                <p th:each="error : ${#fields.globalErrors()}" th:text="${error}" class="mb-0"></p>
+            </div>
+
             <!-- 共通情報 -->
             <div class="section-label">基本情報</div>
 
             <div class="mb-3">
-                <label class="form-label">表示名</label>
+                <label class="form-label">表示名<span class="text-danger">*</span></label>
                 <input type="text" class="form-control" th:field="*{displayName}">
+                <div th:if="${#fields.hasErrors('displayName')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('displayName')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">自己紹介</label>
                 <textarea class="form-control" rows="3" th:field="*{description}"></textarea>
+                <div th:if="${#fields.hasErrors('description')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('description')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">プロフィール画像URL</label>
                 <input type="text" class="form-control" th:field="*{profileImageUrl}">
+                <div th:if="${#fields.hasErrors('profileImageUrl')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('profileImageUrl')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <!-- ライブ関係者専用 -->
@@ -86,16 +100,25 @@
                             <label class="form-check-label">グループ</label>
                         </div>
                     </div>
+                    <div th:if="${#fields.hasErrors('unitType')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('unitType')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">所属事務所</label>
                     <input type="text" class="form-control" th:field="*{agency}" placeholder="例：サンプルプロダクション">
+                    <div th:if="${#fields.hasErrors('agency')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('agency')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">メンバー名</label>
                     <input type="text" class="form-control" th:field="*{memberNames}" placeholder="例：ボケ:山田太郎/ツッコミ:山田花子">
+                    <div th:if="${#fields.hasErrors('memberNames')}" class="text-danger small mt-1">
+                        <p th:each="error : ${#fields.errors('memberNames')}" th:text="${error}" class="mb-0"></p>
+                    </div>
                 </div>
             </div>
 
@@ -105,31 +128,49 @@
             <div class="mb-3">
                 <label class="form-label">X（Twitter）URL</label>
                 <input type="text" class="form-control" th:field="*{xUrl}" placeholder="https://x.com/...">
+                <div th:if="${#fields.hasErrors('xUrl')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('xUrl')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Instagram URL</label>
                 <input type="text" class="form-control" th:field="*{instagramUrl}" placeholder="https://instagram.com/...">
+                <div th:if="${#fields.hasErrors('instagramUrl')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('instagramUrl')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">YouTube URL</label>
                 <input type="text" class="form-control" th:field="*{youtubeUrl}" placeholder="https://youtube.com/...">
+                <div th:if="${#fields.hasErrors('youtubeUrl')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('youtubeUrl')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">TikTok URL</label>
                 <input type="text" class="form-control" th:field="*{tiktokUrl}" placeholder="https://tiktok.com/...">
+                <div th:if="${#fields.hasErrors('tiktokUrl')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('tiktokUrl')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Note URL</label>
                 <input type="text" class="form-control" th:field="*{noteUrl}" placeholder="https://note.com/...">
+                <div th:if="${#fields.hasErrors('noteUrl')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('noteUrl')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">ポッドキャスト URL</label>
                 <input type="text" class="form-control" th:field="*{podcastUrl}">
+                <div th:if="${#fields.hasErrors('podcastUrl')}" class="text-danger small mt-1">
+                    <p th:each="error : ${#fields.errors('podcastUrl')}" th:text="${error}" class="mb-0"></p>
+                </div>
             </div>
 
             <div class="d-grid mt-4">

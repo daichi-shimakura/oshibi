@@ -67,7 +67,7 @@
     <h5 class="mb-3">自分のライブ情報を編集</h5>
 
     <form th:action="@{/lives/{liveId}/comedians/{accountId}/edit(liveId=${comedianLiveForm.liveId}, accountId=${comedianLiveForm.accountId})}"
-          th:object="${form}"
+          th:object="${comedianLiveRequestDto}"
           method="post">
 
       <!-- ステータス -->
@@ -93,19 +93,28 @@
           <label class="form-label">ネタ本数</label>
           <input type="number" class="form-control" th:field="*{netaCount}"
                  placeholder="例：3" min="0">
+          <div th:if="${#fields.hasErrors('netaCount')}" class="text-danger small mt-1">
+            <p th:each="error : ${#fields.errors('netaCount')}" th:text="${error}" class="mb-0"></p>
+          </div>
         </div>
         <div class="col-md-8">
           <label class="form-label">ネタ種類</label>
           <input type="text" class="form-control" th:field="*{netaType}"
                  placeholder="例：コント2本、漫才1本">
+          <div th:if="${#fields.hasErrors('netaType')}" class="text-danger small mt-1">
+            <p th:each="error : ${#fields.errors('netaType')}" th:text="${error}" class="mb-0"></p>
+          </div>
         </div>
       </div>
 
-      <!-- ファンへのコメント -->
+      <!-- コメント -->
       <div class="mb-4">
-        <label class="form-label">ファンへのコメント</label>
+        <label class="form-label">コメント</label>
         <textarea class="form-control" th:field="*{preComment}" rows="5"
-                  placeholder="意気込み、見どころ、置きチケの案内など"></textarea>
+                  placeholder="意気込み、見どころ、取り置きの案内など"></textarea>
+        <div th:if="${#fields.hasErrors('preComment')}" class="text-danger small mt-1">
+          <p th:each="error : ${#fields.errors('preComment')}" th:text="${error}" class="mb-0"></p>
+        </div>
       </div>
 
       <!-- ボタン -->

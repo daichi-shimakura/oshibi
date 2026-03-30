@@ -196,15 +196,12 @@ public class LiveService {
                     var performer = new LivePerformer();
                     if (id.getAccountId() != null) {
                         performer.setComedian(comedianProfileRepository.findById(id.getAccountId()).orElseThrow());
-                        performer.setLive(live);
-                        performer.setDisplayOrder(liveFormDto.getPerformerAdds().indexOf(id));
-                        performer.setStatus(PerformerStatus.TENTATIVE);
                     } else {
                         performer.setGuestName(id.getGuestName());
-                        performer.setLive(live);
-                        performer.setDisplayOrder(liveFormDto.getPerformerAdds().indexOf(id));
-                        performer.setStatus(PerformerStatus.TENTATIVE);
                     }
+                    performer.setLive(live);
+                    performer.setDisplayOrder(liveFormDto.getPerformerAdds().indexOf(id));
+                    performer.setStatus(PerformerStatus.TENTATIVE);
                     return performer;
                 }
                 ).toList();
@@ -335,6 +332,17 @@ public class LiveService {
         }
     }
 
+    public void restorePerformers(LiveFormDto dto) {
+        if (dto.getPerformerAdds() == null) return;
+        dto.setPerformers(
+                dto.getPerformerAdds().stream()
+                        .map(add -> new PerformerDto(
+                                add.getAccountId(),
+                                add.getAccountId() != null ? add.getDisplayName(): add.getGuestName(),
+                                null))
+                        .toList()
+        );
+    }
 
 
 }

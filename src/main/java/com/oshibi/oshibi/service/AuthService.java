@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -20,18 +22,26 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public void register(RegisterDto dto) {
-        // 1. メールアドレスの重複チェック
+
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email is already in use");
+            throw new IllegalArgumentException("このメールアドレスはすでに使用されています");
         }
-        // 2. パスワードのハッシュ化
+
+        if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
+            throw new IllegalArgumentException("パスワードが一致しません");
+        }
+
+        if (!List.of("FAN", "LIVE_STAFF").contains(dto.getAccountType())) {
+            throw new IllegalArgumentException("不正なアカウント種別です");
+        }
+
         String passwordHash = passwordEncoder.encode(dto.getPassword());
-        // 3. Userエンティティ作成・保存
+
         var user = new User();
         user.setEmail(dto.getEmail());
         user.setPasswordHash(passwordHash);
         userRepository.save(user);
-        // 4. Accountエンティティ作成・保存
+
         var account = new Account();
         account.setUser(user);
         account.setAccountType(AccountType.valueOf(dto.getAccountType()));
@@ -42,31 +52,31 @@ public class AuthService {
     }
 
     public void changeEmail(String currentEmail, String newEmail){
-            // 1. 現在のメールアドレスでUserを検索
+
             var userOpt = userRepository.findByEmail(currentEmail);
-            var user = userOpt.orElseThrow(() -> new IllegalArgumentException("User not found with email: " + currentEmail));
-            // 2. 新しいメールアドレスの重複チェック
+            var user = userOpt.orElseThrow(() -> new IllegalArgumentException("メールアドレスが見つかりません: " + currentEmail));
+
             if (userRepository.findByEmail(newEmail).isPresent()) {
-                throw new IllegalArgumentException("Email is already in use");
+                throw new IllegalArgumentException("このメールアドレスはすでに使用されています");
             }
-            // 3. Userのメールアドレスを更新して保存
+
             user.setEmail(newEmail);
             userRepository.save(user);
     }
 
     public void changePassword(String email, PasswordChangeDto dto) {
-        // 1. メールアドレスでUserを検索
+
         var userOpt = userRepository.findByEmail(email);
-        var user = userOpt.orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
-        // 2. 現在のパスワードが正しいかチェック
+        var user = userOpt.orElseThrow(() -> new IllegalArgumentException("ユーザーが見つかりません: " + email));
+
         if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPasswordHash())) {
-            throw new IllegalArgumentException("Current password is incorrect");
+            throw new IllegalArgumentException("現在のパスワードが正しくありません");
         }
-        // 3. 新しいパスワードと確認用パスワードが一致するかチェック
+
         if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
+            throw new IllegalArgumentException("パスワードが一致しません");
         }
-        // 4. 新しいパスワードをハッシュ化して保存
+
         String newPasswordHash = passwordEncoder.encode(dto.getNewPassword());
         user.setPasswordHash(newPasswordHash);
         userRepository.save(user);
