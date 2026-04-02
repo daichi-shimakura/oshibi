@@ -21,6 +21,10 @@ public class SecurityConfig {
                         .permitAll()
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler((request, response, e) ->
+                                response.sendRedirect("/403"))
+                )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/lives", true)

@@ -124,4 +124,8 @@ public class AuthController {
         return "redirect:/lives";
     }
 
+    @GetMapping("/403")
+    public String accessDenied() {
+        return "error/403";
+    }
 }

@@ -3,7 +3,6 @@ package com.oshibi.oshibi.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
@@ -14,12 +13,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(){
         return "error/404";
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String handleAccessDeniedException(){
-        return "error/403";
     }
 
     @ExceptionHandler(Exception.class)  // ← 全例外のcatch-all
