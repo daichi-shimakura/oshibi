@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: layout(~{::title}, ~{::main})}">
+<title>ページが見つかりません</title>
+<main>
+    <div class="container mt-5 text-center">
+        <h1>404</h1>
+        <p>お探しのページは見つかりませんでした。</p>
+        <a th:href="@{/}" class="btn btn-primary">トップへ戻る</a>
+    </div>
+</main>
+</html>
