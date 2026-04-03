@@ -16,8 +16,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/lives/new", "/lives/*/edit","/lives/*/comedians/*/edit","/my/lives").hasRole("LIVE_STAFF")
-                        .requestMatchers("/lives", "/lives/**", "/comedians/**", "/comedians/detail/**",
-                                "/login", "/register")
+                        .requestMatchers("/lives", "/lives/**", "/comedians/**", "/comedians/detail/**", "/login", "/register","/", "/403")
                         .permitAll()
                         .anyRequest().authenticated()
                 )
