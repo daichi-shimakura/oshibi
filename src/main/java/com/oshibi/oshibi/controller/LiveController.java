@@ -24,6 +24,11 @@ public class LiveController {
     private final LiveService liveService;
     private final AccountService accountService;
 
+    @GetMapping("/")
+    public String index() {
+        return "redirect:/lives";
+    }
+
     @GetMapping("/lives")
     public String list(Model model, LiveSearchDto liveSearchDto, @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 20);
