@@ -26,12 +26,9 @@ public class ProfileController {
 
     @GetMapping("/profile/edit")
     public String showProfileForm(@AuthenticationPrincipal UserDetails userDetails,Model model) {
-
         String email = userDetails.getUsername();
-        Account account = accountRepository.findByUser_Email(email).orElse(null);
-        model.addAttribute("profileFormDto", new ProfileFormDto());
-        model.addAttribute("accountType", account.getAccountType().name());
-
+        var profileFormDto = profileService.showProfileEditForm(email);
+        model.addAttribute("profileFormDto", profileFormDto);
         return "profile/edit";
     }
 
@@ -41,17 +38,18 @@ public class ProfileController {
                               @Valid ProfileFormDto dto,
                               BindingResult bindingResult,
                               Model model) {
+        String email = userDetails.getUsername();
         if (bindingResult.hasErrors()) {
-            String email = userDetails.getUsername();
             Account account = accountRepository.findByUser_Email(email).orElse(null);
             model.addAttribute("accountType", account.getAccountType().name());
             return "profile/edit";
         }
-        String email = userDetails.getUsername();
         try {
             profileService.saveProfile(email, dto);
         } catch (IllegalArgumentException e) {
             bindingResult.reject("error.global", e.getMessage());
+            Account account = accountRepository.findByUser_Email(email).orElse(null);
+            model.addAttribute("accountType", account.getAccountType().name());
             return "profile/edit";
         }
         return "redirect:/lives";

@@ -47,9 +47,7 @@ public class ProfileService {
             ComedianProfile comedianProfile = comedianProfileRepository
                     .findById(account.getAccountId())
                     .orElse(new ComedianProfile());
-            if (dto.getUnitType() != null && !dto.getUnitType().isBlank()) {
-                comedianProfile.setUnitType(UnitType.valueOf(dto.getUnitType()));
-            }
+            comedianProfile.setUnitType(UnitType.valueOf(dto.getUnitType()));
             comedianProfile.setAgency(dto.getAgency());
             comedianProfile.setMemberNames(dto.getMemberNames());
             comedianProfile.setAccount(account);
@@ -77,7 +75,9 @@ public class ProfileService {
 
         if (AccountType.LIVE_STAFF.equals(account.getAccountType())) {
             ComedianProfile comedianProfile = comedianProfileRepository.findById(account.getAccountId()).orElse(new ComedianProfile());
-            profileFormDto.setUnitType(comedianProfile.getUnitType().name());
+            if (comedianProfile.getUnitType() != null) {
+                profileFormDto.setUnitType(comedianProfile.getUnitType().name());
+            }
             profileFormDto.setAgency(comedianProfile.getAgency());
             profileFormDto.setMemberNames(comedianProfile.getMemberNames());
         }
