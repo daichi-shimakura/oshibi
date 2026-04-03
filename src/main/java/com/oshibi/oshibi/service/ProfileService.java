@@ -47,7 +47,9 @@ public class ProfileService {
             ComedianProfile comedianProfile = comedianProfileRepository
                     .findById(account.getAccountId())
                     .orElse(new ComedianProfile());
-            comedianProfile.setUnitType(UnitType.valueOf(dto.getUnitType()));
+            if (dto.getUnitType() != null && !dto.getUnitType().isBlank()) {
+                comedianProfile.setUnitType(UnitType.valueOf(dto.getUnitType()));
+            }
             comedianProfile.setAgency(dto.getAgency());
             comedianProfile.setMemberNames(dto.getMemberNames());
             comedianProfile.setAccount(account);
