@@ -3,6 +3,7 @@ package com.oshibi.oshibi.service;
 import com.oshibi.oshibi.domain.entity.*;
 import com.oshibi.oshibi.dto.*;
 import com.oshibi.oshibi.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -163,6 +164,7 @@ public class LiveService {
         ));
     }
 
+    @Transactional
     public Long save(LiveFormDto liveFormDto,String email){
         //ライブパフォーマーがライブIdをFKにしているためライブから登録
         //liveRepositoryで使えるようにDtoをエンティティ型に変換する
@@ -188,6 +190,10 @@ public class LiveService {
         live.setStreamingStartDate(liveFormDto.getStreamingStartDate());
         live.setStreamingEndDate(liveFormDto.getStreamingEndDate());
         live.setFlyerUrl(liveFormDto.getFlyerUrl());
+        if (liveFormDto.getLiveId() != null) {
+            livePerformerRepository.deleteByLive_LiveId(liveFormDto.getLiveId());
+            livePerformerRepository.flush(); // 削除をDBに即時反映
+        }
         liveRepository.save(live);
 
         if (liveFormDto.getPerformerAdds() != null && !liveFormDto.getPerformerAdds().isEmpty()) {
