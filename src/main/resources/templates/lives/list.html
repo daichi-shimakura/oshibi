@@ -147,7 +147,7 @@
                     <span th:text="${#temporals.format(live.liveDate, 'yyyy/M/d')}" class="small text-muted"></span>
                     <span th:if="${live.openTime != null}" class="small text-muted"> /開場 <span th:text="${live.openTime}"></span></span>
                     <span class="small text-muted"> /開演 <span th:text="${live.startTime}"></span></span>
-                    <span th:text="${live.venue + '（' + live.prefecture + '）'}" class="small text-muted ms-3"></span>
+                    <span th:text="${live.venue != null ? live.venue + '（' + live.prefecture + '）' : '会場未定'}" class="small text-muted ms-3"></span>
                 </div>
                 <div class="performers-text mt-1">
                     出演：<span th:text="${#strings.listJoin(live.comedianNames, '、')}"></span>
