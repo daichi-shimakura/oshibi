@@ -98,13 +98,15 @@
         <!-- フィルター行 -->
         <div class="row g-2">
             <div class="col-md-4">
-                <label class="form-label small text-muted">ユニット種別</label>
+                <label class="form-label small text-muted">活動カテゴリ</label>
                 <select class="form-select form-select-sm" th:field="*{unitType}">
                     <option value="">すべて</option>
                     <option value="PIN">ピン</option>
                     <option value="COMBI">コンビ</option>
                     <option value="TRIO">トリオ</option>
                     <option value="GROUP">グループ</option>
+                    <option value="STAFF">スタッフ</option>
+                    <option value="OTHER">その他</option>
                 </select>
             </div>
             <div class="col-md-4">

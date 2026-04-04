@@ -23,7 +23,7 @@ public class ProfileService {
 
         if ("LIVE_STAFF".equals(dto.getAccountType())
                 && !StringUtils.hasText(dto.getUnitType())) {
-            throw new IllegalArgumentException("ユニット種別は必須です");
+            throw new IllegalArgumentException("活動カテゴリは必須です");
         }
 
         // Accountを作成

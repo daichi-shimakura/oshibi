@@ -4,7 +4,9 @@ public enum UnitType {
     PIN("ピン"),
     COMBI("コンビ"),
     TRIO("トリオ"),
-    GROUP("グループ");
+    GROUP("グループ"),
+    STAFF("スタッフ"),
+    OTHER("その他");
 
     private final String label;
 

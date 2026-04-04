@@ -76,7 +76,7 @@
                 <!-- ライブ関係者専用 -->
                 <div th:if="${profileFormDto.accountType == 'LIVE_STAFF'}">
                     <div class="mb-3">
-                        <label class="form-label">ユニット種別</label>
+                        <label class="form-label">活動カテゴリ</label>
                         <div class="d-flex gap-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" th:field="*{unitType}" value="PIN">
@@ -93,6 +93,14 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" th:field="*{unitType}" value="GROUP">
                                 <label class="form-check-label">グループ</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" th:field="*{unitType}" value="STAFF">
+                                <label class="form-check-label">スタッフ</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" th:field="*{unitType}" value="OTHER">
+                                <label class="form-check-label">その他</label>
                             </div>
                         </div>
                         <div th:if="${#fields.hasErrors('unitType')}" class="text-danger small mt-1">
