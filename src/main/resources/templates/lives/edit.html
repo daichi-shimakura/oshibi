@@ -208,19 +208,16 @@
         <div class="form-section">
             <h5 class="mb-3">会場</h5>
             <div class="mb-3">
-                <label class="form-label">会場</label>
-                <select class="form-select" th:field="*{venueId}">
-                    <option value="">選択してください</option>
-                    <option th:each="venue : ${venues}"
-                            th:value="${venue.venueId}"
-                            th:text="${venue.name} + ' (' + ${venue.prefecture} + ')'">
-                    </option>
-                </select>
-                <div class="form-text mt-1">
-                    会場が見つからない場合は
-                    <a href="javascript:void(0)" onclick="window.open('/venue/new', '_blank')">
-                        新しく会場を登録する
-                    </a>
+                <div class="mb-3 position-relative">
+                    <label class="form-label">会場</label>
+                    <input type="text" id="venueSearch" class="form-control"
+                           placeholder="会場名で検索" autocomplete="off">
+                    <div id="venueDropdown"
+                         class="list-group position-absolute w-100 shadow"
+                         style="z-index:1000; display:none; max-height:200px; overflow-y:auto;">
+                    </div>
+                    <div id="selectedVenue" class="form-text mt-1 text-dark fw-bold"></div>
+                    <input type="hidden" id="venueId" name="venueId" th:value="*{venueId}">
                 </div>
             </div>
         </div>
@@ -359,6 +356,49 @@
             addPerformer(p.accountId, p.displayName);
         });
     }
+
+    const existingVenueName = /*[[${liveFormDto.venueName}]]*/ null;
+    const existingAddress = /*[[${liveFormDto.address}]]*/ null;
+    const existingStation = /*[[${liveFormDto.nearestStation}]]*/ null;
+    if (existingVenueName) {
+        const detail = [existingAddress, existingStation].filter(Boolean).join(' / ');
+        document.getElementById('selectedVenue').textContent =
+            '選択中：' + existingVenueName + (detail ? ` (${detail})` : '');
+    }
+
+    document.getElementById('venueSearch').addEventListener('input', function() {
+        const q = this.value;
+        if (q.length < 1) {
+            document.getElementById('venueDropdown').style.display = 'none';
+            return;
+        }
+
+        fetch(`/api/venues/search?q=${q}`)
+            .then(res => res.json())
+            .then(data => {
+                const dropdown = document.getElementById('venueDropdown');
+                dropdown.innerHTML = '';
+                dropdown.style.display = 'block';
+
+                data.forEach(venue => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = 'list-group-item list-group-item-action';
+                    const parts = [venue.prefecture, venue.nearestStation].filter(Boolean).join(' / ');
+                    item.textContent = venue.name + (parts ? ` (${parts})` : '');
+                    dropdown.appendChild(item);
+
+                    item.addEventListener('click', function() {
+                        document.getElementById('venueId').value = venue.venueId;
+                        const detail = [venue.address, venue.nearestStation].filter(Boolean).join(' / ');
+                        document.getElementById('selectedVenue').textContent =
+                            '選択中：' + venue.name + (detail ? ` (${detail})` : '');
+                        document.getElementById('venueSearch').value = '';
+                        dropdown.style.display = 'none';
+                    });
+                });
+            });
+    });
 </script>
 
 </body>
