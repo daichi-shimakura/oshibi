@@ -86,15 +86,17 @@
                                   th:class="|badge-live-type ms-2 ${live.badgeClass}|"></span>                        </div>
                         <div class="text-end text-nowrap ms-3">
                             <span class="small">
-                                前売 <span th:text="${live.priceAdvance}"></span>円 /
-                                当日 <span th:text="${live.priceDoor}"></span>円
+                                <span th:if="${live.priceAdvance != null}">前売 <span th:text="${live.priceAdvance}"></span>円</span>
+                                <span th:if="${live.priceAdvance != null and live.priceDoor != null}"> / </span>
+                                <span th:if="${live.priceDoor != null}">当日 <span th:text="${live.priceDoor}"></span>円</span>
+                                <span th:if="${live.priceAdvance == null and live.priceDoor == null}">料金未定</span>
                             </span>
                         </div>
                     </div>
                     <div class="mt-1">
                         <span class="small text-muted">
                             <span th:text="${#temporals.format(live.liveDate, 'yyyy/M/d')}"></span>
-                            開場 <span th:text="${live.openTime}"></span> /
+                            <span th:if="${live.openTime != null}">開場 <span th:text="${live.openTime}"></span> / </span>
                             開演 <span th:text="${live.startTime}"></span>
                         </span>
                         <span class="small text-muted ms-3">
