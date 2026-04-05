@@ -12,10 +12,12 @@
 </th:block>
 
 <!-- ===== navbarフラグメント ===== -->
-<nav th:fragment="header" class="navbar navbar-expand-lg">
+<nav th:fragment="header" class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand" th:href="@{/lives}">oshi<span>bi</span></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -30,17 +32,15 @@
                     <a class="nav-link" th:href="@{/my/lives}">マイライブ</a>
                 </li>
             </ul>
-            <div class="d-flex align-items-center gap-2">
-                <!-- 非LIVE_STAFF向け誘導リンク -->
+
+            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2 mt-2 mt-lg-0">
                 <div sec:authorize="!hasRole('LIVE_STAFF')">
                     <a class="nav-link nav-link-cta" th:href="@{/register}">ライブを登録する方はこちら →</a>
                 </div>
-                <!-- LIVE_STAFF向け登録ボタン -->
                 <div sec:authorize="hasRole('LIVE_STAFF')">
                     <a class="btn-nav-newlive" th:href="@{/lives/new}">＋ ライブ登録</a>
                 </div>
-                <div class="nav-divider"></div>
-                <!-- ログイン済み -->
+                <div class="nav-divider d-none d-lg-block"></div>
                 <div sec:authorize="isAuthenticated()">
                     <a class="nav-link" th:href="@{/account/edit}">アカウント設定</a>
                 </div>
@@ -49,7 +49,6 @@
                         <button type="submit" class="btn btn-link nav-link p-0">ログアウト</button>
                     </form>
                 </div>
-                <!-- 未ログイン -->
                 <div sec:authorize="!isAuthenticated()">
                     <a class="btn-nav-login" th:href="@{/login}">ログイン</a>
                 </div>
