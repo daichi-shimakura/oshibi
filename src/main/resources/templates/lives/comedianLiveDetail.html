@@ -141,8 +141,8 @@
       <div class="info-row d-flex">
         <span class="info-label">配信期間</span>
         <span>
-          <span th:text="${comedianLiveDetail.streamingStartDate}"></span> ～
-          <span th:text="${comedianLiveDetail.streamingEndDate}"></span>
+          <span th:text="${#temporals.format(comedianLiveDetail.streamingStartDate, 'yyyy/M/d')}"></span> ～
+          <span th:text="${#temporals.format(comedianLiveDetail.streamingEndDate, 'yyyy/M/d')}"></span>
         </span>
       </div>
     </div>
