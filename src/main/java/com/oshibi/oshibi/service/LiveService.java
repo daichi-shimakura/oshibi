@@ -252,7 +252,7 @@ public class LiveService {
     }
 
     public List<LiveListItemDto> getOwnedLives(Long accountId) {
-        return liveRepository.findByCreatedBy_AccountIdAndDateGreaterThanEqual(accountId, LocalDate.now()).stream()
+        return liveRepository.findByCreatedBy_AccountIdAndDateGreaterThanEqualOrderByDateAsc(accountId, LocalDate.now()).stream()
                 .map(live -> {
                     Venue venue = live.getVenue();
                     return new LiveListItemDto(

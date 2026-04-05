@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,7 @@ public class LiveController {
 
     @GetMapping("/lives")
     public String list(Model model, LiveSearchDto liveSearchDto, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, 20, Sort.by("date").ascending());
         var livePage  = liveService.search(liveSearchDto,pageable);
         model.addAttribute("livePage", livePage);
         model.addAttribute("liveSearchDto", liveSearchDto);

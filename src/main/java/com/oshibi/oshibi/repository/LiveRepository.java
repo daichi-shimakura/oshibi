@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface LiveRepository extends JpaRepository<Live, Long>, JpaSpecificationExecutor<Live> {
 
-    List<Live> findByCreatedBy_AccountIdAndDateGreaterThanEqual(Long accountId, LocalDate liveDate);
+    List<Live> findByCreatedBy_AccountIdAndDateGreaterThanEqualOrderByDateAsc(Long accountId, LocalDate liveDate);
 
     @EntityGraph(attributePaths = {"livePerformers"})
     List<Live> findAll(Specification<Live> spec);
