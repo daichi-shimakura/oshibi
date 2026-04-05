@@ -41,6 +41,7 @@ public class ComedianService {
                         cp.getAccountId(),
                         cp.getAccount().getDisplayName(),
                         cp.getUnitType().getLabel(),
+                        cp.getUnitType().getBadgeClass(),
                         cp.getAgency()
                 ));
     }
@@ -59,6 +60,7 @@ public class ComedianService {
                             lp.getLive().getVenue().getName(),
                             lp.getLive().getVenue().getPrefecture(),
                             lp.getLive().getLiveType().getLabel(),
+                            lp.getLive().getLiveType().getBadgeClass(),
                             lp.getLive().getPriceAdvance(),
                             lp.getLive().getPriceDoor()
                     )).toList();
@@ -68,6 +70,7 @@ public class ComedianService {
             return new ComedianDetailDto(
                     comedian.getAccount().getDisplayName(),
                     comedian.getUnitType().getLabel(),
+                    comedian.getUnitType().getBadgeClass(),
                     comedian.getAgency(),
                     comedian.getMemberNames(),
                     comedian.getAccount().getProfileImageUrl(),

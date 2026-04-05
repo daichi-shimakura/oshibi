@@ -14,6 +14,8 @@ public class ComedianDetailDto {
 
     private String unitType;
 
+    private String unitTypeBadgeClass;
+
     private String agency;
 
     private String memberNames;

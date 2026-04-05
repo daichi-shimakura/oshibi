@@ -12,5 +12,7 @@ public class ComedianListItemDto {
 
     private String unitType;
 
+    private String unitTypeBadgeClass;
+
     private String agency;
 }

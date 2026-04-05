@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/springsecurity6">
+<body>
+
+<!-- ===== headフラグメント ===== -->
+<th:block th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/oshibi.css}">
+</th:block>
+
+<!-- ===== navbarフラグメント ===== -->
+<nav th:fragment="header" class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/lives}">oshi<span>bi</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/lives}">ライブ一覧</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/comedians}">芸人一覧</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('LIVE_STAFF')">
+                    <a class="nav-link" th:href="@{/my/lives}">マイライブ</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center gap-2">
+                <!-- 非LIVE_STAFF向け誘導リンク -->
+                <div sec:authorize="!hasRole('LIVE_STAFF')">
+                    <a class="nav-link nav-link-cta" th:href="@{/register}">ライブを登録する方はこちら →</a>
+                </div>
+                <!-- LIVE_STAFF向け登録ボタン -->
+                <div sec:authorize="hasRole('LIVE_STAFF')">
+                    <a class="btn-nav-newlive" th:href="@{/lives/new}">＋ ライブ登録</a>
+                </div>
+                <div class="nav-divider"></div>
+                <!-- ログイン済み -->
+                <div sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/account/edit}">アカウント設定</a>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-link nav-link p-0">ログアウト</button>
+                    </form>
+                </div>
+                <!-- 未ログイン -->
+                <div sec:authorize="!isAuthenticated()">
+                    <a class="btn-nav-login" th:href="@{/login}">ログイン</a>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <a class="btn-nav-register" th:href="@{/register}">ユーザー登録</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="footer" class="text-center py-3 mt-5">
+    <small>
+        &copy; 2026 oshibi　|　
+        <a href="https://x.com/daininge" target="_blank" style="color:rgba(255,255,255,0.5);">X</a>
+        　|　
+        <a href="https://forms.gle/5w4ML1dvkjeiJEy96" target="_blank" style="color:rgba(255,255,255,0.5);">お問い合わせ</a>
+    </small>
+</footer>
+
+</body>
+</html>

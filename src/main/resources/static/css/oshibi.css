@@ -1,0 +1,287 @@
+/* =============================================
+   oshibi.css - テーマ定義
+   コンセプト：劇場の緞帳・白熱電球
+   ============================================= */
+
+:root {
+    --a-navy:       #1a1a2e;   /* 舞台の暗転 */
+    --a-navy-mid:   #16213e;
+    --a-navy-light: #0f3460;
+    --a-glow:       #c8a96a;   /* 幕の下から漏れる光 */
+    --a-bulb:       #f2d07a;   /* 白熱電球の差し色（2700K） */
+    --a-bulb-pale:  #fdf3dc;
+    --a-bulb-text:  #8a6820;
+    --a-surface:    #f4f4f8;
+    --a-card:       #ffffff;
+    --a-border:     #e0e0f0;
+    --a-text:       #1a1a2e;
+    --a-muted:      #6b6b8a;
+}
+
+body {
+    background: var(--a-surface);
+    color: var(--a-text);
+}
+
+/* ===== Navbar ===== */
+.navbar {
+    background: var(--a-navy) !important;
+    border-bottom: 2px solid var(--a-glow);
+}
+.navbar-brand {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-size: 1.25rem;
+    color: #fff !important;
+}
+.navbar-brand span { color: var(--a-bulb); }
+
+.nav-link {
+    color: rgba(255,255,255,0.75) !important;
+    font-size: 0.875rem;
+}
+.nav-link:hover, .nav-link.active { color: #fff !important; }
+
+.nav-link-cta {
+    font-size: 0.78rem !important;
+    color: var(--a-bulb) !important;
+    opacity: 0.85;
+    padding: 4px 8px !important;
+    white-space: nowrap;
+}
+.nav-link-cta:hover { opacity: 1; color: #fff !important; }
+
+.nav-divider {
+    width: 1px;
+    height: 18px;
+    background: rgba(255,255,255,0.15);
+}
+
+.btn-nav-login {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 4px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+}
+.btn-nav-login:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+.btn-nav-register {
+    font-size: 0.78rem;
+    color: var(--a-navy);
+    background: var(--a-bulb);
+    border: none;
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+}
+.btn-nav-register:hover { background: #f5d88a; color: var(--a-navy); }
+
+.btn-nav-newlive {
+    font-size: 0.78rem;
+    color: var(--a-navy);
+    background: var(--a-bulb);
+    border: none;
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.btn-nav-newlive:hover { background: #f5d88a; color: var(--a-navy); }
+
+/* ===== 検索パネル ===== */
+.filter-section {
+    background: var(--a-card);
+    border: 1px solid var(--a-border);
+    border-radius: 10px;
+    padding: 1.25rem 1.25rem 1rem;
+}
+.filter-section .form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--a-muted);
+    margin-bottom: 4px;
+}
+.form-control, .form-select {
+    border-color: #d0d0e8;
+    font-size: 0.875rem;
+    color: var(--a-text);
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--a-glow);
+    box-shadow: 0 0 0 3px rgba(200,169,106,0.18);
+}
+.btn-primary {
+    background: var(--a-navy);
+    border-color: var(--a-navy);
+    color: #fff;
+}
+.btn-primary:hover { background: var(--a-navy-light); border-color: var(--a-navy-light); }
+
+.btn-outline-secondary {
+    color: var(--a-navy);
+    border-color: var(--a-border);
+    font-size: 0.8rem;
+}
+.btn-outline-secondary:hover {
+    background: var(--a-navy);
+    border-color: var(--a-navy);
+    color: #fff;
+}
+
+/* ===== ライブリスト行 ===== */
+.live-row {
+    background: var(--a-card);
+    border: 1px solid var(--a-border);
+    border-left: 3px solid transparent;
+    border-radius: 8px;
+    padding: 14px 18px;
+    transition: border-left-color 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+}
+.live-row:hover {
+    border-left-color: var(--a-glow);
+    box-shadow: 0 2px 10px rgba(26,26,46,0.07);
+}
+.live-row a { text-decoration: none; color: inherit; }
+
+.live-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--a-navy);
+}
+.live-row:hover .live-title { color: var(--a-bulb-text); }
+
+.live-meta {
+    font-size: 0.8rem;
+    color: var(--a-muted);
+    margin-top: 4px;
+}
+.live-performers {
+    font-size: 0.8rem;
+    color: #9898b8;
+    margin-top: 4px;
+}
+.live-price {
+    font-size: 0.8rem;
+    color: var(--a-text);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ===== ライブ種別バッジ ===== */
+.badge-live-type {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+.lt-neta    { background: #f0edff; color: #4a35b8; }
+.lt-talk    { background: #e6f7f0; color: #1a6644; }
+.lt-kikaku  { background: var(--a-bulb-pale); color: var(--a-bulb-text); }
+.lt-sho     { background: #fdecea; color: #922b21; }
+.lt-battle  { background: #fff0e4; color: #9a3412; }
+.lt-tandoku { background: #e8eeff; color: #2a3fb5; }
+.lt-twoman  { background: #e2f8fd; color: #0e5e75; }
+.lt-unit    { background: #fce8f4; color: #8a1254; }
+.lt-other   { background: #f3f4f6; color: #4b5563; }
+
+/* ===== ユニット種別バッジ ===== */
+.badge-unit-type {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+.ut-pin   { background: #e0e7ff; color: #3730a3; }
+.ut-combi { background: #fdf3dc; color: #8a6820; }
+.ut-trio  { background: #d1fae5; color: #065f46; }
+.ut-group { background: #fce8f4; color: #8a1254; }
+.ut-staff { background: #f3f4f6; color: #4b5563; }
+.ut-other { background: #f3f4f6; color: #4b5563; }
+
+/* ===== 結果件数 ===== */
+.result-count { font-size: 0.875rem; color: var(--a-muted); }
+.result-count strong { color: var(--a-text); }
+
+/* ===== ページネーション ===== */
+.page-link {
+    color: var(--a-navy);
+    border-color: var(--a-border);
+    font-size: 0.875rem;
+}
+.page-item.active .page-link {
+    background: var(--a-navy);
+    border-color: var(--a-navy);
+}
+.page-link:hover {
+    background: var(--a-bulb-pale);
+    color: var(--a-bulb-text);
+    border-color: var(--a-border);
+}
+
+/* ===== 詳細画面共通 ===== */
+.detail-section {
+    background: #fff;
+    border: 1px solid var(--a-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 140px;
+}
+
+.info-row {
+    padding: 6px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+/* ===== 芸人カード ===== */
+.comedian-card {
+    background: var(--a-card);
+    border: 1px solid var(--a-border);
+    border-radius: 8px;
+    transition: box-shadow 0.15s;
+}
+.comedian-card:hover {
+    box-shadow: 0 2px 8px rgba(26,26,46,0.1);
+}
+.comedian-card a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ===== タブ（nav-tabs） ===== */
+.nav-tabs .nav-link {
+    color: var(--a-muted) !important;
+}
+.nav-tabs .nav-link.active {
+    color: var(--a-navy) !important;
+    background: #fff;
+}
+.nav-tabs .nav-link:hover {
+    color: var(--a-navy) !important;
+}
+
+/* ===== フッター ===== */
+footer {
+    background: var(--a-navy);
+    border-top: 2px solid var(--a-glow);
+    color: rgba(255,255,255,0.5);
+}

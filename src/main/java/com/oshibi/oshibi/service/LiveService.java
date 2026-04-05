@@ -67,6 +67,7 @@ public class LiveService {
                             venue != null ? venue.getName() : null,
                             venue != null ? venue.getPrefecture() : null,
                             live.getLiveType().getLabel(),
+                            live.getLiveType().getBadgeClass(),
                             live.getPriceAdvance(),
                             live.getPriceDoor(),
                             live.getLivePerformers().stream().map(lp ->
@@ -91,6 +92,7 @@ public class LiveService {
                     venue != null ? venue.getName() : null,
                     venue != null ? venue.getPrefecture() : null,
                     live.getLiveType().getLabel(),
+                    live.getLiveType().getBadgeClass(),
                     live.getPriceAdvance(),
                     live.getPriceDoor(),
                     live.getLivePerformers().stream().map(lp -> new PerformerDto(
@@ -128,6 +130,7 @@ public class LiveService {
                     venue != null ? venue.getName() : null,
                     venue != null ? venue.getPrefecture() : null,
                     live.getLiveType().getLabel(),
+                    live.getLiveType().getBadgeClass(),
                     live.getPriceAdvance(),
                     live.getPriceDoor(),
                     live.getLivePerformers().stream()
@@ -264,6 +267,7 @@ public class LiveService {
                             venue != null ? venue.getName() : null,
                             venue != null ? venue.getPrefecture() : null,
                             live.getLiveType().getLabel(),
+                            live.getLiveType().getBadgeClass(),
                             live.getPriceAdvance(),
                             live.getPriceDoor(),
                             List.of(),
@@ -286,6 +290,7 @@ public class LiveService {
                             venue != null ? venue.getName() : null,
                             venue != null ? venue.getPrefecture() : null,
                             live.getLiveType().getLabel(),
+                            live.getLiveType().getBadgeClass(),
                             live.getPriceAdvance(),
                             live.getPriceDoor(),
                             live.getLivePerformers().stream().map(livePerformer ->

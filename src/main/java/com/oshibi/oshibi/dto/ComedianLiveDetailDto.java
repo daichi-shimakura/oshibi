@@ -26,6 +26,8 @@ public class ComedianLiveDetailDto {
 
     private String liveType;
 
+    private String badgeClass;
+
     private Integer priceAdvance;
 
     private Integer priceDoor;

@@ -26,6 +26,8 @@ public class LiveDetailDto {
 
     private String liveType;
 
+    private String badgeClass;
+
     private Integer priceAdvance;
 
     private Integer priceDoor;

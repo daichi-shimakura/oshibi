@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>アカウント設定</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <th:block th:replace="~{fragments/common :: head}"></th:block>
+    <title>アカウント設定 - oshibi</title>
 </head>
 <body>
 
 <!-- ヘッダーナビ -->
-<nav th:replace="~{fragments/header :: header}"></nav>
+<nav th:replace="~{fragments/common :: header}"></nav>
 
 <div class="container my-4" style="max-width: 800px;">
 
@@ -169,7 +167,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-dark">保存する</button>
+                <button type="submit" class="btn btn-primary">保存する</button>
             </form>
         </div>
 
@@ -196,7 +194,7 @@
                         <p th:each="error : ${#fields.errors('newEmail')}" th:text="${error}" class="mb-0"></p>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-dark">変更する</button>
+                <button type="submit" class="btn btn-primary">変更する</button>
             </form>
 
             <hr>
@@ -212,26 +210,35 @@
 
                 <div class="mb-3">
                     <label class="form-label">現在のパスワード</label>
-                    <input type="password" class="form-control" th:field="*{currentPassword}">
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="currentPassword" th:field="*{currentPassword}">
+                        <button class="btn btn-outline-secondary" type="button" id="toggleCurrent">表示</button>
+                    </div>
                     <div th:if="${#fields.hasErrors('currentPassword')}" class="text-danger small mt-1">
                         <p th:each="error : ${#fields.errors('currentPassword')}" th:text="${error}" class="mb-0"></p>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">新しいパスワード</label>
-                    <input type="password" class="form-control" th:field="*{newPassword}">
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="newPassword" th:field="*{newPassword}">
+                        <button class="btn btn-outline-secondary" type="button" id="toggleNew">表示</button>
+                    </div>
                     <div th:if="${#fields.hasErrors('newPassword')}" class="text-danger small mt-1">
                         <p th:each="error : ${#fields.errors('newPassword')}" th:text="${error}" class="mb-0"></p>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">新しいパスワード（確認）</label>
-                    <input type="password" class="form-control" th:field="*{confirmPassword}">
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="confirmPassword" th:field="*{confirmPassword}">
+                        <button class="btn btn-outline-secondary" type="button" id="toggleConfirm">表示</button>
+                    </div>
                     <div th:if="${#fields.hasErrors('confirmPassword')}" class="text-danger small mt-1">
                         <p th:each="error : ${#fields.errors('confirmPassword')}" th:text="${error}" class="mb-0"></p>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-dark">変更する</button>
+                <button type="submit" class="btn btn-primary">変更する</button>
             </form>
 
             <hr>
@@ -246,5 +253,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    ['current', 'new', 'confirm'].forEach(function(name) {
+        document.getElementById('toggle' + name.charAt(0).toUpperCase() + name.slice(1))
+            .addEventListener('click', function() {
+                const input = document.getElementById(name + 'Password');
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                this.textContent = isPassword ? '隠す' : '表示';
+            });
+    });
+</script>
 </body>
 </html>
