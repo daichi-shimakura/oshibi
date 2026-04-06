@@ -11,4 +11,6 @@ public class PerformerDto {
     private String displayName;
 
     private Integer displayOrder;
+
+    private String status;
 }

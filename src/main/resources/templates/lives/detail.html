@@ -110,6 +110,19 @@
         </div>
     </div>
 
+    <!-- 芸人別ライブ情報一覧 -->
+    <div class="detail-section">
+        <h5 class="mb-3">各芸人のライブ情報</h5>
+        <div class="d-flex flex-wrap gap-2">
+            <th:block th:each="performer : ${live.performers}">
+                <a th:if="${performer.accountId != null and performer.status == 'CONFIRMED'}"
+                   th:href="@{/lives/{liveId}/comedians/{accountId}(liveId=${live.liveId}, accountId=${performer.accountId})}"
+                   th:text="${performer.displayName}"
+                   class="btn btn-outline-secondary btn-sm"></a>
+            </th:block>
+        </div>
+    </div>
+
     <!-- 会場・アクセス -->
     <div class="detail-section">
         <h5 class="mb-3">会場・アクセス</h5>

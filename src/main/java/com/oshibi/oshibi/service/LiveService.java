@@ -98,7 +98,8 @@ public class LiveService {
                     live.getLivePerformers().stream().map(lp -> new PerformerDto(
                             lp.getComedian() != null ? lp.getComedian().getAccountId() : null,
                             lp.getComedian() != null ? lp.getComedian().getAccount().getDisplayName() : lp.getGuestName(),
-                            lp.getDisplayOrder())).toList(),
+                            lp.getDisplayOrder(),
+                            lp.getStatus().name())).toList(),
                     live.getTicketMethod() != null ? live.getTicketMethod().getLabel() : null,
                     live.getHasStreaming(),
                     live.getStreamingPrice(),
@@ -138,7 +139,8 @@ public class LiveService {
                             .map(lp -> new PerformerDto(
                                     lp.getComedian() != null ? lp.getComedian().getAccountId() : null,
                                     lp.getComedian() != null ? lp.getComedian().getAccount().getDisplayName() : lp.getGuestName(),
-                                    lp.getDisplayOrder())).toList(),
+                                    lp.getDisplayOrder(),
+                                    lp.getStatus().name())).toList(),
                     live.getTicketMethod() != null ? live.getTicketMethod().getLabel() : null,
                     live.getHasStreaming(),
                     live.getStreamingPrice(),
@@ -247,7 +249,8 @@ public class LiveService {
                     live.getLivePerformers().stream().map(lp -> new PerformerDto(
                             lp.getComedian() != null ? lp.getComedian().getAccountId() : null,
                             lp.getComedian() != null ? lp.getComedian().getAccount().getDisplayName() : lp.getGuestName(),
-                            lp.getDisplayOrder()
+                            lp.getDisplayOrder(),
+                            null
                     )).toList(),
                     null
             );
@@ -334,6 +337,7 @@ public class LiveService {
                         .map(add -> new PerformerDto(
                                 add.getAccountId(),
                                 add.getAccountId() != null ? add.getDisplayName() : add.getGuestName(),
+                                null,
                                 null))
                         .toList()
         );
