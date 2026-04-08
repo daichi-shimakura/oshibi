@@ -216,6 +216,12 @@
                     <div id="selectedVenue" class="form-text mt-1 text-dark fw-bold"></div>
                     <input type="hidden" id="venueId" name="venueId" th:value="*{venueId}">
                 </div>
+                <div class="form-text mt-1">
+                    会場が見つからない場合は
+                    <a href="javascript:void(0)" onclick="window.open('/venue/new', '_blank')">
+                        新しく会場を登録する
+                    </a>
+                </div>
             </div>
         </div>
 
