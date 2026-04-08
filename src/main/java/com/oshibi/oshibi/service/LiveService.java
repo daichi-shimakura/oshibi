@@ -168,7 +168,11 @@ public class LiveService {
         var live = new Live();
         live.setLiveId(liveFormDto.getLiveId());
         live.setCreatedBy(accountRepository.findByUser_Email(email).orElseThrow());
-        live.setVenue(venueRepository.findById(liveFormDto.getVenueId()).orElseThrow());
+        live.setVenue(
+                liveFormDto.getVenueId() != null
+                        ? venueRepository.findById(liveFormDto.getVenueId()).orElseThrow()
+                        : null
+        );
         live.setTitle(liveFormDto.getTitle());
         live.setLiveType(LiveType.valueOf(liveFormDto.getLiveType()));
         live.setDescription(liveFormDto.getDescription());
