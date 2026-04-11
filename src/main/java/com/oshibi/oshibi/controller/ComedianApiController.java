@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ComedianApiController {
-
     private final ComedianService comedianService;
 
     @GetMapping("/api/comedians/search")

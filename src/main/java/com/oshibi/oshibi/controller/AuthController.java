@@ -15,12 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,14 +26,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
     private final ProfileService profileService;
 
     @GetMapping("/login")
     public String login() {
-
         return "auth/login";
     }
 
@@ -50,7 +46,6 @@ public class AuthController {
                            BindingResult bindingResult,
                            HttpServletRequest request,
                            HttpServletResponse response) {
-
         if (bindingResult.hasErrors()) {
             return "auth/register";
         }
@@ -62,14 +57,14 @@ public class AuthController {
             return "auth/register";
         }
 
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword());
-            Authentication authentication = authenticationManager.authenticate(authToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            new HttpSessionSecurityContextRepository()
-                    .saveContext(SecurityContextHolder.getContext(), request, response);
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword());
+        Authentication authentication = authenticationManager.authenticate(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        new HttpSessionSecurityContextRepository()
+                .saveContext(SecurityContextHolder.getContext(), request, response);
 
-            return "redirect:/profile/edit";
+        return "redirect:/profile/edit";
 
     }
 
@@ -78,7 +73,7 @@ public class AuthController {
                               BindingResult bindingResult,
                               @AuthenticationPrincipal UserDetails userDetails,
                               HttpServletRequest request,
-                              Model model){
+                              Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("passwordChangeDto", new PasswordChangeDto());
             model.addAttribute("profileFormDto", profileService.showProfileEditForm(userDetails.getUsername()));

@@ -1,8 +1,24 @@
 package com.oshibi.oshibi.service;
 
-import com.oshibi.oshibi.domain.entity.*;
-import com.oshibi.oshibi.dto.*;
-import com.oshibi.oshibi.repository.*;
+import com.oshibi.oshibi.domain.entity.Live;
+import com.oshibi.oshibi.domain.entity.LivePerformer;
+import com.oshibi.oshibi.domain.entity.LiveType;
+import com.oshibi.oshibi.domain.entity.PerformerStatus;
+import com.oshibi.oshibi.domain.entity.TicketMethod;
+import com.oshibi.oshibi.domain.entity.Venue;
+import com.oshibi.oshibi.dto.ComedianLiveDetailDto;
+import com.oshibi.oshibi.dto.ComedianLiveRequestDto;
+import com.oshibi.oshibi.dto.LiveDetailDto;
+import com.oshibi.oshibi.dto.LiveFormDto;
+import com.oshibi.oshibi.dto.LiveListItemDto;
+import com.oshibi.oshibi.dto.LiveSearchDto;
+import com.oshibi.oshibi.dto.PerformerDto;
+import com.oshibi.oshibi.repository.AccountRepository;
+import com.oshibi.oshibi.repository.ComedianProfileRepository;
+import com.oshibi.oshibi.repository.LivePerformerRepository;
+import com.oshibi.oshibi.repository.LiveRepository;
+import com.oshibi.oshibi.repository.LiveSpecification;
+import com.oshibi.oshibi.repository.VenueRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,7 +35,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class LiveService {
-
     private final LiveRepository liveRepository;
     private final LivePerformerRepository livePerformerRepository;
     private final VenueRepository venueRepository;
@@ -27,7 +42,6 @@ public class LiveService {
     private final ComedianProfileRepository comedianProfileRepository;
 
     public Page<LiveListItemDto> search(LiveSearchDto dto, Pageable pageable) {
-
         Specification<Live> spec = (root, query, cb) -> cb.conjunction();
 
         if (dto.getKeyword() != null && !dto.getKeyword().isBlank()) {
@@ -117,8 +131,7 @@ public class LiveService {
     }
 
     public Optional<ComedianLiveDetailDto> findByLiveIdAndAccountId(Long liveId, Long accountId) {
-
-        var comedianLiveOpt = livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId, accountId).orElseThrow();
+        var livePerformer = livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId, accountId).orElseThrow();
 
         return liveRepository.findById(liveId).map(live -> {
             Venue venue = live.getVenue();
@@ -153,12 +166,12 @@ public class LiveService {
                     venue != null ? venue.getAddress() : null,
                     venue != null ? venue.getNearestStation() : null,
                     venue != null ? venue.getGoogleMapsUrl() : null,
-                    comedianLiveOpt.getComedian().getAccountId(),
-                    comedianLiveOpt.getComedian().getAccount().getDisplayName(),
-                    comedianLiveOpt.getPreComment(),
-                    comedianLiveOpt.getNetaCount(),
-                    comedianLiveOpt.getNetaType(),
-                    comedianLiveOpt.getStatus().getLabel()
+                    livePerformer.getComedian().getAccountId(),
+                    livePerformer.getComedian().getAccount().getDisplayName(),
+                    livePerformer.getPreComment(),
+                    livePerformer.getNetaCount(),
+                    livePerformer.getNetaType(),
+                    livePerformer.getStatus().getLabel()
             );
         });
     }
@@ -216,12 +229,12 @@ public class LiveService {
     }
 
     public void saveComedianLive(Long liveId, Long accountId, ComedianLiveRequestDto dto) {
-        var comedianLiveOpt = livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId, accountId).orElseThrow();
-        comedianLiveOpt.setStatus(PerformerStatus.valueOf(dto.getStatus()));
-        comedianLiveOpt.setNetaCount(dto.getNetaCount());
-        comedianLiveOpt.setNetaType(dto.getNetaType());
-        comedianLiveOpt.setPreComment(dto.getPreComment());
-        livePerformerRepository.save(comedianLiveOpt);
+        var livePerformer = livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId, accountId).orElseThrow();
+        livePerformer.setStatus(PerformerStatus.valueOf(dto.getStatus()));
+        livePerformer.setNetaCount(dto.getNetaCount());
+        livePerformer.setNetaType(dto.getNetaType());
+        livePerformer.setPreComment(dto.getPreComment());
+        livePerformerRepository.save(livePerformer);
     }
 
     public Optional<LiveFormDto> findLiveForEdit(Long liveId) {
@@ -309,10 +322,11 @@ public class LiveService {
                 }).toList();
     }
 
+    @Transactional
     public void delete(Long liveId, String email) {
         checkAuth(email, liveId);
-        liveRepository.deleteById(liveId);
         livePerformerRepository.deleteByLive_LiveId(liveId);
+        liveRepository.deleteById(liveId);
     }
 
     public List<Venue> findAllVenues() {

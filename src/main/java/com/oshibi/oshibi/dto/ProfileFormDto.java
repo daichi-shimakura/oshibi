@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProfileFormDto {
     //ライブ関係者
-
     private String unitType;
 
     @Size(max = 100, message = "所属事務所は100文字以内で入力してください")

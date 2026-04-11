@@ -16,13 +16,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void register(RegisterDto dto) {
-
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("このメールアドレスはすでに使用されています");
         }
@@ -51,21 +49,19 @@ public class AuthService {
         user.setAccount(account);
     }
 
-    public void changeEmail(String currentEmail, String newEmail){
+    public void changeEmail(String currentEmail, String newEmail) {
+        var userOpt = userRepository.findByEmail(currentEmail);
+        var user = userOpt.orElseThrow(() -> new IllegalArgumentException("メールアドレスが見つかりません: " + currentEmail));
 
-            var userOpt = userRepository.findByEmail(currentEmail);
-            var user = userOpt.orElseThrow(() -> new IllegalArgumentException("メールアドレスが見つかりません: " + currentEmail));
+        if (userRepository.findByEmail(newEmail).isPresent()) {
+            throw new IllegalArgumentException("このメールアドレスはすでに使用されています");
+        }
 
-            if (userRepository.findByEmail(newEmail).isPresent()) {
-                throw new IllegalArgumentException("このメールアドレスはすでに使用されています");
-            }
-
-            user.setEmail(newEmail);
-            userRepository.save(user);
+        user.setEmail(newEmail);
+        userRepository.save(user);
     }
 
     public void changePassword(String email, PasswordChangeDto dto) {
-
         var userOpt = userRepository.findByEmail(email);
         var user = userOpt.orElseThrow(() -> new IllegalArgumentException("ユーザーが見つかりません: " + email));
 

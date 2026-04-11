@@ -20,9 +20,9 @@ public enum UnitType {
 
     public String getBadgeClass() {
         return switch (this) {
-            case PIN   -> "ut-pin";
+            case PIN -> "ut-pin";
             case COMBI -> "ut-combi";
-            case TRIO  -> "ut-trio";
+            case TRIO -> "ut-trio";
             case GROUP -> "ut-group";
             case STAFF -> "ut-staff";
             case OTHER -> "ut-other";

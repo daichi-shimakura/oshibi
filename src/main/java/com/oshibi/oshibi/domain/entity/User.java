@@ -1,9 +1,16 @@
 package com.oshibi.oshibi.domain.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;            // Lombok
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;            // Lombok
+import lombok.Setter;
 
 //Entityクラスであることの宣言
 @Entity
@@ -14,7 +21,6 @@ import lombok.Setter;            // Lombok
 //デフォルトコンストラクタと同じ
 @NoArgsConstructor
 public class User extends BaseEntity {
-
     //主キー指定
     @Id
     //自動採番の設定

@@ -18,8 +18,8 @@ public class ComedianController {
 
     @GetMapping("/comedians")
     public String list(Model model, ComedianSearchDto comedianSearchDto, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page,21);
-        var comedianPage = comedianService.search(comedianSearchDto,pageable);
+        Pageable pageable = PageRequest.of(page, 21);
+        var comedianPage = comedianService.search(comedianSearchDto, pageable);
         model.addAttribute("comedianPage", comedianPage);
         model.addAttribute("comedianSearchDto", comedianSearchDto);
         return "comedians/list";

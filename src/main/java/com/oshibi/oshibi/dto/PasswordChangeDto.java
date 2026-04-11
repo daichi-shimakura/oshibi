@@ -23,5 +23,4 @@ public class PasswordChangeDto {
 
     @NotBlank(message = "パスワード確認は必須です")
     private String confirmPassword;
-
 }

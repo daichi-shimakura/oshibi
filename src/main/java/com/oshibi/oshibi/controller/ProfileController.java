@@ -20,12 +20,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @RequiredArgsConstructor
 public class ProfileController {
-
     private final ProfileService profileService;
     private final AccountRepository accountRepository;
 
     @GetMapping("/profile/edit")
-    public String showProfileForm(@AuthenticationPrincipal UserDetails userDetails,Model model) {
+    public String showProfileForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         String email = userDetails.getUsername();
         var profileFormDto = profileService.showProfileEditForm(email);
         model.addAttribute("profileFormDto", profileFormDto);
@@ -56,7 +55,7 @@ public class ProfileController {
     }
 
     @GetMapping("/account/edit")
-    public String showAccountEditForm(Model model, @AuthenticationPrincipal UserDetails userDetails){
+    public String showAccountEditForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         ProfileFormDto form = profileService.showProfileEditForm(email);
         model.addAttribute("profileFormDto", form);
@@ -90,6 +89,4 @@ public class ProfileController {
         }
         return "redirect:/lives";
     }
-
-
 }

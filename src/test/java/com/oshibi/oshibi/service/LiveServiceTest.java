@@ -17,7 +17,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LiveServiceTest {
-
     @Mock
     private LivePerformerRepository livePerformerRepository;
 
@@ -25,27 +24,28 @@ public class LiveServiceTest {
     private LiveService liveService;
 
     @Test
-    void LivePerformerテーブルが見つからなかった場合例外が投げられる(){
+    void LivePerformerテーブルが見つからなかった場合例外が投げられる() {
         long liveId = 1;
         long accountId = 2;
         var dto = new ComedianLiveRequestDto();
 
-        when(livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId,accountId))
+        when(livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId, accountId))
                 .thenReturn(Optional.empty());
 
         assertThrows(NoSuchElementException.class, () -> liveService.saveComedianLive(liveId, accountId, dto));
     }
+
     @Test
-    void 正常登録でlivePerformerRepositoryのsaveが呼ばれる(){
+    void 正常登録でlivePerformerRepositoryのsaveが呼ばれる() {
         long liveId = 1;
         long accountId = 2;
         var dto = new ComedianLiveRequestDto();
         dto.setStatus("TENTATIVE");
 
-        when(livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId,accountId))
+        when(livePerformerRepository.findByLive_LiveIdAndComedian_AccountId(liveId, accountId))
                 .thenReturn(Optional.of(new LivePerformer()));
 
-        liveService.saveComedianLive(liveId,accountId,dto);
+        liveService.saveComedianLive(liveId, accountId, dto);
 
         verify(livePerformerRepository, times(1)).save(any(LivePerformer.class));
     }

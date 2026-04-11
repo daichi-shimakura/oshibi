@@ -24,15 +24,15 @@ public enum LiveType {
 
     public String getBadgeClass() {
         return switch (this) {
-            case NETA    -> "lt-neta";
-            case TALK    -> "lt-talk";
-            case KIKAKU  -> "lt-kikaku";
-            case YOSEN   -> "lt-sho";
-            case BATTLE  -> "lt-battle";
+            case NETA -> "lt-neta";
+            case TALK -> "lt-talk";
+            case KIKAKU -> "lt-kikaku";
+            case YOSEN -> "lt-sho";
+            case BATTLE -> "lt-battle";
             case TANDOKU -> "lt-tandoku";
-            case TWOMAN  -> "lt-twoman";
-            case UNIT    -> "lt-unit";
-            case OTHER   -> "lt-other";
+            case TWOMAN -> "lt-twoman";
+            case UNIT -> "lt-unit";
+            case OTHER -> "lt-other";
         };
     }
 }

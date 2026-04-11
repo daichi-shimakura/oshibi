@@ -1,7 +1,11 @@
 package com.oshibi.oshibi.service;
 
 import com.oshibi.oshibi.domain.entity.ComedianProfile;
-import com.oshibi.oshibi.dto.*;
+import com.oshibi.oshibi.dto.ComedianDetailDto;
+import com.oshibi.oshibi.dto.ComedianListItemDto;
+import com.oshibi.oshibi.dto.ComedianScheduleItemDto;
+import com.oshibi.oshibi.dto.ComedianSearchDto;
+import com.oshibi.oshibi.dto.ComedianSearchResultDto;
 import com.oshibi.oshibi.repository.ComedianProfileRepository;
 import com.oshibi.oshibi.repository.ComedianSpecification;
 import com.oshibi.oshibi.repository.LivePerformerRepository;
@@ -21,7 +25,6 @@ public class ComedianService {
     private final LivePerformerRepository livePerformerRepository;
 
     public Page<ComedianListItemDto> search(ComedianSearchDto dto, Pageable pageable) {
-
         Specification<ComedianProfile> spec = (root, query, cb) -> cb.conjunction();
 
         if (dto.getKeyWord() != null && !dto.getKeyWord().isBlank()) {
@@ -36,7 +39,7 @@ public class ComedianService {
             spec = spec.and(ComedianSpecification.agency(dto.getAgency()));
         }
 
-        return comedianProfileRepository.findAll(spec,pageable)
+        return comedianProfileRepository.findAll(spec, pageable)
                 .map(cp -> new ComedianListItemDto(
                         cp.getAccountId(),
                         cp.getAccount().getDisplayName(),
@@ -47,7 +50,6 @@ public class ComedianService {
     }
 
     public Optional<ComedianDetailDto> findById(Long accountId) {
-
         return comedianProfileRepository.findById(accountId).map(comedian -> {
             // comedianが出演するライブのリストを取得
             List<ComedianScheduleItemDto> lives = livePerformerRepository.findByComedian_AccountId(accountId).stream()

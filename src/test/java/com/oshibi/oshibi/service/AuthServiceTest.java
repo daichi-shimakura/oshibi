@@ -17,7 +17,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
-
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -57,7 +56,7 @@ class AuthServiceTest {
     }
 
     @Test
-    void accountTypeが不正の場合は例外が投げられる(){
+    void accountTypeが不正の場合は例外が投げられる() {
         RegisterDto dto = new RegisterDto();
         dto.setEmail("test@test.com");
         dto.setPassword("password");

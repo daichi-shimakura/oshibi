@@ -13,7 +13,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-
     private final UserRepository userRepository;
 
     @Override
@@ -29,5 +28,4 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .roles(user.getAccount().getAccountType().toString())
                 .build();
     }
-
 }

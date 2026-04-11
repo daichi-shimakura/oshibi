@@ -15,7 +15,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,7 +37,7 @@ public class LiveController {
     @GetMapping("/lives")
     public String list(Model model, LiveSearchDto liveSearchDto, @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by("date").ascending());
-        var livePage  = liveService.search(liveSearchDto,pageable);
+        var livePage = liveService.search(liveSearchDto, pageable);
         model.addAttribute("livePage", livePage);
         model.addAttribute("liveSearchDto", liveSearchDto);
         return "lives/list";
@@ -48,7 +52,7 @@ public class LiveController {
 
     @GetMapping("/lives/{liveId}/comedians/{accountId}")
     public String comedianLiveDetail(@PathVariable Long liveId, @PathVariable Long accountId, Model model) {
-        var comedianLiveDetail = liveService.findByLiveIdAndAccountId(liveId,accountId).orElseThrow();
+        var comedianLiveDetail = liveService.findByLiveIdAndAccountId(liveId, accountId).orElseThrow();
         model.addAttribute("comedianLiveDetail", comedianLiveDetail);
         return "lives/comedianLiveDetail";
     }
@@ -62,7 +66,7 @@ public class LiveController {
 
     @GetMapping("/lives/{liveId}/edit")
     public String editLive(Model model, @PathVariable Long liveId, @AuthenticationPrincipal UserDetails userDetails) {
-        liveService.checkAuth(userDetails.getUsername(),liveId);
+        liveService.checkAuth(userDetails.getUsername(), liveId);
         var liveDetail = liveService.findLiveForEdit(liveId).orElseThrow();
         model.addAttribute("liveFormDto", liveDetail);
         model.addAttribute("venues", liveService.findAllVenues());
@@ -81,7 +85,7 @@ public class LiveController {
         }
         var email = userDetails.getUsername();
         var liveId = liveService.save(dto, email);
-        return REDIRECT_LIVES + liveId;
+        return "redirect:/lives/" + liveId;
     }
 
     @PostMapping("/lives/{liveId}/edit")
@@ -98,13 +102,13 @@ public class LiveController {
         var email = userDetails.getUsername();
         liveService.checkAuth(email, liveId);
         var liveIdRedirect = liveService.save(dto, email);
-        return REDIRECT_LIVES + liveIdRedirect;
+        return "redirect:/lives/" + liveIdRedirect;
     }
 
     @GetMapping("/lives/{liveId}/comedians/{accountId}/edit")
     public String showComedianLiveForm(Model model, @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long liveId, @PathVariable Long accountId) {
-        liveService.checkAuthComedianLiveAccount(userDetails.getUsername(),accountId);
-        var comedianLiveForm = liveService.findByLiveIdAndAccountId(liveId,accountId).orElseThrow();
+        liveService.checkAuthComedianLiveAccount(userDetails.getUsername(), accountId);
+        var comedianLiveForm = liveService.findByLiveIdAndAccountId(liveId, accountId).orElseThrow();
         model.addAttribute("comedianLiveForm", comedianLiveForm);
         var form = new ComedianLiveRequestDto();
         form.setStatus(comedianLiveForm.getStatus());
@@ -129,7 +133,7 @@ public class LiveController {
         }
         liveService.checkAuthComedianLiveAccount(userDetails.getUsername(), accountId);
         liveService.saveComedianLive(liveId, accountId, dto);
-        return REDIRECT_LIVES + liveId + "/comedians/" + accountId;
+        return "redirect:/lives/" + liveId + "/comedians/" + accountId;
     }
 
     @GetMapping("/my/lives")
@@ -147,8 +151,7 @@ public class LiveController {
     @PostMapping("/lives/{liveId}/delete")
     public String deleteLive(@PathVariable Long liveId, @AuthenticationPrincipal UserDetails userDetails) {
         var email = userDetails.getUsername();
-        liveService.delete(liveId,email);
+        liveService.delete(liveId, email);
         return "redirect:/my/lives";
     }
-
 }

@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter  // Springがフォームの値をDTOに詰める（書き込み）
 @Getter  // サービス層がDTOから値を取り出す（読み込み）
 public class RegisterDto {
-
     @NotBlank(message = "メールアドレスは必須です")
     @Email(message = "メールアドレスの形式が正しくありません")
     @Size(max = 255, message = "メールアドレスは255文字以内で入力してください")

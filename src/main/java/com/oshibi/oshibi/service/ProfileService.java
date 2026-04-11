@@ -15,12 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
-
     private final AccountRepository accountRepository;
     private final ComedianProfileRepository comedianProfileRepository;
 
     public void saveProfile(String email, ProfileFormDto dto) {
-
         if ("LIVE_STAFF".equals(dto.getAccountType())
                 && !StringUtils.hasText(dto.getUnitType())) {
             throw new IllegalArgumentException("活動カテゴリは必須です");
@@ -56,7 +54,7 @@ public class ProfileService {
 
     }
 
-    public ProfileFormDto showProfileEditForm(String email){
+    public ProfileFormDto showProfileEditForm(String email) {
         Account account = accountRepository.findByUser_Email(email)
                 .orElseThrow(() -> new RuntimeException("アカウントが見つかりません"));
 

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @RequiredArgsConstructor
 public class VenueController {
-
     private final VenueService venueService;
 
     @GetMapping("venue/new")

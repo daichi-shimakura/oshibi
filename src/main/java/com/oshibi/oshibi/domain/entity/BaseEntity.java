@@ -5,13 +5,13 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
+
 import java.time.LocalDateTime;
 
 //親クラスであることの宣言
 @MappedSuperclass
 @Getter//Setterは必要ない
 public class BaseEntity {
-
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -27,7 +27,7 @@ public class BaseEntity {
     }
 
     @PreUpdate
-    protected  void preUpdate() {
+    protected void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 }
