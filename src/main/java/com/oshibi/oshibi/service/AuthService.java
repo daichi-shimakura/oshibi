@@ -7,6 +7,7 @@ import com.oshibi.oshibi.dto.PasswordChangeDto;
 import com.oshibi.oshibi.dto.RegisterDto;
 import com.oshibi.oshibi.repository.AccountRepository;
 import com.oshibi.oshibi.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class AuthService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void register(RegisterDto dto) {
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("このメールアドレスはすでに使用されています");
