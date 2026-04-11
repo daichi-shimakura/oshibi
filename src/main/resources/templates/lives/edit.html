@@ -244,12 +244,13 @@
         </div>
 
         <!-- ========== 送信ボタン ========== -->
-        <div class="d-flex justify-content: between align-items-center mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
             <div>
-                <form th:action="@{/lives/{liveId}/delete(liveId=${liveFormDto.liveId})}" method="post">
-                    <button th:if="${liveFormDto.liveId != null}" type="submit" class="btn btn-outline-danger"
+                    <button th:if="${liveFormDto.liveId != null}"
+                            type="submit"
+                            form="deleteForm"
+                            class="btn btn-outline-danger"
                             onclick="return confirm('このライブを削除しますか？')">このライブを削除</button>
-                </form>
             </div>
             <div class="d-flex gap-2">
                 <a th:href="@{/my/lives}" class="btn btn-outline-secondary">キャンセル</a>
@@ -257,6 +258,10 @@
             </div>
         </div>
 
+    </form>
+    <form th:action="@{/lives/{liveId}/delete(liveId=${liveFormDto.liveId})}"
+          method="post"
+          id="deleteForm">
     </form>
 </div>
 
