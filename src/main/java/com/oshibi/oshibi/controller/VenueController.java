@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class VenueController {
     private final VenueService venueService;
 
-    @GetMapping("venue/new")
+    @GetMapping("/venue/new")
     public String showVenueForm(Model model) {
         model.addAttribute("venueRequestDto", new VenueRequestDto());
         return "venue/new";

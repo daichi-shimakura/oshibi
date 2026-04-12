@@ -51,7 +51,6 @@ public class ComedianService {
 
     public Optional<ComedianDetailDto> findById(Long accountId) {
         return comedianProfileRepository.findById(accountId).map(comedian -> {
-            // comedianが出演するライブのリストを取得
             List<ComedianScheduleItemDto> lives = livePerformerRepository.findByComedian_AccountId(accountId).stream()
                     .map(lp -> new ComedianScheduleItemDto(
                             lp.getLive().getLiveId(),
@@ -59,16 +58,14 @@ public class ComedianService {
                             lp.getLive().getDate(),
                             lp.getLive().getOpenTime(),
                             lp.getLive().getStartTime(),
-                            lp.getLive().getVenue().getName(),
-                            lp.getLive().getVenue().getPrefecture(),
+                            lp.getLive().getVenue() != null ? lp.getLive().getVenue().getName() : null,
+                            lp.getLive().getVenue() != null ? lp.getLive().getVenue().getPrefecture() : null,
                             lp.getLive().getLiveType().getLabel(),
                             lp.getLive().getLiveType().getBadgeClass(),
                             lp.getLive().getPriceAdvance(),
                             lp.getLive().getPriceDoor()
                     )).toList();
 
-
-            // 作ったlivesを渡す
             return new ComedianDetailDto(
                     comedian.getAccount().getDisplayName(),
                     comedian.getUnitType().getLabel(),

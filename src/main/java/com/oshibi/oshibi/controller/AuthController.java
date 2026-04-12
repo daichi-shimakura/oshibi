@@ -60,12 +60,12 @@ public class AuthController {
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword());
         Authentication authentication = authenticationManager.authenticate(authToken);
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         new HttpSessionSecurityContextRepository()
                 .saveContext(SecurityContextHolder.getContext(), request, response);
 
         return "redirect:/profile/edit";
-
     }
 
     @PostMapping("/account/email")

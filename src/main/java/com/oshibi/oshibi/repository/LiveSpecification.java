@@ -72,6 +72,5 @@ public class LiveSpecification {
             case "20:00~" -> cb.greaterThanOrEqualTo(root.get(START_TIME), LocalTime.of(20, 0));
             default -> cb.conjunction();
         };
-
     }
 }

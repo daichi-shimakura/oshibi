@@ -12,18 +12,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//Entityクラスであることの宣言
 @Entity
-//テーブルの名前指定
 @Table(name = "users")
 @Getter
 @Setter
-//デフォルトコンストラクタと同じ
 @NoArgsConstructor
 public class User extends BaseEntity {
-    //主キー指定
     @Id
-    //自動採番の設定
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;

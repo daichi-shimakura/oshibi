@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LivePerformerRepository extends JpaRepository<LivePerformer, Long> {
-    List<LivePerformer> findByComedian_AccountId(Long accountId);// コメディアンのアカウントIDから、そのコメディアンが出演するライブのリストを取得
+    List<LivePerformer> findByComedian_AccountId(Long accountId);
 
     Optional<LivePerformer> findByLive_LiveIdAndComedian_AccountId(Long liveId, Long accountId);
 

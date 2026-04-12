@@ -18,7 +18,6 @@ public class BaseEntity {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-
     @PrePersist
     protected void prePersist() {
         LocalDateTime now = LocalDateTime.now();

@@ -52,8 +52,8 @@ public class AuthService {
     }
 
     public void changeEmail(String currentEmail, String newEmail) {
-        var userOpt = userRepository.findByEmail(currentEmail);
-        var user = userOpt.orElseThrow(() -> new IllegalArgumentException("メールアドレスが見つかりません: " + currentEmail));
+        var user = userRepository.findByEmail(currentEmail)
+                .orElseThrow(() -> new IllegalStateException("メールアドレスが見つかりません: " + currentEmail));
 
         if (userRepository.findByEmail(newEmail).isPresent()) {
             throw new IllegalArgumentException("このメールアドレスはすでに使用されています");
@@ -64,8 +64,8 @@ public class AuthService {
     }
 
     public void changePassword(String email, PasswordChangeDto dto) {
-        var userOpt = userRepository.findByEmail(email);
-        var user = userOpt.orElseThrow(() -> new IllegalArgumentException("ユーザーが見つかりません: " + email));
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("ユーザーが見つかりません: " + email));
 
         if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPasswordHash())) {
             throw new IllegalArgumentException("現在のパスワードが正しくありません");

@@ -8,7 +8,7 @@ import com.oshibi.oshibi.dto.ProfileFormDto;
 import com.oshibi.oshibi.repository.AccountRepository;
 import com.oshibi.oshibi.repository.ComedianProfileRepository;
 import lombok.RequiredArgsConstructor;
-import org.flywaydb.core.internal.util.StringUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.stereotype.Service;
 
 
@@ -24,11 +24,8 @@ public class ProfileService {
             throw new IllegalArgumentException("活動カテゴリは必須です");
         }
 
-        // Accountを作成
-        //ログイン中のアカウントのIdを取得
         Account account = accountRepository.findByUser_Email(email)
-                .orElseThrow(() -> new RuntimeException("アカウントが見つかりません"));
-        //アカウントエンティティを更新
+                    .orElseThrow(() -> new IllegalStateException("アカウントが見つかりません"));
         account.setDisplayName(dto.getDisplayName());
         account.setDescription(dto.getDescription());
         account.setProfileImageUrl(dto.getProfileImageUrl());
@@ -41,7 +38,6 @@ public class ProfileService {
         accountRepository.save(account);
 
         if (account.getAccountType() == AccountType.LIVE_STAFF) {
-            // ComedianProfileを作成
             ComedianProfile comedianProfile = comedianProfileRepository
                     .findById(account.getAccountId())
                     .orElse(new ComedianProfile());
@@ -56,8 +52,7 @@ public class ProfileService {
 
     public ProfileFormDto showProfileEditForm(String email) {
         Account account = accountRepository.findByUser_Email(email)
-                .orElseThrow(() -> new RuntimeException("アカウントが見つかりません"));
-
+                .orElseThrow(() -> new IllegalStateException("アカウントが見つかりません"));
 
         ProfileFormDto profileFormDto = new ProfileFormDto();
         profileFormDto.setAccountType(account.getAccountType().name());

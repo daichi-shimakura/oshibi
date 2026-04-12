@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 public class LiveController {
-    public static final String REDIRECT_LIVES = "redirect:/lives/";
-
     private final LiveService liveService;
     private final AccountService accountService;
 

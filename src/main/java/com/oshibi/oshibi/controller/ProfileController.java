@@ -31,7 +31,6 @@ public class ProfileController {
         return "profile/edit";
     }
 
-
     @PostMapping("/profile/edit")
     public String saveProfile(@AuthenticationPrincipal UserDetails userDetails,
                               @Valid ProfileFormDto dto,
@@ -39,7 +38,7 @@ public class ProfileController {
                               Model model) {
         String email = userDetails.getUsername();
         if (bindingResult.hasErrors()) {
-            Account account = accountRepository.findByUser_Email(email).orElse(null);
+            Account account = accountRepository.findByUser_Email(email).orElseThrow();
             model.addAttribute("accountType", account.getAccountType().name());
             return "profile/edit";
         }
@@ -47,7 +46,7 @@ public class ProfileController {
             profileService.saveProfile(email, dto);
         } catch (IllegalArgumentException e) {
             bindingResult.reject("error.global", e.getMessage());
-            Account account = accountRepository.findByUser_Email(email).orElse(null);
+            Account account = accountRepository.findByUser_Email(email).orElseThrow();
             model.addAttribute("accountType", account.getAccountType().name());
             return "profile/edit";
         }
@@ -59,8 +58,8 @@ public class ProfileController {
         String email = userDetails.getUsername();
         ProfileFormDto form = profileService.showProfileEditForm(email);
         model.addAttribute("profileFormDto", form);
-        model.addAttribute("emailChangeDto", new EmailChangeDto());   // 追加
-        model.addAttribute("passwordChangeDto", new PasswordChangeDto()); // 追加
+        model.addAttribute("emailChangeDto", new EmailChangeDto());
+        model.addAttribute("passwordChangeDto", new PasswordChangeDto());
         model.addAttribute("email", email);
         return "account/edit";
     }

@@ -11,7 +11,6 @@ public enum LiveType {
     UNIT("ユニット"),
     OTHER("その他");
 
-
     private final String label;
 
     LiveType(String label) {
