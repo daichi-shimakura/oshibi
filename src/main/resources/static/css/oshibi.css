@@ -283,6 +283,31 @@ body {
     color: var(--a-navy) !important;
 }
 
+/* ===== プロフィールアバター（頭文字） ===== */
+.profile-avatar {
+    background: var(--a-navy);
+    color: var(--a-bulb);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+    user-select: none;
+}
+.profile-avatar-sm {
+    width: 80px;
+    height: 80px;
+    font-size: 1.75rem;
+    margin: 0 auto 0.75rem;
+}
+.profile-avatar-lg {
+    width: 120px;
+    height: 120px;
+    font-size: 2.5rem;
+}
+
 /* ===== フッター ===== */
 footer {
     background: var(--a-navy);

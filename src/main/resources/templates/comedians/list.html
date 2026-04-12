@@ -11,18 +11,6 @@
         .comedian-name:hover {
             text-decoration: underline;
         }
-        .profile-image-placeholder {
-            background: #dee2e6;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-size: 0.7rem;
-            margin: 0 auto 0.75rem;
-        }
     </style>
 </head>
 <body>
@@ -81,10 +69,12 @@
         <div class="col-md-4 col-sm-6" th:each="comedian : ${comedianPage.content}">
             <div class="comedian-card p-3 text-center">
                 <a th:href="@{/comedians/detail/{accountId}(accountId=${comedian.accountId})}">
-                    <div class="profile-image-placeholder">画像</div>
+                    <div class="profile-avatar profile-avatar-sm"
+                         th:text="${#strings.substring(comedian.displayName, 0, 1)}"></div>
                     <div class="comedian-name" th:text="${comedian.displayName}"></div>
                     <span th:text="${comedian.unitType}"
-                          th:class="|badge-unit-type ${comedian.unitTypeBadgeClass}|"></span>                    <div th:text="${comedian.agency}" class="small text-muted mt-1"></div>
+                          th:class="|badge-unit-type ${comedian.unitTypeBadgeClass}|"></span>
+                    <div th:text="${comedian.agency}" class="small text-muted mt-1"></div>
                 </a>
             </div>
         </div>
