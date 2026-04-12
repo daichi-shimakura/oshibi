@@ -3,6 +3,8 @@
    コンセプト：劇場の緞帳・白熱電球
    ============================================= */
 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap');
+
 :root {
     --a-navy:       #1a1a2e;   /* 舞台の暗転 */
     --a-navy-mid:   #16213e;
@@ -19,6 +21,7 @@
 }
 
 body {
+    font-family: 'Noto Sans JP', sans-serif;
     background: var(--a-surface);
     color: var(--a-text);
 }
@@ -116,11 +119,12 @@ body {
     box-shadow: 0 0 0 3px rgba(200,169,106,0.18);
 }
 .btn-primary {
-    background: var(--a-navy);
-    border-color: var(--a-navy);
-    color: #fff;
+    background: var(--a-glow);
+    border-color: var(--a-glow);
+    color: var(--a-navy);
+    font-weight: 700;
 }
-.btn-primary:hover { background: var(--a-navy-light); border-color: var(--a-navy-light); }
+.btn-primary:hover { background: var(--a-bulb); border-color: var(--a-bulb); color: var(--a-navy); }
 
 .btn-outline-secondary {
     color: var(--a-navy);
@@ -150,8 +154,8 @@ body {
 .live-row a { text-decoration: none; color: inherit; }
 
 .live-title {
-    font-weight: 700;
-    font-size: 0.95rem;
+    font-weight: 800;
+    font-size: 1rem;
     color: var(--a-navy);
 }
 .live-row:hover .live-title { color: var(--a-bulb-text); }
