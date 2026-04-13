@@ -80,7 +80,9 @@
   <div class="detail-section">
     <h5 class="mb-3">ライブ情報</h5>
     <div class="d-flex align-items-center mb-2">
-      <span th:text="${comedianLiveDetail.liveTitle}" class="fw-bold me-2"></span>
+      <a th:href="@{/lives/{liveId}(liveId=${comedianLiveDetail.liveId})}"
+         th:text="${comedianLiveDetail.liveTitle}"
+         class="fw-bold me-2 text-decoration-none"></a>
       <span th:text="${comedianLiveDetail.liveType}"
             th:class="|badge-live-type fs-6 ${comedianLiveDetail.badgeClass}|"></span>
     </div>
