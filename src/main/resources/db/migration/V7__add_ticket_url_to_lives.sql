@@ -1,0 +1,1 @@
+ALTER TABLE lives ADD COLUMN ticket_url VARCHAR(500);

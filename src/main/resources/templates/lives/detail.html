@@ -77,6 +77,10 @@
             <span class="info-label">チケット取得方法</span>
             <span th:text="${live.ticketMethod}"></span>
         </div>
+        <div class="info-row d-flex" th:if="${live.ticketUrl != null}">
+            <span class="info-label">チケット購入</span>
+            <a th:href="${live.ticketUrl}" th:text="${live.ticketUrl}" target="_blank" rel="noopener noreferrer"></a>
+        </div>
         <div class="info-row d-flex">
             <span class="info-label">配信</span>
             <span th:text="${live.hasStreaming} ? 'あり' : 'なし'"></span>

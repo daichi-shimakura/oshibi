@@ -125,7 +125,8 @@ public class LiveService {
                     live.getDescription(),
                     venue != null ? venue.getAddress() : null,
                     venue != null ? venue.getNearestStation() : null,
-                    venue != null ? venue.getGoogleMapsUrl() : null
+                    venue != null ? venue.getGoogleMapsUrl() : null,
+                    live.getTicketUrl()
             );
         });
     }
@@ -155,6 +156,7 @@ public class LiveService {
                                     lp.getDisplayOrder(),
                                     lp.getStatus().name())).toList(),
                     live.getTicketMethod() != null ? live.getTicketMethod().getLabel() : null,
+                    live.getTicketUrl(),
                     live.getHasStreaming(),
                     live.getStreamingPrice(),
                     live.getStreamingStartDate(),
@@ -204,6 +206,7 @@ public class LiveService {
         live.setStreamingStartDate(liveFormDto.getStreamingStartDate());
         live.setStreamingEndDate(liveFormDto.getStreamingEndDate());
         live.setFlyerUrl(liveFormDto.getFlyerUrl());
+        live.setTicketUrl(liveFormDto.getTicketUrl());
         if (liveFormDto.getLiveId() != null) {
             livePerformerRepository.deleteByLive_LiveId(liveFormDto.getLiveId());
             livePerformerRepository.flush();
@@ -263,6 +266,7 @@ public class LiveService {
                     live.getStreamingStartDate(),
                     live.getStreamingEndDate(),
                     live.getFlyerUrl(),
+                    live.getTicketUrl(),
                     live.getLivePerformers().stream().map(lp -> new PerformerDto(
                             lp.getComedian() != null ? lp.getComedian().getAccountId() : null,
                             lp.getComedian() != null ? lp.getComedian().getAccount().getDisplayName() : lp.getGuestName(),

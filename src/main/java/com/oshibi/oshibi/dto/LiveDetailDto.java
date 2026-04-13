@@ -34,4 +34,5 @@ public class LiveDetailDto {
     private String address;
     private String nearestStation;
     private String googleMapsUrl;
+    private String ticketUrl;
 }

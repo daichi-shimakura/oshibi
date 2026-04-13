@@ -111,6 +111,10 @@
       <span class="info-label">チケット取得方法</span>
       <span th:text="${comedianLiveDetail.ticketMethod}"></span>
     </div>
+    <div class="info-row d-flex" th:if="${comedianLiveDetail.ticketUrl != null}">
+      <span class="info-label">チケット購入</span>
+      <a th:href="${comedianLiveDetail.ticketUrl}" th:text="${comedianLiveDetail.ticketUrl}" target="_blank" rel="noopener noreferrer">チケットを購入する</a>
+    </div>
     <div class="info-row d-flex">
       <span class="info-label">会場</span>
       <span th:text="${comedianLiveDetail.venue}"></span>

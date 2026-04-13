@@ -23,6 +23,7 @@ public class ComedianLiveDetailDto {
     private Integer priceDoor;
     private List<PerformerDto> performers;
     private String ticketMethod;
+    private String ticketUrl;
     private Boolean hasStreaming;
     private Integer streamingPrice;
     private LocalDate streamingStartDate;

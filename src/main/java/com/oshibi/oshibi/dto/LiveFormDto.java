@@ -78,6 +78,9 @@ public class LiveFormDto {
     @Size(max = 500, message = "フライヤーURLは500文字以内で入力してください")
     private String flyerUrl;
 
+    @Size(max = 500)
+    private String ticketUrl;
+
     private List<PerformerDto> performers;
 
     private List<PerformerAddDto> performerAdds;

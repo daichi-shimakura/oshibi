@@ -83,6 +83,9 @@ public class Live extends BaseEntity {
     @Column(name = "flyer_url", length = 500)
     private String flyerUrl;
 
+    @Column(name = "ticket_url", length = 500)
+    private String ticketUrl;
+
     @OneToMany(mappedBy = "live")
     private List<LivePerformer> livePerformers = new ArrayList<>();
 }
