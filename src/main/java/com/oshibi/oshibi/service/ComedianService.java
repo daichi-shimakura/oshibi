@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,7 +52,7 @@ public class ComedianService {
 
     public Optional<ComedianDetailDto> findById(Long accountId) {
         return comedianProfileRepository.findById(accountId).map(comedian -> {
-            List<ComedianScheduleItemDto> lives = livePerformerRepository.findByComedian_AccountId(accountId).stream()
+            List<ComedianScheduleItemDto> lives = livePerformerRepository.findByComedian_AccountIdAndLive_DateGreaterThanEqual(accountId, LocalDate.now()).stream()
                     .map(lp -> new ComedianScheduleItemDto(
                             lp.getLive().getLiveId(),
                             lp.getLive().getTitle(),
