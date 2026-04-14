@@ -43,6 +43,18 @@
         </ol>
     </nav>
 
+    <div class="form-section mb-4" style="border: 2px solid #0d6efd; border-radius: 8px; padding: 1.5rem;">
+        <h5 class="mb-1">フライヤー画像から自動入力</h5>
+        <p class="text-muted small mb-3">Xやチケットサイトのスクショをアップロードするとフォームを自動入力します。内容は必ず確認・修正してください。</p>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <input type="file" id="flyerImageInput" accept="image/jpeg,image/png,image/webp"
+                   class="form-control" style="max-width: 400px;">
+            <button type="button" id="extractBtn" class="btn btn-outline-primary"
+                    onclick="extractFromImage()">画像から入力</button>
+        </div>
+        <div id="extractStatus" class="mt-2 small"></div>
+    </div>
+
     <h4 class="mb-4" th:text="${liveFormDto.liveId == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></h4>
 
     <p class="text-danger small mb-4">※ 会場を新規登録する場合は、先に「新規会場を登録する」から登録してください。</p>
@@ -427,6 +439,87 @@
                 });
             });
     });
+
+    async function extractFromImage() {
+        const fileInput = document.getElementById('flyerImageInput');
+        const statusEl = document.getElementById('extractStatus');
+        const btn = document.getElementById('extractBtn');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            statusEl.innerHTML = '<span class="text-danger">画像を選択してください</span>';
+            return;
+        }
+
+        btn.disabled = true;
+        statusEl.innerHTML = '<span class="text-muted">解析中...（10〜20秒かかります）</span>';
+
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+
+        try {
+            const res = await fetch('/api/lives/extract-from-image', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!res.ok) {
+                statusEl.innerHTML = '<span class="text-danger">エラーが発生しました。別の画像を試してください。</span>';
+                return;
+            }
+
+            const data = await res.json();
+            fillFormFromExtract(data);
+            statusEl.innerHTML = '<span class="text-success">✅ 自動入力完了。内容を確認・修正してください。</span>';
+
+        } catch (e) {
+            statusEl.innerHTML = '<span class="text-danger">通信エラーが発生しました。</span>';
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    function fillFormFromExtract(data) {
+        const liveTypeMap = {
+            'ネタ': 'NETA', 'トーク': 'TALK', '企画': 'KIKAKU',
+            '賞レース予選': 'YOSEN', 'バトルライブ': 'BATTLE',
+            '単独': 'TANDOKU', 'ツーマン': 'TSUMAN',
+            'ユニットライブ': 'UNIT', 'その他': 'OTHER'
+        };
+
+        if (data.live_name) setField('title', data.live_name);
+        if (data.live_type && liveTypeMap[data.live_type]) setSelectField('liveType', liveTypeMap[data.live_type]);
+        if (data.live_date) setField('date', data.live_date);
+        if (data.open_time) setField('openTime', data.open_time);
+        if (data.start_time) setField('startTime', data.start_time);
+        if (data.price_advance != null) setField('priceAdvance', data.price_advance);
+        if (data.price_door != null) setField('priceDoor', data.price_door);
+        if (data.ticket_url) setField('ticketUrl', data.ticket_url);
+
+        if (data.performers && data.performers.length > 0) {
+            data.performers.forEach(name => addPerformer(null, name));
+        }
+
+        if (data.venue_name) {
+            const venueSearchInput = document.getElementById('venueSearch');
+            venueSearchInput.value = data.venue_name;
+
+            // 検索イベントを手動で発火させて候補を表示する
+            venueSearchInput.dispatchEvent(new Event('input'));
+
+            document.getElementById('extractStatus').innerHTML +=
+                `<br><span class="text-warning">会場候補が表示されます。正しい会場を選択してください。</span>`;
+        }
+    }
+
+    function setField(fieldName, value) {
+        const el = document.querySelector(`[name="${fieldName}"]`);
+        if (el) el.value = value;
+    }
+
+    function setSelectField(fieldName, value) {
+        const el = document.querySelector(`[name="${fieldName}"]`);
+        if (el) el.value = value;
+    }
 </script>
 
 </body>
