@@ -41,3 +41,4 @@ jobs:
         run: ./gradlew test
         env:
           SPRING_DATASOURCE_PASSWORD: oshibi1234
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
