@@ -307,6 +307,82 @@ body {
     height: 120px;
     font-size: 2.5rem;
 }
+/* =============================================
+   AI アシスト セクション（白背景版）
+   方針：他のカードと同じ白ベース + 金の細いアクセント
+   ============================================= */
+.ai-assist-section {
+    position: relative;
+    background: var(--a-card);
+    border: 1px solid var(--a-border);
+    border-left: 3px solid var(--a-glow);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.ai-assist-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--a-bulb-text);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+.ai-assist-label::before {
+    content: "✦";
+    font-size: 0.85rem;
+    color: var(--a-glow);
+}
+
+.ai-assist-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--a-navy);
+    margin-bottom: 4px;
+}
+
+.ai-assist-desc {
+    font-size: 0.8rem;
+    color: var(--a-muted);
+    margin-bottom: 1rem;
+}
+
+/* AI 実行ボタン：金バルブカラー */
+.btn-ai-extract {
+    background: var(--a-bulb);
+    border: none;
+    color: var(--a-navy);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 8px 20px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background 0.15s, transform 0.1s;
+}
+.btn-ai-extract:hover {
+    background: #f5d88a;
+    color: var(--a-navy);
+}
+.btn-ai-extract:active { transform: scale(0.98); }
+.btn-ai-extract:disabled {
+    background: var(--a-border);
+    color: var(--a-muted);
+    cursor: not-allowed;
+}
+
+/* ステータスメッセージ */
+.ai-status {
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+    color: var(--a-muted);
+}
+.ai-status.is-success { color: #1a6644; }
+.ai-status.is-error   { color: #922b21; }
+.ai-status.is-loading { color: var(--a-bulb-text); }
 
 /* ===== フッター ===== */
 footer {

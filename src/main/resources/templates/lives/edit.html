@@ -43,16 +43,19 @@
         </ol>
     </nav>
 
-    <div class="form-section mb-4" style="border: 2px solid #0d6efd; border-radius: 8px; padding: 1.5rem;">
-        <h5 class="mb-1">フライヤー画像から自動入力</h5>
-        <p class="text-muted small mb-3">Xやチケットサイトのスクショをアップロードするとフォームを自動入力します。内容は必ず確認・修正してください。</p>
+    <div class="ai-assist-section">
+        <div class="ai-assist-label">AI Assist</div>
+        <div class="ai-assist-title">フライヤー画像から自動入力</div>
+        <p class="ai-assist-desc">
+            Xやチケットサイトのスクショをアップロードするとフォームを自動入力します。内容は必ず確認・修正してください。
+        </p>
         <div class="d-flex align-items-center gap-3 flex-wrap">
             <input type="file" id="flyerImageInput" accept="image/jpeg,image/png,image/webp"
                    class="form-control" style="max-width: 400px;">
-            <button type="button" id="extractBtn" class="btn btn-outline-primary"
+            <button type="button" id="extractBtn" class="btn-ai-extract"
                     onclick="extractFromImage()">画像から入力</button>
         </div>
-        <div id="extractStatus" class="mt-2 small"></div>
+        <div id="extractStatus" class="ai-status"></div>
     </div>
 
     <h4 class="mb-4" th:text="${liveFormDto.liveId == null} ? 'ライブ情報登録' : 'ライブ情報編集'"></h4>
