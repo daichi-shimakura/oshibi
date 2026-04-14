@@ -39,7 +39,7 @@ public class LiveFormDto {
     @Size(max = 200, message = "ライブ名は200文字以内で入力してください")
     private String title;
 
-    @NotNull(message = "ライブ種別は必須です")
+    @NotBlank(message = "ライブ種別は必須です")
     private String liveType;
 
     @Size(max = 1000, message = "備考・説明は1000文字以内で入力してください")
