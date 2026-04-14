@@ -29,7 +29,7 @@ public class LiveController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/lives";
+        return "index";
     }
 
     @GetMapping("/lives")

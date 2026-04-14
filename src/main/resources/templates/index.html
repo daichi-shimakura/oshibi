@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/common :: head}"></th:block>
+    <title>oshibi — SNSを巡回しなくても、推しのライブがわかる。</title>
+    <style>
+        /* ===== ランディングページ専用スタイル ===== */
+        html { scroll-behavior: smooth; }
+
+        /* ===== HERO ===== */
+        .lp-hero {
+          background: var(--a-navy);
+          color: #fff;
+          text-align: center;
+          padding: 80px 24px 72px;
+          position: relative;
+          overflow: hidden;
+        }
+        .lp-hero::after {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 0; right: 0;
+          height: 3px;
+          background: linear-gradient(90deg,
+            transparent 0%, var(--a-glow) 30%, var(--a-bulb) 50%, var(--a-glow) 70%, transparent 100%);
+        }
+        .lp-hero-bg {
+          position: absolute; inset: 0;
+          background: radial-gradient(ellipse 80% 60% at 50% 100%,
+            rgba(200,169,106,0.12) 0%, transparent 70%);
+          pointer-events: none;
+        }
+        .lp-hero-inner { position: relative; z-index: 1; }
+
+        .lp-hero-badge {
+          display: inline-block;
+          background: rgba(200,169,106,0.15);
+          border: 1px solid rgba(200,169,106,0.35);
+          color: var(--a-bulb);
+          font-size: 0.75rem;
+          font-weight: 700;
+          padding: 5px 16px;
+          border-radius: 999px;
+          margin-bottom: 28px;
+          letter-spacing: 0.05em;
+        }
+        .lp-hero h1 {
+          font-size: clamp(1.8rem, 5.5vw, 3.2rem);
+          font-weight: 900;
+          line-height: 1.2;
+          letter-spacing: -0.025em;
+          margin-bottom: 8px;
+          color: #fff;
+        }
+        .lp-hero h1 .accent { color: var(--a-bulb); }
+        .lp-hero-tagline {
+          font-size: 0.95rem;
+          color: var(--a-glow);
+          margin-bottom: 20px;
+          font-weight: 500;
+        }
+        .lp-hero-desc {
+          font-size: 0.9rem;
+          color: rgba(255,255,255,0.55);
+          max-width: 480px;
+          margin: 0 auto 40px;
+          line-height: 1.85;
+        }
+        .lp-cta {
+          display: flex;
+          gap: 12px;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+        .lp-btn-main {
+          display: inline-flex;
+          align-items: center;
+          background: var(--a-bulb);
+          color: var(--a-navy);
+          font-weight: 700;
+          font-size: 1rem;
+          padding: 13px 32px;
+          border-radius: 999px;
+          text-decoration: none;
+          transition: background 0.2s, transform 0.15s;
+          box-shadow: 0 4px 20px rgba(242,208,122,0.3);
+        }
+        .lp-btn-main:hover { background: #f5d88a; color: var(--a-navy); transform: translateY(-2px); }
+        .lp-btn-sub {
+          display: inline-flex;
+          align-items: center;
+          background: rgba(255,255,255,0.08);
+          color: rgba(255,255,255,0.85);
+          font-size: 0.9rem;
+          font-weight: 600;
+          padding: 13px 24px;
+          border-radius: 999px;
+          text-decoration: none;
+          border: 1px solid rgba(255,255,255,0.15);
+          transition: background 0.2s, transform 0.15s;
+        }
+        .lp-btn-sub:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+
+        /* hero phone mockup */
+        .lp-phone { margin: 56px auto 0; max-width: 300px; }
+        .lp-phone-shell {
+          background: var(--a-card);
+          border-radius: 20px;
+          padding: 18px 14px;
+          box-shadow:
+            0 0 0 1px rgba(200,169,106,0.3),
+            0 32px 64px rgba(0,0,0,0.5);
+        }
+        .lp-phone-notch {
+          width: 44px; height: 4px;
+          background: var(--a-border);
+          border-radius: 2px;
+          margin: 0 auto 14px;
+        }
+        .lp-p-row {
+          background: var(--a-surface);
+          border: 1px solid var(--a-border);
+          border-left: 3px solid transparent;
+          border-radius: 8px;
+          padding: 10px 12px;
+          margin-bottom: 7px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .lp-p-row:last-child { margin-bottom: 0; }
+        .lp-p-type {
+          width: 36px; height: 36px;
+          background: var(--a-bulb-pale);
+          border-radius: 6px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 0.6rem; font-weight: 700;
+          color: var(--a-bulb-text);
+          flex-shrink: 0; text-align: center;
+        }
+        .lp-p-title { font-size: 0.75rem; font-weight: 700; color: var(--a-navy); margin-bottom: 2px; }
+        .lp-p-meta  { font-size: 0.62rem; color: var(--a-muted); }
+
+        /* ===== SECTION COMMON ===== */
+        .lp-section { padding: 80px 24px; }
+        .lp-section-white   { background: var(--a-card); }
+        .lp-section-surface { background: var(--a-surface); }
+        .lp-container { max-width: 720px; margin: 0 auto; }
+
+        .lp-sec-label {
+          font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+          text-transform: uppercase; color: var(--a-bulb-text); margin-bottom: 8px;
+        }
+        .lp-sec-title {
+          font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 900;
+          letter-spacing: -0.02em; color: var(--a-navy);
+          margin-bottom: 10px; line-height: 1.25;
+        }
+        .lp-sec-desc {
+          font-size: 0.88rem; color: var(--a-muted);
+          margin-bottom: 48px; line-height: 1.8;
+        }
+
+        /* ===== FEATURES ===== */
+        .lp-feat-grid {
+          display: flex; flex-direction: column; gap: 1px;
+          background: var(--a-border);
+          border: 1px solid var(--a-border);
+          border-radius: 10px; overflow: hidden;
+        }
+        .lp-feat-item {
+          background: var(--a-card); padding: 28px 24px;
+          display: grid; grid-template-columns: 36px 1fr;
+          gap: 18px; align-items: start; transition: background 0.15s;
+        }
+        .lp-feat-item:hover { background: var(--a-bulb-pale); }
+        .lp-feat-num { font-size: 1.1rem; font-weight: 900; color: var(--a-glow); line-height: 1; padding-top: 3px; }
+        .lp-feat-body h3 { font-size: 0.95rem; font-weight: 700; color: var(--a-navy); margin-bottom: 6px; }
+        .lp-feat-body p  { font-size: 0.84rem; color: var(--a-muted); line-height: 1.75; }
+
+        /* ===== WHY OSHIBI ===== */
+        .lp-why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 560px) { .lp-why-grid { grid-template-columns: 1fr; } }
+
+        .lp-why-before {
+          background: #fff5f5; border: 1px solid #fecaca;
+          border-radius: 10px; padding: 24px 20px;
+        }
+        .lp-why-after {
+          background: var(--a-bulb-pale); border: 1px solid rgba(200,169,106,0.4);
+          border-radius: 10px; padding: 24px 20px;
+        }
+        .lp-why-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 12px; }
+        .lp-why-before .lp-why-label { color: #dc2626; }
+        .lp-why-after  .lp-why-label { color: var(--a-bulb-text); }
+
+        .lp-scatter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+        .lp-scatter-item {
+          background: #fff; border: 1px solid #fca5a5;
+          border-radius: 6px; padding: 5px 10px;
+          font-size: 0.72rem; color: #991b1b;
+        }
+        .lp-scatter-item.faded { opacity: 0.4; }
+
+        .lp-unified-item {
+          display: flex; align-items: center; gap: 8px;
+          background: #fff; border: 1px solid rgba(200,169,106,0.3);
+          border-radius: 7px; padding: 7px 12px;
+          font-size: 0.75rem; font-weight: 600;
+          color: var(--a-navy); margin-bottom: 6px;
+        }
+        .lp-unified-item:last-child { margin-bottom: 0; }
+        .lp-unified-dot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: var(--a-glow); flex-shrink: 0;
+        }
+
+        /* ===== TWO-LAYER ===== */
+        .lp-twolayer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 600px) { .lp-twolayer-grid { grid-template-columns: 1fr; } }
+
+        .lp-twolayer-card {
+          background: var(--a-card); border: 1px solid var(--a-border);
+          border-radius: 10px; overflow: hidden;
+          box-shadow: 0 2px 12px rgba(26,26,46,0.06);
+        }
+        .lp-twolayer-head {
+          background: var(--a-navy); padding: 10px 16px;
+          display: flex; align-items: center; justify-content: space-between;
+        }
+        .lp-twolayer-live  { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.65); }
+        .lp-twolayer-name  { font-size: 0.72rem; color: var(--a-bulb); font-weight: 700; }
+        .lp-twolayer-body  { padding: 16px; }
+
+        .lp-tl-live-name {
+          font-size: 0.8rem; font-weight: 700; color: var(--a-navy);
+          margin-bottom: 10px; padding-bottom: 10px;
+          border-bottom: 1px solid var(--a-border);
+        }
+        .lp-tl-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 7px; font-size: 0.75rem; }
+        .lp-tl-row:last-child { margin-bottom: 0; }
+        .lp-tl-key { flex-shrink: 0; min-width: 72px; color: var(--a-muted); font-size: 0.68rem; }
+        .lp-tl-val { color: var(--a-navy); font-weight: 600; }
+        .lp-tl-comment {
+          background: var(--a-bulb-pale); border-left: 3px solid var(--a-glow);
+          border-radius: 0 6px 6px 0; padding: 7px 10px;
+          font-size: 0.72rem; color: var(--a-bulb-text);
+          font-style: italic; margin-top: 10px; line-height: 1.6;
+        }
+
+        /* ===== AI SECTION ===== */
+        .lp-ai-flow {
+          display: grid; grid-template-columns: 1fr auto 1fr;
+          gap: 16px; align-items: center; margin-bottom: 24px;
+        }
+        @media (max-width: 560px) {
+          .lp-ai-flow { grid-template-columns: 1fr; }
+          .lp-ai-arrow { text-align: center; }
+        }
+        .lp-ai-box {
+          background: var(--a-card); border: 1px solid var(--a-border);
+          border-radius: 10px; padding: 20px;
+        }
+        .lp-ai-box.result {
+          border-color: rgba(200,169,106,0.45); background: var(--a-bulb-pale);
+        }
+        .lp-ai-box-label {
+          font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+          color: var(--a-muted); margin-bottom: 6px;
+        }
+        .lp-ai-box-title { font-size: 0.88rem; font-weight: 700; color: var(--a-navy); margin-bottom: 8px; }
+        .lp-ai-box.result .lp-ai-box-title { color: var(--a-bulb-text); }
+        .lp-ai-box-desc { font-size: 0.78rem; color: var(--a-muted); line-height: 1.7; }
+        .lp-ai-arrow { font-size: 1.4rem; color: var(--a-glow); font-weight: 700; text-align: center; flex-shrink: 0; }
+
+        .lp-extracted-fields { display: flex; flex-direction: column; gap: 6px; }
+        .lp-extracted-field  { display: flex; gap: 8px; font-size: 0.72rem; }
+        .lp-ef-key { color: var(--a-muted); min-width: 52px; flex-shrink: 0; }
+        .lp-ef-val { font-weight: 700; color: var(--a-navy); }
+
+        .lp-ai-note { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 560px) { .lp-ai-note { grid-template-columns: 1fr; } }
+        .lp-ai-note-item {
+          background: var(--a-card); border: 1px solid var(--a-border);
+          border-radius: 8px; padding: 14px 16px;
+        }
+        .lp-ai-note-item h4 { font-size: 0.8rem; font-weight: 700; color: var(--a-navy); margin-bottom: 4px; }
+        .lp-ai-note-item p  { font-size: 0.76rem; color: var(--a-muted); line-height: 1.7; }
+
+        /* ===== FOR WHOM ===== */
+        .lp-for-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 520px) { .lp-for-grid { grid-template-columns: 1fr; } }
+
+        .lp-for-card {
+          background: var(--a-card); border: 1px solid var(--a-border);
+          border-top: 3px solid var(--a-glow); border-radius: 10px; padding: 26px 22px;
+        }
+        .lp-for-card.fan { border-top-color: #6366f1; }
+        .lp-for-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; color: var(--a-bulb-text); margin-bottom: 8px; }
+        .lp-for-card.fan .lp-for-tag { color: #6366f1; }
+        .lp-for-card h3 { font-size: 0.95rem; font-weight: 900; color: var(--a-navy); margin-bottom: 14px; line-height: 1.35; }
+        .lp-for-list { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; }
+        .lp-for-list li { font-size: 0.82rem; color: var(--a-muted); display: flex; align-items: flex-start; gap: 8px; }
+        .lp-for-list li::before { content: '–'; color: var(--a-glow); font-weight: 700; flex-shrink: 0; }
+        .lp-for-card.fan .lp-for-list li::before { color: #6366f1; }
+
+        /* ===== BOTTOM CTA ===== */
+        .lp-cta-section {
+          background: var(--a-navy); padding: 80px 24px;
+          text-align: center; position: relative; overflow: hidden;
+        }
+        .lp-cta-section::before {
+          content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+          background: linear-gradient(90deg,
+            transparent, var(--a-glow) 30%, var(--a-bulb) 50%, var(--a-glow) 70%, transparent);
+        }
+        .lp-cta-section h2 {
+          font-size: clamp(1.5rem, 4.5vw, 2.4rem); font-weight: 900;
+          color: #fff; letter-spacing: -0.025em; margin-bottom: 10px;
+        }
+        .lp-cta-section p { font-size: 0.88rem; color: rgba(255,255,255,0.5); margin-bottom: 32px; }
+    </style>
+</head>
+<body>
+
+<!-- ナビ（共通フラグメント） -->
+<nav th:replace="~{fragments/common :: header}"></nav>
+
+
+<!-- HERO -->
+<section class="lp-hero">
+    <div class="lp-hero-bg"></div>
+    <div class="lp-hero-inner">
+        <span class="lp-hero-badge">お笑いライブ情報プラットフォーム</span>
+        <h1>
+            SNSを巡回しなくても、<br>
+            <span class="accent">推しのライブがわかる。</span>
+        </h1>
+        <p class="lp-hero-tagline">芸人は推されやすく、ファンは推しやすく。</p>
+        <p class="lp-hero-desc">
+            X・Instagram・Noteに散らばったライブ情報を一か所に。
+            芸人からの意気込みコメントやネタ情報も読めるお笑いファンのためのプラットフォームです。
+        </p>
+        <div class="lp-cta">
+            <a th:href="@{/lives}" class="lp-btn-main">ライブを探す</a>
+            <a th:href="@{/comedians}" class="lp-btn-sub">芸人を探す</a>
+        </div>
+
+        <div class="lp-phone">
+            <div class="lp-phone-shell">
+                <div class="lp-phone-notch"></div>
+                <div class="lp-p-row">
+                    <div class="lp-p-type">ネタ</div>
+                    <div>
+                        <div class="lp-p-title">吉祥寺大爆笑ナイト vol.12</div>
+                        <div class="lp-p-meta">5/15（金）19:30 · 吉祥寺</div>
+                    </div>
+                    <span class="badge-live-type lt-neta ms-auto">ネタ</span>
+                </div>
+                <div class="lp-p-row">
+                    <div class="lp-p-type">バトル</div>
+                    <div>
+                        <div class="lp-p-title">新宿コメディアンズ #88</div>
+                        <div class="lp-p-meta">5/17（日）18:00 · 新宿</div>
+                    </div>
+                    <span class="badge-live-type lt-battle ms-auto">バトル</span>
+                </div>
+                <div class="lp-p-row">
+                    <div class="lp-p-type">単独</div>
+                    <div>
+                        <div class="lp-p-title">下北沢笑いまつり 2026</div>
+                        <div class="lp-p-meta">5/22（金）配信あり</div>
+                    </div>
+                    <span class="badge-live-type lt-tandoku ms-auto">単独</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- FEATURES -->
+<section class="lp-section lp-section-white">
+    <div class="lp-container">
+        <p class="lp-sec-label">Features</p>
+        <h2 class="lp-sec-title">できること</h2>
+        <p class="lp-sec-desc">ライブを探す、芸人を知る、推しに近づく。すべてが一か所に。</p>
+        <div class="lp-feat-grid">
+            <div class="lp-feat-item">
+                <span class="lp-feat-num">01</span>
+                <div class="lp-feat-body">
+                    <h3>ライブを検索・絞り込む</h3>
+                    <p>日付・エリア・ライブ種別・価格帯・芸人名で絞り込み。今週末の近くのライブが即見つかります。</p>
+                </div>
+            </div>
+            <div class="lp-feat-item">
+                <span class="lp-feat-num">02</span>
+                <div class="lp-feat-body">
+                    <h3>芸人ページがスケジュール帳になる</h3>
+                    <p>推し芸人のページには今後の出演ライブが一覧表示。SNSを何周も巡回する必要がなくなります。</p>
+                </div>
+            </div>
+            <div class="lp-feat-item">
+                <span class="lp-feat-num">03</span>
+                <div class="lp-feat-body">
+                    <h3>芸人からのコメントを受け取れる</h3>
+                    <p>意気込みコメント・ネタ本数・種類を芸人本人が発信。「新ネタ2本おろします」がリアルタイムでわかる。</p>
+                </div>
+            </div>
+            <div class="lp-feat-item">
+                <span class="lp-feat-num">04</span>
+                <div class="lp-feat-body">
+                    <h3>チケット・配信情報も一目で確認</h3>
+                    <p>前売・当日料金、置きチケ・コンビニ等の取得方法、配信有無・アーカイブ期間まで一か所に集約。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- WHY OSHIBI -->
+<section class="lp-section lp-section-surface">
+    <div class="lp-container">
+        <p class="lp-sec-label">Why oshibi</p>
+        <h2 class="lp-sec-title">なぜ、oshibiを作ったのか。</h2>
+        <p class="lp-sec-desc">
+            お笑いライブのスケジュールはX・Instagram・Note・各事務所サイトに散らばっている。
+            チケットもコンビニ・チケットサイト・取り置きとバラバラで、どこを見ればいいかわからない。
+            芸人自身がそのリアルを痛感して作ったのがoshibiです。
+        </p>
+        <div class="lp-why-grid">
+            <div class="lp-why-before">
+                <p class="lp-why-label">今まで</p>
+                <div class="lp-scatter">
+                    <span class="lp-scatter-item">X ポスト</span>
+                    <span class="lp-scatter-item">Instagram</span>
+                    <span class="lp-scatter-item faded">事務所サイト</span>
+                    <span class="lp-scatter-item faded">Note</span>
+                    <span class="lp-scatter-item faded">チケットサイト</span>
+                    <span class="lp-scatter-item faded">コンビニ発券</span>
+                    <span class="lp-scatter-item faded">取り置き</span>
+                </div>
+                <p style="font-size:0.8rem; color:#991b1b; font-weight:600; line-height:1.7;">
+                    情報がバラバラ。全部チェックしないと見逃す。チケットの取り方もわからない。
+                </p>
+            </div>
+            <div class="lp-why-after">
+                <p class="lp-why-label">oshibiなら</p>
+                <div class="lp-unified-item"><span class="lp-unified-dot"></span>ライブスケジュール一覧</div>
+                <div class="lp-unified-item"><span class="lp-unified-dot"></span>チケット取得方法</div>
+                <div class="lp-unified-item"><span class="lp-unified-dot"></span>配信の有無・アーカイブ期間</div>
+                <div class="lp-unified-item"><span class="lp-unified-dot"></span>芸人からのコメント</div>
+                <div class="lp-unified-item"><span class="lp-unified-dot"></span>ネタ本数・ネタ種別</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ONLY ON OSHIBI -->
+<section class="lp-section lp-section-white">
+    <div class="lp-container">
+        <p class="lp-sec-label">Only on oshibi</p>
+        <h2 class="lp-sec-title">同じライブでも、<br>芸人ごとに違う情報が見える。</h2>
+        <p class="lp-sec-desc">
+            oshibiは「共通のライブ情報」に加えて「芸人から見たそのライブ」を重ねて表示します。
+            出演者それぞれにとって、そのライブがどんな意味を持つのかがわかる。
+        </p>
+        <div class="lp-twolayer-grid">
+            <div class="lp-twolayer-card">
+                <div class="lp-twolayer-head">
+                    <span class="lp-twolayer-live">吉祥寺大爆笑ナイト</span>
+                    <span class="lp-twolayer-name">キャベツ太郎</span>
+                </div>
+                <div class="lp-twolayer-body">
+                    <div class="lp-tl-live-name">吉祥寺大爆笑ナイト vol.12</div>
+                    <div class="lp-tl-row"><span class="lp-tl-key">ステータス</span><span class="lp-tl-val" style="color:#065f46;">本予定</span></div>
+                    <div class="lp-tl-row"><span class="lp-tl-key">ネタ</span><span class="lp-tl-val">コント · 2本</span></div>
+                    <div class="lp-tl-row"><span class="lp-tl-key">チケット</span><span class="lp-tl-val">取り置き受付中</span></div>
+                    <div class="lp-tl-comment">「新ネタ2本おろします。絶対笑わせるんで来てください」</div>
+                </div>
+            </div>
+            <div class="lp-twolayer-card">
+                <div class="lp-twolayer-head">
+                    <span class="lp-twolayer-live">吉祥寺大爆笑ナイト</span>
+                    <span class="lp-twolayer-name">コメット田中</span>
+                </div>
+                <div class="lp-twolayer-body">
+                    <div class="lp-tl-live-name">吉祥寺大爆笑ナイト vol.12</div>
+                    <div class="lp-tl-row"><span class="lp-tl-key">ステータス</span><span class="lp-tl-val" style="color:#92400e;">仮予定</span></div>
+                    <div class="lp-tl-row"><span class="lp-tl-key">ネタ</span><span class="lp-tl-val">漫才 · 1本</span></div>
+                    <div class="lp-tl-row"><span class="lp-tl-key">チケット</span><span class="lp-tl-val">チケットサイト</span></div>
+                    <div class="lp-tl-comment">「大好きな先輩と同じ舞台に立てます。全力でやります」</div>
+                </div>
+            </div>
+        </div>
+        <p style="text-align:center; font-size:0.82rem; color:var(--a-muted); margin-top:20px;">
+            同じライブでも、芸人ごとにまったく違う景色がある。
+        </p>
+    </div>
+</section>
+
+
+<!-- AI FEATURE -->
+<section class="lp-section lp-section-surface">
+    <div class="lp-container">
+        <p class="lp-sec-label">AI機能</p>
+        <h2 class="lp-sec-title">フライヤーを読み込むだけで、<br>ライブ情報が自動入力される。</h2>
+        <p class="lp-sec-desc">
+            Anthropic Claude Vision APIと連携。フライヤー画像やXのポスト・チケットサイトのスクリーンショットをアップロードすると、
+            ライブ名・日時・会場・料金などをAIが読み取り、フォームに自動で入力します。内容は確認・修正してから保存できます。
+        </p>
+        <div class="lp-ai-flow">
+            <div class="lp-ai-box">
+                <p class="lp-ai-box-label">INPUT</p>
+                <p class="lp-ai-box-title">フライヤー画像をアップロード</p>
+                <p class="lp-ai-box-desc">フライヤー画像、Xのポスト、チケットサイトのスクリーンショット（JPG・PNG・WebP）に対応。</p>
+            </div>
+            <div class="lp-ai-arrow">&#8594;</div>
+            <div class="lp-ai-box result">
+                <p class="lp-ai-box-label">OUTPUT</p>
+                <p class="lp-ai-box-title">フォームに自動入力</p>
+                <div class="lp-extracted-fields">
+                    <div class="lp-extracted-field"><span class="lp-ef-key">ライブ名</span><span class="lp-ef-val">吉祥寺大爆笑ナイト vol.12</span></div>
+                    <div class="lp-extracted-field"><span class="lp-ef-key">開催日</span><span class="lp-ef-val">2026/05/15</span></div>
+                    <div class="lp-extracted-field"><span class="lp-ef-key">開演</span><span class="lp-ef-val">19:30</span></div>
+                    <div class="lp-extracted-field"><span class="lp-ef-key">会場</span><span class="lp-ef-val">吉祥寺MANDA-LA2</span></div>
+                    <div class="lp-extracted-field"><span class="lp-ef-key">前売</span><span class="lp-ef-val">¥2,000</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="lp-ai-note">
+            <div class="lp-ai-note-item">
+                <h4>画像から自動読み取り</h4>
+                <p>Claude Vision APIがフライヤーのテキスト・日付・会場名・料金を解析して自動入力。手打ち作業をゼロにします。</p>
+            </div>
+            <div class="lp-ai-note-item">
+                <h4>日付も正確に推論</h4>
+                <p>年表記のないフライヤーでも、今日の日付を基準に直近の未来として正しく補完します。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- FOR WHOM -->
+<section class="lp-section lp-section-white">
+    <div class="lp-container">
+        <p class="lp-sec-label">For whom</p>
+        <h2 class="lp-sec-title">芸人にも、ファンにも。</h2>
+        <p class="lp-sec-desc">2種類のアカウントで、それぞれに必要な機能を用意しています。</p>
+        <div class="lp-for-grid">
+            <div class="lp-for-card">
+                <p class="lp-for-tag">ライブ関係者（芸人・スタッフ）</p>
+                <h3>ライブを登録して<br>ファンに届ける</h3>
+                <ul class="lp-for-list">
+                    <li>ライブ情報を一括管理・発信</li>
+                    <li>意気込み・ネタ情報を投稿</li>
+                    <li>仮予定から本予定へのステータス管理</li>
+                    <li>マイライブ一覧でスケジュール把握</li>
+                    <li>フライヤーからの自動入力（AI機能）</li>
+                </ul>
+            </div>
+            <div class="lp-for-card fan">
+                <p class="lp-for-tag">ファン</p>
+                <h3>推し芸人の情報を<br>まとめて追いかける</h3>
+                <ul class="lp-for-list">
+                    <li>出演ライブを一か所で確認</li>
+                    <li>芸人のコメントを受け取る</li>
+                    <li>チケット・配信情報をすぐ確認</li>
+                    <li>登録・利用は無料</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- BOTTOM CTA -->
+<section class="lp-cta-section">
+    <div style="position:relative; z-index:1;">
+        <h2>今夜の推し、どこにいる？</h2>
+        <p>登録なしでライブ検索・芸人検索ができます。</p>
+        <div class="lp-cta">
+            <a th:href="@{/lives}" class="lp-btn-main">ライブを探す</a>
+            <a th:href="@{/register}" class="lp-btn-sub">アカウントを作る</a>
+        </div>
+    </div>
+</section>
+
+
+<!-- フッター（共通フラグメント） -->
+<footer th:replace="~{fragments/common :: footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
