@@ -33,6 +33,9 @@ public class AnthropicVisionClient {
     public LiveInfoExtractDto extractLiveInfo(byte[] imageBytes, String mediaType, String prompt)
             throws IOException, InterruptedException {
 
+        String today = java.time.LocalDate.now().toString();
+        prompt = prompt.replace("{{TODAY}}", today);
+
         String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 
         Map<String, Object> imageSource = new LinkedHashMap<>();
