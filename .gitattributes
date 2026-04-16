@@ -1,3 +1,11 @@
 /gradlew text eol=lf
 *.bat text eol=crlf
 *.jar binary
+
+# Thymeleafテンプレートは言語判定から除外
+*.html linguist-vendored
+
+# 外部ライブラリCSS/JSを除外
+src/main/resources/static/css/** linguist-vendored
+src/main/resources/static/js/** linguist-vendored
+src/main/resources/static/lib/** linguist-vendored
